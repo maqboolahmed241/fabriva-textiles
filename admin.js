@@ -15,11 +15,13 @@ else{
    const {count,error:productError}=await supabase.from("products").select("*",{count:"exact",head:true});
    document.querySelector("#product-count").textContent=productError?"—":String(count??0);
   }else document.querySelector("#product-count").textContent="Restricted";
-  if(profile.is_owner||profile.can_view_orders){
+  if(profile.is_owner||profile.can_view_orders||profile.can_update_order_status||profile.can_cancel_orders){
    const {count,error:orderError}=await supabase.from("orders").select("*",{count:"exact",head:true});
    document.querySelector("#order-count").textContent=orderError?"—":String(count??0);
   }else document.querySelector("#order-count").textContent="Restricted";
-  document.querySelector("#team-link").hidden=!profile.is_owner;\n  document.querySelector("#products-link").hidden=!(profile.is_owner||profile.can_view_products||profile.can_edit_products||profile.can_change_prices||profile.can_adjust_stock||profile.can_set_limited_stock||profile.can_change_low_stock_limit);\n  document.querySelector("#orders-link").hidden=!(profile.is_owner||profile.can_view_orders||profile.can_update_order_status||profile.can_cancel_orders);\n  notice.textContent="Access verified. Your permissions are being applied.";
+  document.querySelector("#team-link").hidden=!profile.is_owner;#
+  document.querySelector("#products-link").hidden=!(profile.is_owner||profile.can_view_products||profile.can_edit_products||profile.can_change_prices||profile.can_adjust_stock||profile.can_set_limited_stock||profile.can_change_low_stock_limit);#
+  document.querySelector("#orders-link").hidden=!(profile.is_owner||profile.can_view_orders||profile.can_update_order_status||profile.can_cancel_orders);\n  notice.textContent="Access verified. Your permissions are being applied.";
   content.hidden=false;
  }
 }

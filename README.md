@@ -30,5 +30,13 @@ Database and private product-image storage groundwork have been provisioned. Aut
 - Collect customer notification consent and provide opt-out/preferences.
 - Do not activate real payment collection until merchant/gateway credentials and validation are complete.
 
+## Private admin development
+- `login.html`: Supabase email/password sign-in; no public sign-up.
+- `admin.html`: role-aware private dashboard shell.
+- `products.html`: private product catalogue form and inventory list.
+- `admin-catalog` Edge Function: server-side product list/create/update/delete permission checks.
+- Product table browser grants are read-only; writes go through the permission-checking Edge Function.
+- Product-image bucket remains private. The product image upload UI is not yet connected.
+
 ## Current stage
-Private foundation and implementation scaffold. Not a live store.
+Private foundation and admin/catalogue scaffold. Owner bootstrap and real-account end-to-end tests are still pending. Not a live store.

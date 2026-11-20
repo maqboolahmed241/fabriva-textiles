@@ -8,7 +8,7 @@ if(!session)location.replace("login.html");
 else{
  const {data,error}=await supabase.from("admin_profiles").select("is_owner,can_view_products,can_edit_products,can_change_prices,can_adjust_stock,can_set_limited_stock,can_change_low_stock_limit").eq("user_id",session.user.id).maybeSingle();
  if(error||!data){await supabase.auth.signOut();location.replace("login.html");}
- else if(!(data.is_owner||data.can_view_products||data.can_edit_products||data.can_change_prices||data.can_adjust_stock)){message.textContent="You do not have product catalogue permission.";}
+ else if(!(data.is_owner||data.can_view_products||data.can_edit_products||data.can_change_prices||data.can_adjust_stock||data.can_set_limited_stock||data.can_change_low_stock_limit)){message.textContent="You do not have product catalogue permission.";}
  else{profile=data;message.textContent="Administrator access verified.";app.hidden=false;if(!(profile.is_owner||profile.can_edit_products||profile.can_change_prices||profile.can_adjust_stock))form.hidden=true;applyFieldPermissions();await loadProducts();}
 }
 function allowed(key){if(profile?.is_owner)return true;if(key==="price"||key==="sale_price")return profile?.can_change_prices===true;if(key==="stock_qty")return profile?.can_adjust_stock===true;if(key==="is_limited_stock")return profile?.can_set_limited_stock===true;if(key==="low_stock_threshold")return profile?.can_change_low_stock_limit===true;return profile?.can_edit_products===true;}

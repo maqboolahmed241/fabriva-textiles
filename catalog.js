@@ -8,7 +8,7 @@ else{
  const {data:profile,error}=await supabase.from("admin_profiles").select("is_owner,can_view_products,can_edit_products,can_change_prices").eq("user_id",session.user.id).maybeSingle();
  if(error||!profile){await supabase.auth.signOut();location.replace("login.html");}
  else if(!(profile.is_owner||profile.can_view_products||profile.can_edit_products)){message.textContent="You do not have product catalogue permission.";}
- else{message.textContent="Administrator access verified.";app.hidden=false;await loadProducts();}
+ else{message.textContent="Administrator access verified.";app.hidden=false;if(!(profile.is_owner||profile.can_edit_products)){document.querySelector("#product-form").hidden=true;}await loadProducts();}
 }
 async function call(action,extra={}){
  const {data:{session:current}}=await supabase.auth.getSession();

@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#242321"><title>Admin Dashboard | FABRIVA TEXTILES</title><link rel="stylesheet" href="styles.css"><link rel="stylesheet" href="admin.css"></head>
+<body class="admin-body">
+<header class="site-header"><a class="brand" href="index.html"><span class="brand-mark">F</span><span><strong>FABRIVA</strong><small>TEXTILES</small></span></a><div class="header-actions"><span class="header-note">PRIVATE ADMIN</span><button id="signout" class="small-button">Sign out</button></div></header>
+<main class="dashboard">
+<div class="dash-heading"><div><p class="eyebrow">CONTROL CENTRE</p><h1>Welcome to your<br><em>workspace.</em></h1><p id="admin-email" class="muted"></p></div><span class="private-chip">PRIVATE</span></div>
+<div id="access-message" class="notice" role="status">Checking administrator access…</div>
+<section id="dashboard-content" hidden>
+<div class="stats-grid">
+<article class="stat-card"><span>PRODUCTS</span><strong id="product-count">—</strong><small>Catalog records</small></article>
+<article class="stat-card"><span>ORDERS</span><strong id="order-count">—</strong><small>Order records</small></article>
+<article class="stat-card"><span>YOUR ROLE</span><strong id="role-name">—</strong><small>Access level</small></article>
+</div>
+<section class="panel"><div class="panel-heading"><div><p class="eyebrow">NEXT STEPS</p><h2>Store setup</h2></div></div>
+<div class="setup-list">
+<div><span class="step-number">01</span><div><b>Owner account</b><p>Confirm the first owner profile and protect account recovery.</p></div><span class="status-pending">Pending</span></div>
+<div><span class="step-number">02</span><div><b>Product catalogue</b><p>Add product photos, multilingual names, prices, units and stock.</p></div><span class="status-pending">Not started</span></div>
+<div><span class="step-number">03</span><div><b>Orders & delivery</b><p>Finish server-side order validation and shipping rules before accepting orders.</p></div><span class="status-pending">Not started</span></div>
+</div></section>
+<p class="muted small-print">This is a development dashboard. It does not yet create products, change orders, send notifications, or collect payments.</p>
+</section>
+</main>
+<footer><span>FABRIVA TEXTILES</span><span>Private development · Not live</span></footer>
+<script type="module" src="admin.js"></script>
+</body></html>

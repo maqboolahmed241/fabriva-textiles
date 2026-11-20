@@ -1,57 +1,33 @@
 import {createClient} from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.57.4/+esm";
 import {SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY} from "./config.js";
 const supabase=createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
-const message=document.querySelector("#message"),app=document.querySelector("#catalog-app"),list=document.querySelector("#product-list");
-const {data:{session}}=await supabase.auth.getSession();
-let profile=null;
+const message=document.querySelector("#message"),app=document.querySelector("#catalog-app"),list=document.querySelector("#product-list"),form=document.querySelector("#product-form");
+const fields=["audience","product_type","category","sku","price","sale_price","stock_qty","unit","low_stock_threshold"];
+const {data:{session}}=await supabase.auth.getSession();let profile=null,products=[];
 if(!session)location.replace("login.html");
 else{
- const {data,error}=await supabase.from("admin_profiles").select("is_owner,can_view_products,can_edit_products,can_change_prices").eq("user_id",session.user.id).maybeSingle();
+ const {data,error}=await supabase.from("admin_profiles").select("is_owner,can_view_products,can_edit_products,can_change_prices,can_adjust_stock,can_set_limited_stock,can_change_low_stock_limit").eq("user_id",session.user.id).maybeSingle();
  if(error||!data){await supabase.auth.signOut();location.replace("login.html");}
- else if(!(data.is_owner||data.can_view_products||data.can_edit_products)){message.textContent="You do not have product catalogue permission.";}
- else{profile=data;message.textContent="Administrator access verified.";app.hidden=false;if(!(profile.is_owner||profile.can_edit_products))document.querySelector("#product-form").hidden=true;await loadProducts();}
+ else if(!(data.is_owner||data.can_view_products||data.can_edit_products||data.can_change_prices||data.can_adjust_stock)){message.textContent="You do not have product catalogue permission.";}
+ else{profile=data;message.textContent="Administrator access verified.";app.hidden=false;if(!(profile.is_owner||profile.can_edit_products||profile.can_change_prices||profile.can_adjust_stock))form.hidden=true;applyFieldPermissions();await loadProducts();}
 }
-async function call(action,extra={}){
- const {data:{session:current}}=await supabase.auth.getSession();
- const res=await fetch(SUPABASE_URL+"/functions/v1/admin-catalog",{method:"POST",headers:{apikey:SUPABASE_PUBLISHABLE_KEY,Authorization:"Bearer "+current.access_token,"Content-Type":"application/json"},body:JSON.stringify({action,...extra})});
- const body=await res.json().catch(()=>({error:"Unexpected server response"}));if(!res.ok)throw new Error(body.error||"Request failed");return body;
-}
-async function loadProducts(){
- list.textContent="Loading products…";
- try{
-  const {products=[]}=await call("list");list.replaceChildren();
-  if(!products.length){list.textContent="No products added yet.";return;}
-  for(const p of products){
-   const row=document.createElement("article");row.className="product-row";
-   if(!p.image_paths?.length)row.classList.add("no-image");
-   if(p.image_paths?.length){const {data:signed}=await supabase.storage.from("fabriva-product-images").createSignedUrl(p.image_paths[0],1800);if(signed?.signedUrl){const img=document.createElement("img");img.className="product-thumb";img.alt="";img.src=signed.signedUrl;row.append(img);}}
-   const name=document.createElement("div");name.className="product-name";
-   const title=p.title?.en||p.title?.ur||p.title?.ar||"Untitled product";
-   const strong=document.createElement("strong");strong.textContent=title;
-   const small=document.createElement("small");small.textContent=[p.audience,p.product_type,p.sku||"No SKU"].join(" · ");
-   name.append(strong,small);
-   const detail=document.createElement("div");detail.className="product-meta";detail.textContent=p.currency+" "+Number(p.price).toLocaleString()+" · Stock "+Number(p.stock_qty)+" "+p.unit;
-   const status=document.createElement("span");status.className="product-status";status.textContent=p.is_active?"ACTIVE":"INACTIVE";
-   row.append(name,detail,status);list.append(row);
-  }
- }catch(e){list.textContent=e.message;}
-}
-document.querySelector("#refresh").addEventListener("click",loadProducts);
-document.querySelector("#product-form").addEventListener("submit",async e=>{
- e.preventDefault();const f=e.currentTarget,v=Object.fromEntries(new FormData(f).entries());
- const title={};for(const lang of ["en","ur","ar","fr","de","es"])if(v["title_"+lang]?.trim())title[lang]=v["title_"+lang].trim();
- const file=f.elements.product_image.files?.[0];if(file&&(file.size>5*1024*1024||!["image/jpeg","image/png","image/webp"].includes(file.type))){message.textContent="Choose a JPG, PNG or WebP image no larger than 5 MB.";return;}
- const button=f.querySelector("button[type=submit]");button.disabled=true;button.textContent="Saving…";message.textContent="";
- let uploadedPath=null;
- try{
-  const imagePaths=[];
-  if(file){const safeName=file.name.toLowerCase().replace(/[^a-z0-9._-]+/g,"-").slice(-80);uploadedPath=session.user.id+"/"+crypto.randomUUID()+"-"+safeName;
-   const {error:uploadError}=await supabase.storage.from("fabriva-product-images").upload(uploadedPath,file,{cacheControl:"3600",upsert:false,contentType:file.type});
-   if(uploadError)throw uploadError;imagePaths.push(uploadedPath);
-  }
-  const product={audience:v.audience,product_type:v.product_type,category:v.category,sku:v.sku||null,title,description:{},price:Number(v.price),sale_price:v.sale_price===""?null:Number(v.sale_price),stock_qty:Number(v.stock_qty),unit:v.unit,low_stock_threshold:Number(v.low_stock_threshold||0),is_limited_stock:f.elements.is_limited_stock.checked,is_active:f.elements.is_active.checked,image_paths:imagePaths};
-  await call("create",{product});message.textContent="Product saved successfully.";f.reset();f.elements.low_stock_threshold.value="2";f.elements.is_active.checked=true;await loadProducts();
- }catch(err){if(uploadedPath)await supabase.storage.from("fabriva-product-images").remove([uploadedPath]);message.textContent=err.message||"Could not save product.";}
- finally{button.disabled=false;button.textContent="Save product";}
-});
-document.querySelector("#signout").addEventListener("click",async()=>{await supabase.auth.signOut();location.replace("login.html");});
+function allowed(key){if(profile?.is_owner)return true;if(key==="price"||key==="sale_price")return profile?.can_change_prices===true;if(key==="stock_qty")return profile?.can_adjust_stock===true;if(key==="is_limited_stock")return profile?.can_set_limited_stock===true;if(key==="low_stock_threshold")return profile?.can_change_low_stock_limit===true;return profile?.can_edit_products===true;}
+function applyFieldPermissions(){for(const key of fields){const el=form.elements[key];if(el)el.disabled=!allowed(key);}for(const key of ["title_en","title_ur","title_ar","title_fr","title_de","title_es","product_image","is_active"]){if(form.elements[key])form.elements[key].disabled=!allowed(key==="is_active"?"is_active":"title");}form.querySelector('button[type="submit"]').disabled=!(profile?.is_owner||(profile?.can_edit_products&&profile?.can_change_prices));}
+async function call(action,extra={}){const {data:{session:s}}=await supabase.auth.getSession();const res=await fetch(SUPABASE_URL+"/functions/v1/admin-catalog",{method:"POST",headers:{apikey:SUPABASE_PUBLISHABLE_KEY,Authorization:"Bearer "+s.access_token,"Content-Type":"application/json"},body:JSON.stringify({action,...extra})});const body=await res.json().catch(()=>({error:"Unexpected server response"}));if(!res.ok)throw new Error(body.error||"Request failed");return body;}
+function addText(parent,tag,cls,content){const el=document.createElement(tag);if(cls)el.className=cls;el.textContent=content??"";parent.append(el);return el;}
+async function loadProducts(){list.textContent="Loading products…";try{const {products:data=[]}=await call("list");products=data;list.replaceChildren();if(!products.length){list.textContent="No products added yet.";return;}for(const p of products){const row=document.createElement("article");row.className="product-row";if(!p.image_paths?.length)row.classList.add("no-image");if(p.image_paths?.length){const {data:signed}=await supabase.storage.from("fabriva-product-images").createSignedUrl(p.image_paths[0],1800);if(signed?.signedUrl){const img=document.createElement("img");img.className="product-thumb";img.alt="";img.src=signed.signedUrl;row.append(img);}}
+const name=document.createElement("div");name.className="product-name";addText(name,"strong","",p.title?.en||p.title?.ur||p.title?.ar||"Untitled product");addText(name,"small","",[p.audience,p.product_type,p.sku||"No SKU"].join(" · "));row.append(name);addText(row,"div","product-meta",p.currency+" "+Number(p.price).toLocaleString()+" · Stock "+Number(p.stock_qty)+" "+p.unit);addText(row,"span","product-status",p.is_active?"ACTIVE":"INACTIVE");
+const actions=document.createElement("div");actions.className="product-actions";
+if(profile?.is_owner||profile?.can_edit_products||profile?.can_change_prices||profile?.can_adjust_stock){const edit=document.createElement("button");edit.className="small-button";edit.textContent="Edit";edit.addEventListener("click",()=>startEdit(p));actions.append(edit);}
+if(profile?.is_owner||profile?.can_edit_products){const del=document.createElement("button");del.className="small-button danger-button";del.textContent="Delete";del.addEventListener("click",async()=>{if(!confirm("Delete this product? This cannot be undone."))return;del.disabled=true;try{await call("delete",{id:p.id});if(p.image_paths?.length)await supabase.storage.from("fabriva-product-images").remove(p.image_paths);message.textContent="Product deleted.";await loadProducts();}catch(e){message.textContent=e.message;del.disabled=false;}});actions.append(del);}row.append(actions);list.append(row);}}catch(e){list.textContent=e.message;}}
+function startEdit(p){form.elements.product_id.value=p.id;for(const key of fields)if(form.elements[key]&&p[key]!==undefined)form.elements[key].value=p[key]??"";for(const lang of ["en","ur","ar","fr","de","es"])form.elements["title_"+lang].value=p.title?.[lang]||"";form.elements.is_limited_stock.checked=p.is_limited_stock===true;form.elements.is_active.checked=p.is_active===true;form.elements.product_image.value="";document.querySelector("#form-title").textContent="Edit product";const submit=form.querySelector('button[type="submit"]');submit.textContent="Save changes";document.querySelector("#cancel-edit").hidden=false;form.scrollIntoView({behavior:"smooth",block:"start"});}
+function resetForm(){form.reset();form.elements.product_id.value="";form.elements.low_stock_threshold.value="2";form.elements.is_active.checked=true;document.querySelector("#form-title").textContent="Add a product";form.querySelector('button[type="submit"]').textContent="Save product";document.querySelector("#cancel-edit").hidden=true;}
+document.querySelector("#cancel-edit").addEventListener("click",resetForm);
+form.addEventListener("submit",async e=>{e.preventDefault();const v=Object.fromEntries(new FormData(form).entries()),id=v.product_id;const title={};for(const lang of ["en","ur","ar","fr","de","es"])if(v["title_"+lang]?.trim())title[lang]=v["title_"+lang].trim();const file=form.elements.product_image.files?.[0];if(file&&(file.size>5*1024*1024||!["image/jpeg","image/png","image/webp"].includes(file.type))){message.textContent="Choose a JPG, PNG or WebP image no larger than 5 MB.";return;}
+const button=form.querySelector('button[type="submit"]');button.disabled=true;button.textContent="Saving…";let uploadedPath=null;
+try{let imagePaths=id?(products.find(p=>p.id===id)?.image_paths||[]):[];if(file){const safeName=file.name.toLowerCase().replace(/[^a-z0-9._-]+/g,"-").slice(-80);uploadedPath=session.user.id+"/"+crypto.randomUUID()+"-"+safeName;const {error}=await supabase.storage.from("fabriva-product-images").upload(uploadedPath,file,{cacheControl:"3600",upsert:false,contentType:file.type});if(error)throw error;imagePaths=[uploadedPath];}
+const product={audience:v.audience,product_type:v.product_type,category:v.category,sku:v.sku||null,title,description:{},price:Number(v.price),currency:"PKR",sale_price:v.sale_price===""?null:Number(v.sale_price),stock_qty:Number(v.stock_qty),unit:v.unit,low_stock_threshold:Number(v.low_stock_threshold||0),is_limited_stock:form.elements.is_limited_stock.checked,is_active:form.elements.is_active.checked,image_paths:imagePaths};
+if(id){await call("update",{id,product});const old=products.find(p=>p.id===id)?.image_paths||[];if(uploadedPath)for(const oldPath of old)await supabase.storage.from("fabriva-product-images").remove([oldPath]);message.textContent="Product updated successfully.";}else{await call("create",{product});message.textContent="Product saved successfully.";}resetForm();await loadProducts();
+}catch(err){if(uploadedPath)await supabase.storage.from("fabriva-product-images").remove([uploadedPath]);message.textContent=err.message||"Could not save product.";}
+finally{button.disabled=false;if(!form.elements.product_id.value)button.textContent="Save product";else button.textContent="Save changes";}});
+document.querySelector("#refresh").addEventListener("click",loadProducts);document.querySelector("#signout").addEventListener("click",async()=>{await supabase.auth.signOut();location.replace("login.html");});

@@ -7,7 +7,7 @@ const {data:{session}}=await supabase.auth.getSession();
 if(!session){window.location.replace("login.html");}
 else{
  document.querySelector("#admin-email").textContent=session.user.email??"Signed in";
- const {data:profile,error}=await supabase.from("admin_profiles").select("role,is_owner,can_view_products,can_edit_products,can_change_prices,can_adjust_stock,can_set_limited_stock,can_change_low_stock_limit,can_view_orders,can_update_order_status,can_cancel_orders,can_manage_admins").eq("user_id",session.user.id).maybeSingle();
+ const {data:profile,error}=await supabase.from("admin_profiles").select("role,is_owner,can_view_products,can_edit_products,can_change_prices,can_adjust_stock,can_set_limited_stock,can_change_low_stock_limit,can_view_orders,can_update_order_status,can_cancel_orders,can_manage_admins,can_manage_settings").eq("user_id",session.user.id).maybeSingle();
  if(error||!profile){await supabase.auth.signOut();window.location.replace("login.html");}
  else{
   document.querySelector("#role-name").textContent=profile.is_owner?"OWNER":(profile.role??"ADMIN").toUpperCase();
@@ -21,7 +21,8 @@ else{
   }else document.querySelector("#order-count").textContent="Restricted";
   document.querySelector("#team-link").hidden=!profile.is_owner;#
   document.querySelector("#products-link").hidden=!(profile.is_owner||profile.can_view_products||profile.can_edit_products||profile.can_change_prices||profile.can_adjust_stock||profile.can_set_limited_stock||profile.can_change_low_stock_limit);#
-  document.querySelector("#orders-link").hidden=!(profile.is_owner||profile.can_view_orders||profile.can_update_order_status||profile.can_cancel_orders);\n  notice.textContent="Access verified. Your permissions are being applied.";
+  document.querySelector("#orders-link").hidden=!(profile.is_owner||profile.can_view_orders||profile.can_update_order_status||profile.can_cancel_orders);
+  document.querySelector("#shipping-link").hidden=!(profile.is_owner||profile.can_manage_settings);\n  notice.textContent="Access verified. Your permissions are being applied.";
   content.hidden=false;
  }
 }

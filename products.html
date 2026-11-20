@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Products | FABRIVA TEXTILES</title><link rel="stylesheet" href="styles.css"><link rel="stylesheet" href="admin.css"><link rel="stylesheet" href="catalog.css"></head>
+<body class="admin-body">
+<header class="site-header"><a class="brand" href="admin.html"><span class="brand-mark">F</span><span><strong>FABRIVA</strong><small>TEXTILES</small></span></a><div class="header-actions"><span class="header-note">PRIVATE CATALOGUE</span><button id="signout" class="small-button">Sign out</button></div></header>
+<main class="dashboard">
+<div class="dash-heading"><div><p class="eyebrow">INVENTORY MANAGEMENT</p><h1>Product <em>catalogue</em></h1><p class="muted">Add and review products in the private store database.</p></div><a class="back-link" href="admin.html">← Dashboard</a></div>
+<div id="message" class="notice" role="status">Checking access…</div>
+<section id="catalog-app" hidden>
+<form id="product-form" class="panel product-form">
+<div class="panel-heading"><div><p class="eyebrow">NEW ITEM</p><h2>Add a product</h2></div></div>
+<div class="form-grid">
+<label>Audience<select name="audience" required><option value="ladies">Ladies</option><option value="gents">Gents</option><option value="unisex">Unisex</option></select></label>
+<label>Product type<select name="product_type" required><option value="one_piece_suit">Ladies/Gents One Piece Suit</option><option value="two_piece_suit">Two Piece Suit</option><option value="three_piece_suit">Three Piece Suit</option><option value="full_suit">Full Suit</option><option value="fabric_by_meter">Fabric by Meter</option><option value="ready_made">Ready-made clothing</option><option value="tshirt">T-shirt</option><option value="jeans">Jeans</option><option value="trousers">Trousers</option><option value="pants">Pants</option><option value="other">Other</option></select></label>
+<label>Category<input name="category" maxlength="100" placeholder="e.g. Lawn, Cambric, Embroidered"></label>
+<label>SKU / product code<input name="sku" maxlength="80"></label>
+<label>Title — English<input name="title_en" required maxlength="150"></label>
+<label>Title — Urdu<input name="title_ur" maxlength="150" dir="rtl"></label>
+<label>Title — Arabic<input name="title_ar" maxlength="150" dir="rtl"></label>
+<label>Title — French<input name="title_fr" maxlength="150"></label>
+<label>Title — German<input name="title_de" maxlength="150"></label>
+<label>Title — Spanish<input name="title_es" maxlength="150"></label>
+<label>Price (PKR)<input name="price" type="number" min="0" step="0.01" required></label>
+<label>Sale price (optional)<input name="sale_price" type="number" min="0" step="0.01"></label>
+<label>Stock quantity<input name="stock_qty" type="number" min="0" step="0.01" required></label>
+<label>Unit<select name="unit"><option value="piece">Piece</option><option value="meter">Meter</option><option value="suit">Suit</option><option value="roll">Roll</option><option value="pack">Pack</option></select></label>
+<label>Low stock warning at<input name="low_stock_threshold" type="number" min="0" step="0.01" value="2"></label>
+<label class="check-label"><input name="is_limited_stock" type="checkbox"> Mark as limited stock</label>
+<label class="check-label"><input name="is_active" type="checkbox" checked> Active product</label>
+</div>
+<button class="gold-button" type="submit">Save product</button>
+<p class="muted small-print">Product photos are not yet connected to this form. No public product listing is enabled.</p>
+</form>
+<section class="panel"><div class="panel-heading"><div><p class="eyebrow">INVENTORY</p><h2>Saved products</h2></div><button id="refresh" class="small-button">Refresh</button></div><div id="product-list" class="product-list"></div></section>
+</section>
+</main>
+<footer><span>FABRIVA TEXTILES</span><span>Private development · Not live</span></footer>
+<script type="module" src="catalog.js"></script></body></html>

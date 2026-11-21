@@ -52,6 +52,7 @@ ALTER TABLE public.products
 
 ALTER TABLE public.order_items
   DROP CONSTRAINT IF EXISTS order_items_quantity_check,
+  DROP CONSTRAINT IF EXISTS order_items_unit_check,
   ADD CONSTRAINT order_items_quantity_check
     CHECK (quantity > 0 AND quantity = trunc(quantity)),
   ADD CONSTRAINT order_items_unit_check

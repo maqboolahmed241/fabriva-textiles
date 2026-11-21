@@ -3,7 +3,13 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="manifest" href="manifest.webmanifest">
   <meta name="theme-color" content="#242321">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icons/icon.svg">
   <meta name="description" content="MARYAM LUXE — considered fabrics and clothing for ladies and gentlemen, with worldwide ambitions.">
   <title>MARYAM LUXE | Fabrics · Fashion · Worldwide</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -91,5 +97,14 @@
   </main>
 
   <footer><span>MARYAM LUXE</span><span data-i18n="footer">Fabrics · Fashion · Worldwide</span></footer>
+
+<script>
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+      navigator.serviceWorker.register("./service-worker.js")
+        .catch(error => console.error("MARYAM LUXE offline setup:", error));
+    });
+  }
+</script>
 </body>
 </html>

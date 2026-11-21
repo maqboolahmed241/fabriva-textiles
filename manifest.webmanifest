@@ -1,0 +1,25 @@
+{
+  "name": "MARYAM LUXE",
+  "short_name": "MARYAM LUXE",
+  "description": "MARYAM LUXE — Fabrics and Fashion",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#242321",
+  "theme_color": "#242321",
+  "icons": [
+    {
+      "src": "icons/icon.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

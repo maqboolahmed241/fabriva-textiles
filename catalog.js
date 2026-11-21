@@ -3,7 +3,8 @@ import {SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY} from "./config.js";
 const supabase=createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
 const message=document.querySelector("#message"),app=document.querySelector("#catalog-app"),list=document.querySelector("#product-list"),form=document.querySelector("#product-form");
 const fields=["audience","product_type","category","sku","price","sale_price","stock_qty","unit","low_stock_threshold"];
-const languages=["en","ur","ar","fr","de","es"];\nlet translatedTitle={},translatedDescription={};
+const languages=["en","ur","ar","fr","de","es"];
+let translatedTitle={},translatedDescription={};
 const {data:{session}}=await supabase.auth.getSession();let profile=null,products=[];
 if(!session)location.replace("login.html");
 else{

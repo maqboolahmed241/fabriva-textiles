@@ -23,6 +23,9 @@
    <label class="wide">Full delivery address<textarea name="address" required maxlength="500" rows="3" autocomplete="street-address"></textarea></label>
    <label class="wide">Delivery notes (optional)<textarea name="delivery_notes" maxlength="500" rows="2"></textarea></label>
    <label>Payment method<select name="payment_method" required><option value="cod">Cash on delivery (Pakistan only)</option><option value="bank_transfer">Bank transfer (manual confirmation)</option></select></label>
+   <label id="transaction-field" class="wide" hidden>Bank transaction ID<input name="transaction_id" minlength="3" maxlength="120" autocomplete="off" placeholder="Enter your bank transfer reference"></label>
+   <label id="receipt-field" class="wide" hidden>Upload payment receipt (JPG, PNG or WebP; max 5 MB)<input name="receipt" type="file" accept="image/jpeg,image/png,image/webp"></label>
+   <p id="payment-help" class="wide muted">For bank transfer, enter the transaction ID and attach your receipt. Payment is verified manually by the store.</p>
    <label class="trap" aria-hidden="true">Leave blank<input name="website" tabindex="-1" autocomplete="off"></label>
   </div>
   <button class="gold-button" type="submit" id="place-order">Place order</button>

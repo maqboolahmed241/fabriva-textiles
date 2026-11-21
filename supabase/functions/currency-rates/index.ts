@@ -24,8 +24,7 @@ Deno.serve(async(req:Request)=>{
    actor=user.id;
   }
   const refresh=async()=>{
-   const quotes=Object.keys(currencies).filter(c=>c!=="PKR").join(",");
-   const r=await fetch("https://api.frankfurter.dev/v2/rates?base=PKR&quotes="+quotes,{headers:{"Accept":"application/json"}});
+   const r=await fetch("https://api.frankfurter.dev/v2/rates?base=PKR",{headers:{"Accept":"application/json"}});
    if(!r.ok)throw new Error("FX provider unavailable");
    const rows=await r.json();
    if(!Array.isArray(rows)||!rows.length)throw new Error("No exchange rates returned");

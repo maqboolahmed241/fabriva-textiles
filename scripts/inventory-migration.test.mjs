@@ -64,6 +64,12 @@ test("admin catalog server validation matches the inventory policy", () => {
   assert.match(adminCatalog, /withSupabase\(\{auth:"user"\}/);
 });
 
+test("admin order cancellation requires explicit confirmation and safely restores controls on failure", () => {
+  assert.match(ordersPage, /nextStatus==="cancelled"&&!confirm\(/);
+  assert.match(ordersPage, /This action cannot be undone/);
+  assert.match(ordersPage, /status\.value=order\.order_status;status\.disabled=false;save\.disabled=false/);
+});
+
 test("admin order list displays authorized email, postal code and delivery notes", () => {
   assert.ok(ordersPage.includes('if(order.email)addText(card,"p","muted","Email: "+order.email)'));
   assert.ok(ordersPage.includes('if(order.postal_code)addText(card,"p","muted","Postal code: "+order.postal_code)'));

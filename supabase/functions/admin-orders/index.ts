@@ -58,11 +58,20 @@ Deno.serve(withSupabase({ auth: "user" }, async (req, ctx) => {
     }
     const grouped = new Map<string, unknown[]>();
     for (const item of items) grouped.set(item.order_id, [...(grouped.get(item.order_id) ?? []), item]);
-    return reply({ orders: (orders ?? []).map((order: { id: string; country: string }) => ({
-      ...protectCustomer(order as unknown as Record<string, unknown>),
-      region: order.country?.trim().toLowerCase() === "pakistan" ? "pakistan" : "international",
-      items: grouped.get(order.id) ?? [],
-    })) });
+    const withReceipts = await Promise.all((orders ?? []).map(async (order: { id: string; country: string; payment_receipt_path?: string | null }) => {
+      let receiptUrl: string | null = null;
+      if (order.payment_receipt_path && canViewCustomerDetails) {
+        const { data } = await db.storage.from("maryam-payment-receipts").createSignedUrl(order.payment_receipt_path, 300);
+        receiptUrl = data?.signedUrl ?? null;
+      }
+      return {
+        ...protectCustomer(order as unknown as Record<string, unknown>),
+        payment_receipt_url: receiptUrl,
+        region: order.country?.trim().toLowerCase() === "pakistan" ? "pakistan" : "international",
+        items: grouped.get(order.id) ?? [],
+      };
+    }));
+    return reply({ orders: withReceipts });
   }
 
   if (action === "get") {

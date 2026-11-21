@@ -10,7 +10,7 @@
 <div class="panel-heading"><div><p class="eyebrow">PRODUCT DETAILS</p><h2 id="form-title">Add a product</h2></div><button id="cancel-edit" class="small-button" type="button" hidden>Cancel edit</button></div>
 <div class="form-grid">
 <label>Audience<select name="audience" required><option value="ladies">Ladies</option><option value="gents">Gents</option><option value="unisex">Unisex</option></select></label>
-<label>Product type<select name="product_type" required><option value="one_piece_suit">Ladies/Gents One Piece Suit</option><option value="two_piece_suit">Two Piece Suit</option><option value="three_piece_suit">Three Piece Suit</option><option value="full_suit">Full Suit</option><option value="fabric_by_meter">Fabric by Meter</option><option value="ready_made">Ready-made clothing</option><option value="tshirt">T-shirt</option><option value="jeans">Jeans</option><option value="trousers">Trousers</option><option value="pants">Pants</option><option value="other">Other</option></select></label>
+<label>Product type<select name="product_type" required><option value="one_piece_suit">Ladies/Gents One Piece Suit</option><option value="two_piece_suit">Two Piece Suit</option><option value="three_piece_suit">Three Piece Suit</option><option value="full_suit">Full Suit</option><option value="ready_made">Ready-made clothing</option><option value="tshirt">T-shirt</option><option value="jeans">Jeans</option><option value="trousers">Trousers</option><option value="pants">Pants</option><option value="other">Other</option></select></label>
 <label>Category<input name="category" maxlength="100" placeholder="e.g. Lawn, Cambric, Embroidered"></label>
 <label>SKU / product code<input name="sku" maxlength="80"></label>
 <label>Title — English<input name="title_en" required maxlength="150"></label>
@@ -22,9 +22,9 @@
 <label class="wide-field">Product photo (JPG, PNG or WebP · max 5 MB)<input name="product_image" type="file" accept="image/jpeg,image/png,image/webp"></label>
 <label>Price (PKR)<input name="price" type="number" min="0" step="0.01" required></label>
 <label>Sale price (optional)<input name="sale_price" type="number" min="0" step="0.01"></label>
-<label>Stock quantity<input name="stock_qty" type="number" min="0" step="0.01" required></label>
-<label>Unit<select name="unit"><option value="piece">Piece</option><option value="meter">Meter</option><option value="suit">Suit</option><option value="roll">Roll</option><option value="pack">Pack</option></select></label>
-<label>Low stock warning at<input name="low_stock_threshold" type="number" min="0" step="0.01" value="2"></label>
+<label>Stock quantity<input name="stock_qty" type="number" min="0" step="1" required></label>
+<label>Unit<select name="unit"><option value="piece">Piece</option><option value="suit">Suit</option><option value="roll">Roll</option><option value="pack">Pack</option></select></label>
+<label>Low stock warning at<input name="low_stock_threshold" type="number" min="0" step="1" value="2"></label>
 <label class="check-label"><input name="is_limited_stock" type="checkbox"> Mark as limited stock</label>
 <label class="check-label"><input name="is_active" type="checkbox" checked> Active product</label>
 </div>

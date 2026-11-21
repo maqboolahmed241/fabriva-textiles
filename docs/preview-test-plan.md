@@ -77,3 +77,11 @@ Use this checklist only on the Cloudflare Pages Preview deployment for `feature/
 - [ ] These Edge Function source changes are not deployed to the shared Supabase project. Deploy only after isolated staging tests.
 - [ ] Database migration is intentionally held outside `supabase/migrations/` until the owner decides how to handle existing Demo products that use `meter` / `fabric_by_meter`.
 - [ ] Current shared database has three zero-stock Demo fabric products with `unit=meter` and `product_type=fabric_by_meter`; migration preflight must stop rather than silently convert or delete them.
+
+
+## Cancellation and push-subscription security review
+- [x] Verified the live `restore_fabriva_stock_on_cancel` trigger is enabled on `orders` and its SECURITY DEFINER function restores each linked product's quantity only when an order transitions into `cancelled`. No test orders existed, so the trigger has not been exercised with a real order.
+- [x] Confirmed `customer_push_subscriptions` currently has zero rows and RLS enabled with no policies, so direct browser access is denied by RLS.
+- [x] Found broad table grants for `anon` and `authenticated` despite the no-policy RLS barrier. The staging migration proposal now explicitly revokes those grants and keeps access to `service_role` only.
+- [ ] Verify push subscription insert/read/delete flows through a trusted Edge Function before enabling customer notifications.
+- [ ] Run cancellation restoration tests against isolated staging products and orders; never create test orders in the shared Production database.

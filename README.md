@@ -1,6 +1,6 @@
-# FABRIVA TEXTILES
+# MARYAM LUXE
 
-Private development repository for the FABRIVA TEXTILES international fabric and clothing store.
+Private development repository for the MARYAM LUXE international fabric and clothing store.
 
 ## Project boundaries
 - This project is separate from LIBAAS E RAAHAT and all other projects.
@@ -20,7 +20,7 @@ Private development repository for the FABRIVA TEXTILES international fabric and
 - No tailoring or stitching services.
 
 ## Backend
-Supabase project: `fabriva-textiles-private` (Mumbai region).
+Supabase project: `maryam-luxe-private` (Mumbai region).
 - Private product-image bucket with restricted admin upload and signed public-catalogue image URLs.
 - Owner profile and role-based admin permissions are provisioned.
 - Admin catalogue, order-management and owner-team Edge Functions are active.

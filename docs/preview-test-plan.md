@@ -72,7 +72,8 @@ Use this checklist only on the Cloudflare Pages Preview deployment for `feature/
 ## Backend source and schema migration — feature branch only
 - [x] Captured the currently deployed public-catalog, admin-catalog, place-order, admin-orders and owner-admin-management Edge Function source under `supabase/functions/` for version control.
 - [x] Feature-branch `admin-catalog` source rejects the legacy meter unit, fractional stock and fractional low-stock thresholds; it also removes the retired fabric_by_meter product type.
-- [x] Feature-branch `place-order` source rejects fractional order quantities and unsupported inventory units.
+- [x] The current `place-order` Edge Function wrapper is now version-controlled; it delegates order creation to the database RPC.
+- [ ] The guarded database migration adds whole-number and supported-unit constraints to `order_items`, so fractional roll/pack quantities and legacy meter order items are rejected at the database layer.
 - [ ] These Edge Function source changes are not deployed to the shared Supabase project. Deploy only after isolated staging tests.
 - [ ] Database migration is intentionally held outside `supabase/migrations/` until the owner decides how to handle existing Demo products that use `meter` / `fabric_by_meter`.
 - [ ] Current shared database has three zero-stock Demo fabric products with `unit=meter` and `product_type=fabric_by_meter`; migration preflight must stop rather than silently convert or delete them.

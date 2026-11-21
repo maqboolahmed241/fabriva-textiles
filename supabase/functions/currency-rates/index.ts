@@ -60,12 +60,9 @@ Deno.serve(async(req:Request)=>{
     if(error)throw error;
    }else if(body.action==="refresh"){await refresh();}
    else return reply({error:"Unsupported action"},400);
-  }else{
-   const {data:stale}=await adminDb.from("currency_rates").select("currency_code,updated_at").eq("rate_mode","automatic").lt("updated_at",new Date(Date.now()-20*60*60*1000).toISOString()).limit(1);
-   if(stale?.length){try{await refresh();}catch{/* Last successful rates remain available; response includes their timestamp. */}}
   }
   const {data,error}=await adminDb.from("currency_rates").select("currency_code,currency_name,rate_to_pkr,rate_mode,source,rate_date,updated_at").eq("is_active",true).order("currency_code");
   if(error)throw error;
   return reply({base:"PKR",rates:data||[],provider:"Frankfurter",disclaimer:"Daily reference rates, not bank settlement or card-network rates."});
- }catch(e){return reply({error:"Currency service temporarily unavailable",detail:e instanceof Error?e.message:"Unknown error"},503);}
+ }catch(e){return reply({error:"Currency service temporarily unavailable"},503);}
 });

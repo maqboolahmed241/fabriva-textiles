@@ -9,11 +9,12 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="stylesheet" href="styles.css">
   <script src="store.js" defer></script>
+  <script type="module" src="home-catalog.js"></script>
 </head>
 <body>
   <header class="site-header">
     <a class="brand" href="#top" aria-label="MARYAM LUXE home">
-      <span class="brand-mark">F</span>
+      <span class="brand-mark">M</span>
       <span class="brand-word"><strong>MARYAM LUXE</strong><small>TEXTILES</small></span>
     </a>
     <nav class="main-nav" aria-label="Main navigation">
@@ -38,7 +39,7 @@
       <h1 data-i18n="heroTitle">Elegance, woven<br><em>for every journey.</em></h1>
       <p class="intro" data-i18n="heroIntro">A considered collection of fabrics and clothing for ladies and gentlemen.</p>
       <a class="hero-link" href="#collections" data-i18n="explore">Explore the collections <span aria-hidden="true">↓</span></a>
-      <p class="launch-note" data-i18n="launchNote">Our online collection is being prepared. Orders are not open yet.</p>
+      <p class="launch-note" data-i18n="launchNote">Explore the latest MARYAM LUXE collection and discover available pieces.</p>
     </section>
 
     <section class="collections" id="collections" aria-labelledby="collections-title">
@@ -67,6 +68,17 @@
           <ul><li data-i18n="printed">Printed and digital print</li><li data-i18n="plain">Plain fabrics</li><li data-i18n="embroidered">Embroidered fabrics</li></ul>
         </article>
       </div>
+    </section>
+
+    <section class="home-products" id="new-arrivals" aria-labelledby="home-products-title">
+      <div class="section-heading">
+        <p class="eyebrow">THE COLLECTION</p>
+        <h2 id="home-products-title">Selected for you</h2>
+        <p class="section-intro">Explore the latest pieces from MARYAM LUXE.</p>
+      </div>
+      <p id="home-products-message" class="home-products-message" role="status">Loading the collection…</p>
+      <div id="home-product-grid" class="home-product-grid" aria-live="polite"></div>
+      <a class="hero-link home-shop-link" href="shop.html">Explore the full collection <span aria-hidden="true">→</span></a>
     </section>
 
     <section class="coming" id="about">

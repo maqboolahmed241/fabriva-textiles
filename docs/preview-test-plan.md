@@ -43,3 +43,8 @@ Use this checklist only on the Cloudflare Pages Preview deployment for `feature/
 - Supabase is currently shared with Production; do not apply the currency migration or deploy new functions there.
 - A separate staging Supabase project/database is required for end-to-end checkout testing.
 - Cloudflare Preview URL must be copied from the latest Pages deployment for this branch; do not guess or construct it.
+
+## Automated checks
+- [x] GitHub Actions JavaScript syntax check passed for all root-level browser JavaScript files on commit `64ca0c9c92705b35ca44aaada86b6b9612316ac1`.
+- [x] GitHub Actions local HTML script and stylesheet reference check passed on the same commit.
+- [ ] These static checks do not prove that Supabase authentication, database writes, checkout, stock updates, or mobile browser behavior work end-to-end.

@@ -13,13 +13,23 @@
 <label>Product type<select name="product_type" required><option value="one_piece_suit">Ladies/Gents One Piece Suit</option><option value="two_piece_suit">Two Piece Suit</option><option value="three_piece_suit">Three Piece Suit</option><option value="full_suit">Full Suit</option><option value="ready_made">Ready-made clothing</option><option value="tshirt">T-shirt</option><option value="jeans">Jeans</option><option value="trousers">Trousers</option><option value="pants">Pants</option><option value="other">Other</option></select></label>
 <label>Category<input name="category" maxlength="100" placeholder="e.g. Lawn, Cambric, Embroidered"></label>
 <label>SKU / product code<input name="sku" maxlength="80"></label>
-<label>Title — English<input name="title_en" required maxlength="150"></label>
-<label>Title — Urdu<input name="title_ur" maxlength="150" dir="rtl"></label>
-<label>Title — Arabic<input name="title_ar" maxlength="150" dir="rtl"></label>
-<label>Title — French<input name="title_fr" maxlength="150"></label>
-<label>Title — German<input name="title_de" maxlength="150"></label>
-<label>Title — Spanish<input name="title_es" maxlength="150"></label>
-<label class="wide-field">Product photo (JPG, PNG or WebP · max 5 MB)<input name="product_image" type="file" accept="image/jpeg,image/png,image/webp"></label>
+<div class="wide-field translation-panel">
+  <p class="eyebrow">PRODUCT CONTENT</p>
+  <label>Write content in one language
+    <select name="source_language"><option value="ur">اردو</option><option value="en">English</option><option value="ar">العربية</option><option value="fr">Français</option><option value="de">Deutsch</option><option value="es">Español</option></select>
+  </label>
+  <label>Product / suit name<input name="source_title" required maxlength="150" placeholder="Enter the suit name in your chosen language"></label>
+  <label>Product details<textarea name="source_description" rows="4" maxlength="2000" placeholder="Write fabric, colour, pieces, size and other details once"></textarea></label>
+  <button class="small-button" type="button" id="translate-content">Translate into all languages</button>
+  <p id="translation-status" class="muted" role="status">Enter the name and details in one language, then translate before saving. Please review translations.</p>
+  <div class="translation-results" id="translation-results" hidden></div>
+  <input type="hidden" name="translations_json">
+</div>
+<label class="wide-field photo-upload">Product photos (JPG, PNG or WebP · max 5 MB each)
+  <input name="product_image" type="file" accept="image/jpeg,image/png,image/webp" multiple>
+  <span class="muted">Select one or more product photos. The first photo is used as the main collection image.</span>
+  <img id="photo-preview" alt="Selected product photo preview" hidden>
+</label>
 <label>Price (PKR)<input name="price" type="number" min="0" step="0.01" required></label>
 <label>Sale price (optional)<input name="sale_price" type="number" min="0" step="0.01"></label>
 <label>Stock quantity<input name="stock_qty" type="number" min="0" step="1" inputmode="numeric" required></label>
@@ -29,7 +39,7 @@
 <label class="check-label"><input name="is_active" type="checkbox" checked> Active product</label>
 </div>
 <button class="gold-button" type="submit">Save product</button>
-<p class="muted small-print">Photos are stored in a private bucket. Active products with available stock may appear in the public catalogue. Checkout requires configured delivery rates.</p>
+<p class="muted small-print">Photos are uploaded to private storage. Active products with stock may appear in the public catalogue. Automatic translation uses a free public translation service and must be reviewed before publishing. Checkout requires configured delivery rates.</p>
 </form>
 <section class="panel"><div class="panel-heading"><div><p class="eyebrow">INVENTORY</p><h2>Saved products</h2></div><button id="refresh" class="small-button">Refresh</button></div><div id="product-list" class="product-list"></div></section>
 </section>

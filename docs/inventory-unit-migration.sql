@@ -33,6 +33,11 @@ BEGIN
   END IF;
 END $$;
 
+-- Preserve the customer's province/state so administrators can verify
+-- the exact delivery-rate region after an order is placed.
+ALTER TABLE public.orders
+  ADD COLUMN IF NOT EXISTS region_name text;
+
 ALTER TABLE public.products
   DROP CONSTRAINT IF EXISTS products_unit_check,
   ADD CONSTRAINT products_unit_check
@@ -113,8 +118,8 @@ begin
   end if;
 
   v_order_number := 'FAB-' || to_char(clock_timestamp(),'YYMMDD') || '-' || lpad(nextval('public.fabriva_order_number_seq')::text,6,'0');
-  insert into public.orders(order_number,customer_name,email,phone,country,city,postal_code,address,delivery_notes,currency,subtotal,shipping_total,total,payment_method,payment_status,order_status)
-  values(v_order_number,v_name,v_email,v_phone,v_country,v_city,v_postal,v_address,v_notes,v_currency,0,0,0,v_method,'unpaid','pending')
+  insert into public.orders(order_number,customer_name,email,phone,country,region_name,city,postal_code,address,delivery_notes,currency,subtotal,shipping_total,total,payment_method,payment_status,order_status)
+  values(v_order_number,v_name,v_email,v_phone,v_country,v_region,v_city,v_postal,v_address,v_notes,v_currency,0,0,0,v_method,'unpaid','pending')
   returning id into v_order_id;
 
   for v_item in select value from jsonb_array_elements(p_order->'items') loop

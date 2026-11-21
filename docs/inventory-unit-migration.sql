@@ -169,3 +169,9 @@ $function$;
 -- The current RPC is executable only by service_role; preserve that boundary.
 REVOKE ALL ON FUNCTION public.place_fabriva_order(jsonb) FROM PUBLIC, anon, authenticated;
 GRANT EXECUTE ON FUNCTION public.place_fabriva_order(jsonb) TO service_role;
+
+
+-- Push subscriptions are server-managed and contain private browser endpoints.
+-- No direct browser policy is required while writes are handled by trusted server code.
+REVOKE ALL ON TABLE public.customer_push_subscriptions FROM PUBLIC, anon, authenticated;
+GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE public.customer_push_subscriptions TO service_role;

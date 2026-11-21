@@ -102,6 +102,7 @@ declare
 begin
   if v_name is null or length(v_name)>150 or v_phone is null or length(v_phone)>40
      or v_country is null or length(v_country)>100 or v_country_code is null or length(v_country_code)<>2
+     or v_region is null or length(v_region)<2 or length(v_region)>100
      or v_city is null or length(v_city)>100 or v_address is null or length(v_address)>500 then
     raise exception 'Please provide valid customer and delivery details' using errcode='22023';
   end if;

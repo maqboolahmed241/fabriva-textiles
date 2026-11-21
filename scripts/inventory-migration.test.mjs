@@ -28,9 +28,10 @@ test("migration does not silently delete or rewrite legacy product records", () 
 });
 
 test("staged checkout stores the delivery region used for rate matching", () => {
-  assert.match(sql, /ALTER TABLE public\\.orders\\s+ADD COLUMN IF NOT EXISTS region_name text/i);
-  assert.match(sql, /orders\\(order_number,customer_name,email,phone,country,region_name,city/);
-  assert.match(sql, /values\\(v_order_number,v_name,v_email,v_phone,v_country,v_region,v_city/);
+  assert.ok(sql.includes("ALTER TABLE public.orders"));
+  assert.ok(sql.includes("ADD COLUMN IF NOT EXISTS region_name text"));
+  assert.ok(sql.includes("orders(order_number,customer_name,email,phone,country,region_name,city"));
+  assert.ok(sql.includes("values(v_order_number,v_name,v_email,v_phone,v_country,v_region,v_city"));
 });
 
 test("whole-unit constraints cover products and historical order items", () => {

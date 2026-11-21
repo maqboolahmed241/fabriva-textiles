@@ -9,6 +9,7 @@ const publicCatalog = await readFile(new URL("../supabase/functions/public-catal
 const ownerManagement = await readFile(new URL("../supabase/functions/owner-admin-management/index.ts", import.meta.url), "utf8");
 const currencyRates = await readFile(new URL("../supabase/functions/currency-rates/index.ts", import.meta.url), "utf8");
 const shippingPage = await readFile(new URL("../shipping.js", import.meta.url), "utf8");
+const ordersPage = await readFile(new URL("../orders.js", import.meta.url), "utf8");
 const publicCatalogSource = publicCatalog;
 const storefrontSource = await readFile(new URL("../shop.js", import.meta.url), "utf8");
 const checkoutPage = await readFile(new URL("../shop.html", import.meta.url), "utf8");
@@ -61,6 +62,13 @@ test("admin catalog server validation matches the inventory policy", () => {
   assert.match(adminCatalog, /!Number\.isInteger\(threshold\)/);
   assert.match(adminCatalog, /\["stock_qty","low_stock_threshold"\]\.includes\(k\)&&!Number\.isInteger/);
   assert.match(adminCatalog, /withSupabase\(\{auth:"user"\}/);
+});
+
+test("admin order list and detail include delivery region without exposing restricted customer data", () => {
+  assert.equal((adminOrders.match(/country,region_name,city/g) || []).length, 2);
+  assert.ok(ordersPage.includes("order.region_name"));
+  assert.ok(ordersPage.includes('order.customer_name==="Restricted"?"Customer details restricted"'));
+  assert.ok(ordersPage.includes('[order.region_name,order.city,order.country].filter(Boolean).join(", ")'));
 });
 
 test("admin orders requires an authenticated admin profile", () => {

@@ -5,6 +5,9 @@ import { readFile } from "node:fs/promises";
 const sql = await readFile(new URL("../docs/inventory-unit-migration.sql", import.meta.url), "utf8");
 const adminCatalog = await readFile(new URL("../supabase/functions/admin-catalog/index.ts", import.meta.url), "utf8");
 const adminOrders = await readFile(new URL("../supabase/functions/admin-orders/index.ts", import.meta.url), "utf8");
+const publicCatalog = await readFile(new URL("../supabase/functions/public-catalog/index.ts", import.meta.url), "utf8");
+const homePage = await readFile(new URL("../index.html", import.meta.url), "utf8");
+const translations = await readFile(new URL("../store.js", import.meta.url), "utf8");
 
 test("migration is clearly staging-only and stops on legacy meter products", () => {
   assert.match(sql, /Do not apply to the shared Production Supabase project/i);
@@ -65,4 +68,16 @@ test("order status changes are permission-gated and compare-and-set protected", 
   assert.match(adminOrders, /\.eq\("order_status", current\.order_status\)/);
   assert.match(adminOrders, /if \(!updated\).*Order status changed elsewhere/s);
   assert.match(adminOrders, /This order-status transition is not allowed/);
+});
+
+test("public catalogue does not disclose private stock thresholds or storage paths", () => {
+  assert.doesNotMatch(publicCatalog, /low_stock_threshold/);
+  assert.match(publicCatalog, /const \{image_paths:privateImagePaths,\.\.\.publicProduct\}=p/);
+  assert.match(publicCatalog, /return \{\.\.\.publicProduct,images:images\.filter\(Boolean\)\}/);
+});
+
+test("storefront inventory language matches supported piece and roll units", () => {
+  assert.doesNotMatch(homePage, /Fabrics by the Meter|fabric by the meter/i);
+  assert.doesNotMatch(translations, /fabric by the meter|Fabrics by the Meter|میٹر کے حساب سے کپڑا|أقمشة بالمتر|Tissus au mètre|Stoffe nach Meter|Telas por metro/i);
+  assert.match(homePage, /Fabric Collections/);
 });

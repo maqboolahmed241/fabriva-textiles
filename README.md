@@ -50,3 +50,8 @@ All currently deployed Edge Function source has been copied into `supabase/funct
 
 ## Current stage
 Checkout and immediate stock deduction have been implemented in the private feature branch and Supabase backend. **End-to-end checkout is not yet verified.** Current database has no real products and no shipping rates, so a real checkout cannot succeed until the owner enters actual product details, images and destination-specific delivery rates. Payment instructions, international currency handling, cancellation/restock and order receipt messaging still require review and tests. The storefront remains private and is not launched.
+
+
+## Cancellation and notification security
+- The shared database currently has an enabled order-cancellation trigger that restores product stock on the first transition into `cancelled`. This has been source-inspected, not exercised with live test orders.
+- Customer push subscriptions are server-managed. The staging migration proposal removes direct `anon` and `authenticated` table grants and reserves table access for `service_role`.

@@ -38,6 +38,30 @@ jobs:
       - name: Test inventory validation rules
         run: node --test scripts/*.test.mjs
 
+      - name: Check local JavaScript module imports
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          import sys
+
+          errors = []
+          pattern = re.compile(r'(?:from\\s*|import\\s*\\()\\s*[\"\\'](\\.{1,2}/[^\"\\']+)[\"\\']')
+          for source in sorted(Path('.').rglob('*.js')):
+              if '.git' in source.parts or 'node_modules' in source.parts:
+                  continue
+              content = source.read_text(encoding='utf-8')
+              for match in pattern.finditer(content):
+                  target = (source.parent / match.group(1).split('?', 1)[0]).resolve()
+                  if not target.is_file():
+                      errors.append(f"{source}: missing module {match.group(1)}")
+          if errors:
+              print("\\n".join(errors))
+              sys.exit(1)
+          print("All local JavaScript module imports resolve.")
+          PY
+
       - name: Check local HTML assets
         shell: bash
         run: |

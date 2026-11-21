@@ -42,3 +42,21 @@ footer{padding:24px clamp(20px,6vw,88px);display:flex;justify-content:space-betw
 [dir=rtl] .collection-card li:before{content:"—"}
 @media(max-width:760px){.site-header{min-height:72px;padding:10px 16px;gap:10px;flex-wrap:wrap}.brand-mark{width:40px;height:40px;font-size:23px}.brand-word strong{font-size:15px}.brand-word small{font-size:8px}.main-nav{order:3;width:100%;justify-content:center;gap:0;border-top:1px solid var(--line);padding-top:11px}.main-nav a{font-size:9px;flex:1;text-align:center}.language-picker{margin-inline-start:auto}.hero{min-height:480px;padding:88px 22px 70px}.hero h1{font-size:clamp(44px,12vw,64px)}.intro{font-size:14px}.collections{padding:62px 18px 70px}.collection-grid{grid-template-columns:1fr;gap:12px}.collection-card{min-height:0;padding:25px}.collection-card h3{margin:22px 0 10px}.collection-card p{min-height:0}.collection-card ul{padding-top:12px}.coming{padding:68px 22px}footer{flex-direction:column;text-align:center}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+
+
+/* MARYAM LUXE home collection */
+.home-products{padding:78px clamp(20px,7vw,100px) 84px;background:#f7f3eb;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.home-products-message{text-align:center;color:var(--muted);font:13px/1.7 var(--sans);min-height:24px}
+.home-product-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;max-width:1160px;margin:28px auto 30px}
+.home-product-card{background:#fffefa;border:1px solid var(--line);min-width:0;overflow:hidden;transition:transform .2s ease,box-shadow .2s ease}
+.home-product-card:hover{transform:translateY(-4px);box-shadow:0 14px 35px #28272212}
+.home-product-image,.home-product-placeholder{width:100%;aspect-ratio:4/5;object-fit:cover;display:grid;place-items:center;background:linear-gradient(145deg,#eee5d5,#faf7f0);color:#a68b5e;font:42px var(--serif)}
+.home-product-info{padding:18px 18px 20px}
+.home-product-info small{display:block;color:var(--gold);font:10px var(--sans);letter-spacing:.14em;text-transform:uppercase}
+.home-product-info h3{font:22px/1.25 var(--serif);font-weight:400;margin:10px 0 8px}
+.home-product-price{font:14px var(--sans);color:var(--ink);margin:0}
+.home-product-price del{color:var(--muted);margin-inline-start:8px;font-size:12px}
+.home-product-tag{display:inline-block;margin-top:12px;padding:6px 9px;background:#f1ebdf;color:#786342;font:10px var(--sans);letter-spacing:.06em}
+.home-shop-link{display:flex;width:max-content;margin:0 auto}
+@media(max-width:760px){.home-products{padding:58px 18px}.home-product-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.home-product-info{padding:13px}.home-product-info h3{font-size:18px}}
+@media(max-width:420px){.home-product-grid{grid-template-columns:1fr 1fr}.home-product-image,.home-product-placeholder{aspect-ratio:3/4}.home-product-info h3{font-size:16px}}

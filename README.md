@@ -14,9 +14,9 @@ Private development repository for the FABRIVA TEXTILES international fabric and
 - Responsive mobile-first experience.
 
 ## Catalog scope
-- Ladies: one-piece, two-piece, three-piece suits; fabric by meter; ready-made clothing.
-- Gents: one-piece, two-piece, full suits; fabric by meter; ready-made clothing including T-shirts, jeans, trousers and pants.
-- Product units: piece, meter, suit, roll, pack.
+- Ladies: one-piece, two-piece and three-piece suits; ready-made clothing and fabric products stocked by piece or roll.
+- Gents: one-piece, two-piece and full suits; ready-made clothing including T-shirts, jeans, trousers and pants.
+- Product inventory units: piece, suit, roll, pack. Fractional quantities and the legacy meter unit are not accepted by the updated feature-branch validation.
 - No tailoring or stitching services.
 
 ## Backend
@@ -29,6 +29,9 @@ Supabase project: `fabriva-textiles-private` (Mumbai region).
 - Order cancellation restores the deducted stock through a protected database trigger.
 - Checkout is limited to PKR totals and COD (Pakistan) or manual bank transfer; no online card/payment gateway is connected.
 - Checkout has a private hashed-IP attempt limiter and a honeypot field.
+
+## Edge Function source control
+All currently deployed Edge Function source has been copied into `supabase/functions/` on the feature branch. Feature-branch source includes stricter whole-number inventory checks; it is not deployed to the shared Supabase project.
 
 ## Development safety
 - Use the Supabase publishable key only in browser code.

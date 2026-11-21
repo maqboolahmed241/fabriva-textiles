@@ -18,7 +18,7 @@ Deno.serve(withSupabase({auth:"user"},async(req,ctx)=>{
  const action=b.action;
  if(action==="list"){
   if(!has("can_view_products")&&!has("can_edit_products")&&!has("can_change_prices")&&!has("can_adjust_stock")&&!has("can_set_limited_stock")&&!has("can_change_low_stock_limit"))return response({error:"You do not have permission to view products"},403);
-  const {data,error}=await db.from("products").select("id,sku,audience,category,product_type,title,description,price,currency,sale_price,stock_qty,unit,image_paths,is_active,is_limited_stock,low_stock_threshold,created_at,updated_at").order("created_at",{ascending:false}).limit(250);
+  const {data,error}=await db.from("products").select("id,product_tracking_id,sku,audience,category,product_type,title,description,price,currency,sale_price,stock_qty,unit,image_paths,is_active,is_limited_stock,low_stock_threshold,created_at,updated_at").order("created_at",{ascending:false}).limit(250);
   if(error)return response({error:"Could not load products"},500);
   return response({products:data??[]});
  }
@@ -38,7 +38,7 @@ Deno.serve(withSupabase({auth:"user"},async(req,ctx)=>{
   const threshold=has("can_change_low_stock_limit")?Math.max(0,Number(x.low_stock_threshold??2)):2;
   if(!Number.isInteger(threshold))return response({error:"Low-stock threshold must be a whole number"},400);
   const row={sku:x.sku||null,audience:x.audience,category:String(x.category??"").slice(0,100),product_type:x.product_type,title:x.title,description:x.description&&typeof x.description==="object"?x.description:{},price:Number(x.price),currency:"PKR",sale_price:sale,stock_qty:has("can_adjust_stock")?Number(x.stock_qty):0,unit:x.unit,image_paths:imagePaths,is_active:x.is_active!==false,is_limited_stock:has("can_set_limited_stock")&&x.is_limited_stock===true,low_stock_threshold:threshold};
-  const {data,error}=await db.from("products").insert(row).select("id,sku,title,price,stock_qty,unit").single();
+  const {data,error}=await db.from("products").insert(row).select("id,product_tracking_id,sku,title,price,stock_qty,unit").single();
   if(error)return response({error:"Product could not be saved. Check SKU and product details."},400);
   await db.from("admin_activity_logs").insert({actor_user_id:uid,action:"create_product",entity_type:"product",entity_id:data.id,details:{sku:data.sku}});
   return response({ok:true,product:data},201);

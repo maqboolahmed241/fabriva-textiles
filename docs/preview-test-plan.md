@@ -47,7 +47,7 @@ Use this checklist only on the Cloudflare Pages Preview deployment for `feature/
 ## Automated checks
 - [x] GitHub Actions JavaScript syntax check passed for all root-level browser JavaScript files on commit `64ca0c9c92705b35ca44aaada86b6b9612316ac1`.
 - [x] GitHub Actions local HTML script and stylesheet reference check passed on the same commit.
-- [ ] These static checks do not prove that Supabase authentication, database writes, checkout, stock updates, or mobile browser behavior work end-to-end.
+- [x] Static checks validate source syntax, local assets and inventory/migration safety assertions; they do not prove Supabase authentication, database writes, checkout, stock updates, or mobile browser behavior end-to-end.
 
 
 ## Inventory unit consistency — pending isolated database migration
@@ -55,9 +55,9 @@ Use this checklist only on the Cloudflare Pages Preview deployment for `feature/
 - [x] Product editor offers only piece, suit, roll and pack units.
 - [x] Inventory and low-stock inputs use whole-number steps in the browser.
 - [x] Demo catalogue uses piece-based quantities; its cart remains local and checkout is disabled.
-- [ ] Database still permits the legacy `meter` unit and fractional numeric quantities. Do not claim the meter workflow is fully removed until a reviewed migration removes `meter` from the unit constraint and a safe policy for existing rows is applied.
+- [x] The feature-branch backend source and staging-only SQL proposal now reject legacy `meter` and fractional inventory quantities. The shared Supabase database is intentionally unchanged until a separate staging database is available.
 - [ ] Review existing products and order_items for legacy meter units before applying any schema constraint change. Do not silently rewrite historical order records.
-- [ ] Apply and verify the inventory-unit migration only in an isolated free test database; do not alter the shared Production Supabase project.
+- [ ] Apply and verify the inventory-unit migration only in an isolated staging database; do not alter the shared Supabase project. No staging database/branch currently exists.
 - [ ] Test create/edit/list/cart/order quantity validation with whole-number piece, suit, roll and pack units.
 
 
@@ -85,3 +85,9 @@ Use this checklist only on the Cloudflare Pages Preview deployment for `feature/
 - [x] Found broad table grants for `anon` and `authenticated` despite the no-policy RLS barrier. The staging migration proposal now explicitly revokes those grants and keeps access to `service_role` only.
 - [ ] Verify push subscription insert/read/delete flows through a trusted Edge Function before enabling customer notifications.
 - [ ] Run cancellation restoration tests against isolated staging products and orders; never create test orders in the shared Production database.
+
+
+## Migration safety automation
+- [x] Added automated Node tests for migration preflight, no silent legacy-product deletion/rewrite, whole-unit constraints, checkout RPC validation and service-role-only push-subscription access.
+- [ ] Confirm the new migration tests pass in the latest GitHub Actions run.
+- [ ] A separate Supabase staging branch/project is not currently available. Creating one may incur charges; do not create it without the user's cost approval.

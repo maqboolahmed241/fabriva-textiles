@@ -47,7 +47,7 @@ jobs:
           import sys
 
           errors = []
-          pattern = re.compile(r'(?:from\\s*|import\\s*\\()\\s*[\"\\'](\\.{1,2}/[^\"\\']+)[\"\\']')
+          pattern = re.compile(r'''(?:from\s*|import\s*\()\s*["'](\.{1,2}/[^"']+)["']''')
           for source in sorted(Path('.').rglob('*.js')):
               if '.git' in source.parts or 'node_modules' in source.parts:
                   continue

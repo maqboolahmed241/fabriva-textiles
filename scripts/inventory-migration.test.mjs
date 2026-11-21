@@ -64,6 +64,14 @@ test("admin catalog server validation matches the inventory policy", () => {
   assert.match(adminCatalog, /withSupabase\(\{auth:"user"\}/);
 });
 
+test("admin order list displays authorized email, postal code and delivery notes", () => {
+  assert.ok(ordersPage.includes('if(order.email)addText(card,"p","muted","Email: "+order.email)'));
+  assert.ok(ordersPage.includes('if(order.postal_code)addText(card,"p","muted","Postal code: "+order.postal_code)'));
+  assert.ok(ordersPage.includes('if(order.delivery_notes)addText(card,"p","muted","Delivery notes: "+order.delivery_notes)'));
+  assert.match(adminOrders, /email: null, phone: null, postal_code: null/);
+  assert.match(adminOrders, /delivery_notes: null/);
+});
+
 test("admin order list and detail include delivery region without exposing restricted customer data", () => {
   assert.equal((adminOrders.match(/country,region_name,city/g) || []).length, 2);
   assert.ok(ordersPage.includes("order.region_name"));

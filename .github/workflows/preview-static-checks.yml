@@ -35,6 +35,9 @@ jobs:
             echo "Syntax OK: $file"
           done
 
+      - name: Test inventory validation rules
+        run: node --test scripts/*.test.mjs
+
       - name: Check local HTML assets
         shell: bash
         run: |

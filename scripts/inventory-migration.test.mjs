@@ -27,6 +27,12 @@ test("migration does not silently delete or rewrite legacy product records", () 
   assert.match(sql, /fractional product stock or low-stock thresholds require owner review/i);
 });
 
+test("staged checkout stores the delivery region used for rate matching", () => {
+  assert.match(sql, /ALTER TABLE public\\.orders\\s+ADD COLUMN IF NOT EXISTS region_name text/i);
+  assert.match(sql, /orders\\(order_number,customer_name,email,phone,country,region_name,city/);
+  assert.match(sql, /values\\(v_order_number,v_name,v_email,v_phone,v_country,v_region,v_city/);
+});
+
 test("whole-unit constraints cover products and historical order items", () => {
   assert.match(sql, /stock_qty\s*=\s*trunc\(stock_qty\)/i);
   assert.match(sql, /low_stock_threshold\s*=\s*trunc\(low_stock_threshold\)/i);

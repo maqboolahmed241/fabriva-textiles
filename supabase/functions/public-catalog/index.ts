@@ -10,7 +10,7 @@ Deno.serve(async(req:Request)=>{
   const url=Deno.env.get("SUPABASE_URL");
   if(!url||!secret)return reply({error:"Catalogue service is not configured"},503);
   const db=createClient(url,secret,{auth:{persistSession:false,autoRefreshToken:false}});
-  const {data,error}=await db.from("products").select("id,sku,audience,category,product_type,title,description,price,currency,sale_price,stock_qty,unit,image_paths,is_limited_stock").eq("is_active",true).order("created_at",{ascending:false}).limit(100);
+  const {data,error}=await db.from("products").select("id,product_tracking_id,sku,audience,category,product_type,title,description,price,currency,sale_price,stock_qty,unit,image_paths,is_limited_stock").eq("is_active",true).order("created_at",{ascending:false}).limit(100);
   if(error)return reply({error:"Could not load the catalogue"},500);
   const visible=(data??[]).filter(p=>Number(p.stock_qty)>0&&!String(p.sku??"").startsWith("DEMO-"));
   const products=await Promise.all(visible.map(async(p)=>{

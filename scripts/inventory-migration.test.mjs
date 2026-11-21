@@ -9,6 +9,8 @@ const publicCatalog = await readFile(new URL("../supabase/functions/public-catal
 const ownerManagement = await readFile(new URL("../supabase/functions/owner-admin-management/index.ts", import.meta.url), "utf8");
 const currencyRates = await readFile(new URL("../supabase/functions/currency-rates/index.ts", import.meta.url), "utf8");
 const shippingPage = await readFile(new URL("../shipping.js", import.meta.url), "utf8");
+const publicCatalogSource = publicCatalog;
+const storefrontSource = await readFile(new URL("../shop.js", import.meta.url), "utf8");
 const homePage = await readFile(new URL("../index.html", import.meta.url), "utf8");
 const translations = await readFile(new URL("../store.js", import.meta.url), "utf8");
 
@@ -103,4 +105,13 @@ test("shipping form uses shared strict validation before database writes", () =>
   assert.match(shippingPage, /import \{validateShippingRate\} from "\.\/shipping-validation\.js"/);
   assert.match(shippingPage, /validated=validateShippingRate\(/);
   assert.match(shippingPage, /\.insert\(payload\)/);
+});
+
+test("public catalogue never publishes demo or zero-stock products", () => {
+  assert.match(publicCatalogSource, /Number\(p\.stock_qty\)>0&&!String\(p\.sku\?\?""\)\.startsWith\("DEMO-"\)/);
+});
+
+test("storefront sanitizes saved cart quantities against current stock", () => {
+  assert.match(storefrontSource, /import \{sanitizeCart\} from "\.\/cart-validation\.js"/);
+  assert.match(storefrontSource, /cart=sanitizeCart\(cart,products\)/);
 });

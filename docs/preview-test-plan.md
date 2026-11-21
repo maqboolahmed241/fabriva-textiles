@@ -48,3 +48,14 @@ Use this checklist only on the Cloudflare Pages Preview deployment for `feature/
 - [x] GitHub Actions JavaScript syntax check passed for all root-level browser JavaScript files on commit `64ca0c9c92705b35ca44aaada86b6b9612316ac1`.
 - [x] GitHub Actions local HTML script and stylesheet reference check passed on the same commit.
 - [ ] These static checks do not prove that Supabase authentication, database writes, checkout, stock updates, or mobile browser behavior work end-to-end.
+
+
+## Inventory unit consistency — pending isolated database migration
+- [x] Product editor no longer offers fabric-by-meter as a product type.
+- [x] Product editor offers only piece, suit, roll and pack units.
+- [x] Inventory and low-stock inputs use whole-number steps in the browser.
+- [x] Demo catalogue uses piece-based quantities; its cart remains local and checkout is disabled.
+- [ ] Database still permits the legacy `meter` unit and fractional numeric quantities. Do not claim the meter workflow is fully removed until a reviewed migration removes `meter` from the unit constraint and a safe policy for existing rows is applied.
+- [ ] Review existing products and order_items for legacy meter units before applying any schema constraint change. Do not silently rewrite historical order records.
+- [ ] Apply and verify the inventory-unit migration only in an isolated free test database; do not alter the shared Production Supabase project.
+- [ ] Test create/edit/list/cart/order quantity validation with whole-number piece, suit, roll and pack units.

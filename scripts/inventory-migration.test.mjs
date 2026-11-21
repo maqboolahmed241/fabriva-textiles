@@ -6,6 +6,9 @@ const sql = await readFile(new URL("../docs/inventory-unit-migration.sql", impor
 const adminCatalog = await readFile(new URL("../supabase/functions/admin-catalog/index.ts", import.meta.url), "utf8");
 const adminOrders = await readFile(new URL("../supabase/functions/admin-orders/index.ts", import.meta.url), "utf8");
 const publicCatalog = await readFile(new URL("../supabase/functions/public-catalog/index.ts", import.meta.url), "utf8");
+const ownerManagement = await readFile(new URL("../supabase/functions/owner-admin-management/index.ts", import.meta.url), "utf8");
+const currencyRates = await readFile(new URL("../supabase/functions/currency-rates/index.ts", import.meta.url), "utf8");
+const shippingPage = await readFile(new URL("../shipping.js", import.meta.url), "utf8");
 const homePage = await readFile(new URL("../index.html", import.meta.url), "utf8");
 const translations = await readFile(new URL("../store.js", import.meta.url), "utf8");
 
@@ -80,4 +83,24 @@ test("storefront inventory language matches supported piece and roll units", () 
   assert.doesNotMatch(homePage, /Fabrics by the Meter|fabric by the meter/i);
   assert.doesNotMatch(translations, /fabric by the meter|Fabrics by the Meter|میٹر کے حساب سے کپڑا|أقمشة بالمتر|Tissus au mètre|Stoffe nach Meter|Telas por metro/i);
   assert.match(homePage, /Fabric Collections/);
+});
+
+test("administrator management is owner-only and protects the owner account", () => {
+  assert.match(ownerManagement, /owner\.is_owner!==true/);
+  assert.match(ownerManagement, /Maximum is one owner plus three additional admins/);
+  assert.match(ownerManagement, /target\.is_owner\)return Response\.json\(\{error:"Admin not found or protected owner"\}/);
+  assert.match(ownerManagement, /admin\.auth\.admin\.deleteUser\(targetId\)/);
+});
+
+test("currency rate writes require a verified settings administrator", () => {
+  assert.match(currencyRates, /authDb\.auth\.getUser\(token\)/);
+  assert.match(currencyRates, /profile\.is_owner\|\|profile\.can_manage_settings/);
+  assert.match(currencyRates, /!Number\.isFinite\(rate\)/);
+  assert.match(currencyRates, /rate>10000000/);
+});
+
+test("shipping form uses shared strict validation before database writes", () => {
+  assert.match(shippingPage, /import \{validateShippingRate\} from "\.\/shipping-validation\.js"/);
+  assert.match(shippingPage, /validated=validateShippingRate\(/);
+  assert.match(shippingPage, /\.insert\(payload\)/);
 });

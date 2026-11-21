@@ -23,7 +23,7 @@ Deno.serve(async(req:Request)=>{
    if(!profile||!(profile.is_owner||profile.can_manage_settings))return reply({error:"Settings permission required"},403);
    actor=user.id;
   }
-  const refresh=async()=>{
+  const refresh=async(forceManualCode:string|null=null)=>{
    const r=await fetch("https://api.frankfurter.dev/v2/rates?base=PKR",{headers:{"Accept":"application/json"}});
    if(!r.ok)throw new Error("FX provider unavailable");
    const rows=await r.json();
@@ -38,7 +38,7 @@ Deno.serve(async(req:Request)=>{
    if(entries.length<5)throw new Error("Insufficient currency coverage from provider");
    for(const item of entries){
     const {data:existing}=await adminDb.from("currency_rates").select("rate_mode").eq("currency_code",item.currency_code).maybeSingle();
-    if(existing?.rate_mode==="manual")continue;
+    if(existing?.rate_mode==="manual"&&item.currency_code!==forceManualCode)continue;
     const {error}=await adminDb.from("currency_rates").upsert(item,{onConflict:"currency_code"});
     if(error)throw error;
    }
@@ -53,11 +53,11 @@ Deno.serve(async(req:Request)=>{
    }else if(body.action==="automatic"){
     const code=String(body.currency_code||"").toUpperCase();
     if(!currencies[code])return reply({error:"Unsupported currency"},400);
-    const {data:existing}=await adminDb.from("currency_rates").select("currency_code,rate_mode").eq("currency_code",code).maybeSingle();
-    if(!existing)return reply({error:"No saved rate. Refresh automatic rates first."},409);
-    const {error}=await adminDb.from("currency_rates").update({rate_mode:"automatic",updated_by:actor}).eq("currency_code",code);
+    await refresh(code);
+    const {data:updated}=await adminDb.from("currency_rates").select("currency_code,rate_mode,source").eq("currency_code",code).maybeSingle();
+    if(!updated||updated.rate_mode!=="automatic"||updated.source==="Admin manual override")return reply({error:"The provider did not return a fresh rate for this currency. Your manual rate was kept."},409);
+    const {error}=await adminDb.from("currency_rates").update({updated_by:actor}).eq("currency_code",code);
     if(error)throw error;
-    await refresh();
    }else if(body.action==="refresh"){await refresh();}
    else return reply({error:"Unsupported action"},400);
   }else{

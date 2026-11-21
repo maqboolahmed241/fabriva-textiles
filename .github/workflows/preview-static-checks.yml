@@ -1,0 +1,75 @@
+name: Preview static checks
+
+on:
+  push:
+    branches:
+      - feature/admin-orders-team
+  pull_request:
+    branches:
+      - main
+      - feature/admin-orders-team
+
+permissions:
+  contents: read
+
+jobs:
+  static-checks:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Check browser JavaScript syntax
+        shell: bash
+        run: |
+          set -euo pipefail
+          for file in ./*.js; do
+            [ -f "$file" ] || continue
+            cp "$file" /tmp/fabriva-check.mjs
+            node --check /tmp/fabriva-check.mjs
+            echo "Syntax OK: $file"
+          done
+
+      - name: Check local HTML assets
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from html.parser import HTMLParser
+          from pathlib import Path
+          import sys
+
+          root = Path(".")
+          errors = []
+
+          class AssetParser(HTMLParser):
+              def __init__(self, page):
+                  super().__init__()
+                  self.page = page
+              def handle_starttag(self, tag, attrs):
+                  attrs = dict(attrs)
+                  candidates = []
+                  if tag == "script" and attrs.get("src"):
+                      candidates.append(attrs["src"])
+                  if tag == "link" and attrs.get("href") and attrs.get("rel") == "stylesheet":
+                      candidates.append(attrs["href"])
+                  for value in candidates:
+                      if value.startswith(("http://", "https://", "//", "#", "data:")):
+                          continue
+                      target = (root / value.split("?", 1)[0].split("#", 1)[0]).resolve()
+                      if not target.is_file():
+                          errors.append(f"{self.page}: missing local asset {value}")
+
+          for page in sorted(root.glob("*.html")):
+              parser = AssetParser(page)
+              parser.feed(page.read_text(encoding="utf-8"))
+
+          if errors:
+              print("\\n".join(errors))
+              sys.exit(1)
+          print("All local script and stylesheet references exist.")
+          PY

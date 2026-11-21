@@ -89,5 +89,5 @@ Use this checklist only on the Cloudflare Pages Preview deployment for `feature/
 
 ## Migration safety automation
 - [x] Added automated Node tests for migration preflight, no silent legacy-product deletion/rewrite, whole-unit constraints, checkout RPC validation and service-role-only push-subscription access.
-- [ ] Confirm the new migration tests pass in the latest GitHub Actions run.
+- [x] Migration safety and admin-catalog server validation tests passed in GitHub Actions run #34.
 - [ ] A separate Supabase staging branch/project is not currently available. Creating one may incur charges; do not create it without the user's cost approval.

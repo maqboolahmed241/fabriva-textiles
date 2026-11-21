@@ -40,7 +40,7 @@ Deno.serve(withSupabase({ auth: "user" }, async (req, ctx) => {
     if (!can("can_view_orders") && !can("can_update_order_status") && !can("can_cancel_orders")) return reply({ error: "Order-view permission required" }, 403);
     const limit = Math.min(100, Math.max(1, Number(body.limit) || 50));
     let query = db.from("orders")
-      .select("id,order_number,customer_name,email,phone,country,city,postal_code,address,delivery_notes,currency,subtotal,shipping_total,total,payment_method,payment_status,order_status,created_at")
+      .select("id,order_number,customer_name,email,phone,country,region_name,city,postal_code,address,delivery_notes,currency,subtotal,shipping_total,total,payment_method,payment_status,order_status,created_at")
       .order("created_at", { ascending: false }).limit(limit);
     if (typeof body.status === "string" && validStatuses.includes(body.status)) query = query.eq("order_status", body.status);
     if (body.region === "pakistan") query = query.ilike("country", "Pakistan");
@@ -70,7 +70,7 @@ Deno.serve(withSupabase({ auth: "user" }, async (req, ctx) => {
     const id = typeof body.id === "string" ? body.id : "";
     if (!id) return reply({ error: "Order ID required" }, 400);
     const { data: order, error } = await db.from("orders")
-      .select("id,order_number,customer_name,email,phone,country,city,postal_code,address,delivery_notes,currency,subtotal,shipping_total,total,payment_method,payment_status,order_status,created_at")
+      .select("id,order_number,customer_name,email,phone,country,region_name,city,postal_code,address,delivery_notes,currency,subtotal,shipping_total,total,payment_method,payment_status,order_status,created_at")
       .eq("id", id).maybeSingle();
     if (error) return reply({ error: "Could not load order" }, 500);
     if (!order) return reply({ error: "Order not found" }, 404);

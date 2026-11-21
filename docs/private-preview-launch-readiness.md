@@ -33,6 +33,12 @@ Production branch: `main` (do not modify or merge without explicit approval)
 
 Do not alter the Demo records. Real products, stock quantities, and delivery rates are still needed before a genuine checkout test can be performed.
 
+## Known admin-team recovery risks
+
+- The current invitation cap is checked before the Auth invitation and profile insert. Two simultaneous owner invitations could race past the four-account limit. A database-transactional/serialized invitation operation is required before relying on the cap for production.
+- If Auth user deletion fails after an administrator profile has been removed, the account can remain in Auth without an admin profile. The UI now refreshes team capacity after each invitation attempt, but the partial-removal case still requires owner-side Auth review.
+- Do not attempt to simulate invitations or deletions against the shared Production Auth service during development.
+
 ## Required before a safe private preview
 
 - [ ] Choose a preview method that keeps the repository and storefront private and does not require a paid plan.

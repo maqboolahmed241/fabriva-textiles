@@ -4,6 +4,7 @@ import { readFile } from "node:fs/promises";
 
 const sql = await readFile(new URL("../docs/inventory-unit-migration.sql", import.meta.url), "utf8");
 const adminCatalog = await readFile(new URL("../supabase/functions/admin-catalog/index.ts", import.meta.url), "utf8");
+const adminOrders = await readFile(new URL("../supabase/functions/admin-orders/index.ts", import.meta.url), "utf8");
 
 test("migration is clearly staging-only and stops on legacy meter products", () => {
   assert.match(sql, /Do not apply to the shared Production Supabase project/i);
@@ -44,4 +45,24 @@ test("admin catalog server validation matches the inventory policy", () => {
   assert.match(adminCatalog, /!Number\.isInteger\(threshold\)/);
   assert.match(adminCatalog, /\["stock_qty","low_stock_threshold"\]\.includes\(k\)&&!Number\.isInteger/);
   assert.match(adminCatalog, /withSupabase\(\{auth:"user"\}/);
+});
+
+test("admin orders requires an authenticated admin profile", () => {
+  assert.match(adminOrders, /withSupabase\(\{ auth: "user" \}/);
+  assert.match(adminOrders, /if \(!userId\).*Sign in required/s);
+  assert.match(adminOrders, /if \(profileError \|\| !profile\).*Administrator access required/s);
+});
+
+test("customer private fields are masked without customer-view permission", () => {
+  assert.match(adminOrders, /const canViewCustomerDetails = owner \|\| profile\.can_view_customers === true/);
+  assert.match(adminOrders, /customer_name: "Restricted", email: null, phone: null/);
+  assert.match(adminOrders, /address: "Customer details restricted", delivery_notes: null/);
+});
+
+test("order status changes are permission-gated and compare-and-set protected", () => {
+  assert.match(adminOrders, /if \(nextStatus === "cancelled"\).*can\("can_cancel_orders"\)/s);
+  assert.match(adminOrders, /can\("can_update_order_status"\)/);
+  assert.match(adminOrders, /\.eq\("order_status", current\.order_status\)/);
+  assert.match(adminOrders, /if \(!updated\).*Order status changed elsewhere/s);
+  assert.match(adminOrders, /This order-status transition is not allowed/);
 });

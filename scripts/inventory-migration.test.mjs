@@ -11,6 +11,7 @@ const currencyRates = await readFile(new URL("../supabase/functions/currency-rat
 const shippingPage = await readFile(new URL("../shipping.js", import.meta.url), "utf8");
 const publicCatalogSource = publicCatalog;
 const storefrontSource = await readFile(new URL("../shop.js", import.meta.url), "utf8");
+const checkoutPage = await readFile(new URL("../shop.html", import.meta.url), "utf8");
 const homePage = await readFile(new URL("../index.html", import.meta.url), "utf8");
 const translations = await readFile(new URL("../store.js", import.meta.url), "utf8");
 
@@ -117,6 +118,6 @@ test("storefront sanitizes saved cart quantities against current stock", () => {
 });
 
 test("checkout requires a delivery region for shipping-rate matching", () => {
-  assert.match(homePage, /State \/ province \/ region<input name="region_name" required/);
+  assert.match(checkoutPage, /State \/ province \/ region<input name="region_name" required/);
   assert.match(storefrontSource, /payload\.region_name=String\(payload\.region_name\|\|""\)\.trim\(\)/);
 });

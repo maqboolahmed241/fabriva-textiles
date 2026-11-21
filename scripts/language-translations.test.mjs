@@ -65,9 +65,12 @@ test("all translation values are non-empty strings", () => {
 
 test("language selector offers exactly the six implemented locales", async () => {
   const html = await readFile(new URL("../index.html", import.meta.url), "utf8");
-  const select = html.match(/<select\\s+id=["']language-select["'][\\s\\S]*?<\\/select>/i);
-  assert.ok(select, "Missing language selector");
-  const options = [...select[0].matchAll(/<option\\s+value=["']([^"']+)["']/g)]
+  const start = html.indexOf('<select id="language-select"');
+  assert.notEqual(start, -1, "Missing language selector");
+  const end = html.indexOf("</select>", start);
+  assert.notEqual(end, -1, "Language selector is not closed");
+  const select = html.slice(start, end + "</select>".length);
+  const options = [...select.matchAll(/<option value="([^"]+)"/g)]
     .map((match) => match[1])
     .sort();
   assert.deepEqual(options, [...expectedLocales].sort());

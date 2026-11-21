@@ -64,8 +64,8 @@ Use this checklist only on the Cloudflare Pages Preview deployment for `feature/
 ## Inventory validation follow-up — feature branch
 - [x] Browser inventory payload now rejects unsupported units (`meter`) and accepts only piece, suit, roll and pack.
 - [x] Browser inventory payload rejects fractional or negative stock and low-stock thresholds before any upload or API write.
-- [ ] Mirror these checks in the `admin-catalog` Edge Function and database constraints before enabling writes; the currently deployed shared Supabase function still accepts `meter` and fractional stock.
-- [ ] Mirror whole-unit validation in `place_fabriva_order`; its current database function still permits fractional quantities for `roll` and `pack` (it only checks piece, suit and pack in the inspected definition).
+- [x] Feature-branch `admin-catalog` source now rejects `meter`, fractional stock and fractional low-stock thresholds. The deployed shared Supabase function remains unchanged until isolated staging verification.
+- [x] Added a guarded replacement for `place_fabriva_order(jsonb)` to the staging-only SQL proposal; it rejects fractional quantities for every supported unit and rejects unsupported legacy units.
 - [ ] Do not deploy either backend change or apply migrations to the shared Production Supabase project. Verify only in an isolated staging database.
 
 
@@ -73,7 +73,7 @@ Use this checklist only on the Cloudflare Pages Preview deployment for `feature/
 - [x] Captured the currently deployed public-catalog, admin-catalog, place-order, admin-orders and owner-admin-management Edge Function source under `supabase/functions/` for version control.
 - [x] Feature-branch `admin-catalog` source rejects the legacy meter unit, fractional stock and fractional low-stock thresholds; it also removes the retired fabric_by_meter product type.
 - [x] The current `place-order` Edge Function wrapper is now version-controlled; it delegates order creation to the database RPC.
-- [ ] The guarded database migration adds whole-number and supported-unit constraints to `order_items`, so fractional roll/pack quantities and legacy meter order items are rejected at the database layer.
+- [x] The guarded database migration proposal adds whole-number and supported-unit constraints to `order_items`, so fractional roll/pack quantities and legacy meter order items are rejected at the database layer.
 - [ ] These Edge Function source changes are not deployed to the shared Supabase project. Deploy only after isolated staging tests.
 - [ ] Database migration is intentionally held outside `supabase/migrations/` until the owner decides how to handle existing Demo products that use `meter` / `fabric_by_meter`.
 - [ ] Current shared database has three zero-stock Demo fabric products with `unit=meter` and `product_type=fabric_by_meter`; migration preflight must stop rather than silently convert or delete them.

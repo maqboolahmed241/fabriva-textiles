@@ -135,4 +135,5 @@ test("storefront sanitizes saved cart quantities against current stock", () => {
 test("checkout requires a delivery region for shipping-rate matching", () => {
   assert.match(checkoutPage, /State \/ province \/ region<input name="region_name" required/);
   assert.match(storefrontSource, /payload\.region_name=String\(payload\.region_name\|\|""\)\.trim\(\)/);
+  assert.match(sql, /or v_region is null or length\(v_region\)<2 or length\(v_region\)>100/);
 });

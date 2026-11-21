@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Delivery Settings | FABRIVA TEXTILES</title><link rel="stylesheet" href="styles.css"><link rel="stylesheet" href="admin.css"><link rel="stylesheet" href="shipping.css"></head>
+<body class="admin-body"><header class="site-header"><a class="brand" href="admin.html"><span class="brand-mark">F</span><span><strong>FABRIVA</strong><small>TEXTILES</small></span></a><div class="header-actions"><span class="header-note">PRIVATE DELIVERY SETTINGS</span><button id="signout" class="small-button">Sign out</button></div></header>
+<main class="dashboard"><div class="dash-heading"><div><p class="eyebrow">STORE CONFIGURATION</p><h1>Delivery <em>rates</em></h1><p class="muted">Add confirmed delivery charges for Pakistan and international destinations.</p></div><a class="back-link" href="admin.html">← Dashboard</a></div>
+<div id="message" class="notice" role="status">Checking access…</div><section id="delivery-app" hidden>
+<form id="rate-form" class="panel"><div class="panel-heading"><div><p class="eyebrow">NEW DELIVERY RATE</p><h2>Add a destination</h2></div></div>
+<div class="form-grid">
+<label>Country name<input name="country_name" required maxlength="80" placeholder="Pakistan"></label>
+<label>Country code<input name="country_code" required maxlength="2" minlength="2" placeholder="PK" pattern="[A-Za-z]{2}"></label>
+<label>Province / region<input name="region_name" required maxlength="100" value="All regions" placeholder="Sindh"></label>
+<label>City (optional)<input name="city_name" maxlength="100" placeholder="Karachi"></label>
+<label>Currency<select name="currency"><option value="PKR">PKR</option><option value="USD">USD</option><option value="AED">AED</option><option value="GBP">GBP</option><option value="EUR">EUR</option></select></label>
+<label>Delivery charge<input name="amount" type="number" min="0" step="0.01" required></label>
+<label>Free delivery above (optional)<input name="free_over" type="number" min="0" step="0.01"></label>
+<label class="check-label"><input name="is_active" type="checkbox"> Activate this rate</label>
+</div><button class="gold-button" type="submit">Save delivery rate</button><p class="muted small-print">Rates are inactive by default. Checkout remains unavailable until the owner confirms and activates the correct rates.</p></form>
+<section class="panel"><div class="panel-heading"><div><p class="eyebrow">CONFIGURED DESTINATIONS</p><h2>Delivery rate list</h2></div><button id="refresh" class="small-button">Refresh</button></div><div id="rate-list" class="rate-list"></div></section></section></main>
+<footer><span>FABRIVA TEXTILES</span><span>Private development · Not live</span></footer><script type="module" src="shipping.js"></script></body></html>

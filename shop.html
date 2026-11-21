@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en" dir="ltr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#242321"><meta name="description" content="Explore the FABRIVA TEXTILES collection."><title>Shop | FABRIVA TEXTILES</title><link rel="stylesheet" href="styles.css"><link rel="stylesheet" href="shop.css"></head>
+<body><header class="site-header"><a class="brand" href="index.html"><span class="brand-mark">F</span><span class="brand-word"><strong>FABRIVA</strong><small>TEXTILES</small></span></a><nav class="main-nav"><a href="index.html">Home</a><a href="#products">Shop</a></nav><label class="language-picker"><span class="sr-only">Choose language</span><select id="shop-language" aria-label="Choose language"><option value="en">EN</option><option value="ur">اردو</option><option value="ar">العربية</option><option value="fr">FR</option><option value="de">DE</option><option value="es">ES</option></select></label><a class="shop-home" href="index.html">Back to home</a></header>
+<main class="shop-main"><section class="shop-intro"><p class="eyebrow">THE FABRIVA EDIT</p><h1>Discover the <em>collection.</em></h1><p>Thoughtfully selected fabrics and clothing. Browse available pieces and current stock.</p></section>
+<section id="products" class="shop-tools"><label class="search-label"><span>Search collection</span><input id="search" type="search" placeholder="Search products, fabrics or category"></label><label><span>Collection</span><select id="category"><option value="">All collections</option><option value="ladies">Ladies</option><option value="gents">Gents</option><option value="unisex">Unisex</option></select></label><button id="refresh" class="small-button">Refresh</button></section>
+<p id="shop-message" class="shop-message" role="status">Loading collection…</p><section id="product-grid" class="shop-grid" aria-live="polite"></section>
+<section class="checkout-panel" id="checkout">
+ <div class="checkout-heading"><div><p class="eyebrow">SECURE CHECKOUT</p><h2>Your <em>shopping bag</em></h2></div><strong id="cart-count">0 items</strong></div>
+ <div id="cart-items" class="cart-items"><p>Your bag is empty.</p></div>
+ <div class="cart-summary" id="cart-summary" hidden></div>
+ <form id="checkout-form" class="checkout-form" hidden>
+  <h3>Delivery details</h3>
+  <div class="checkout-grid">
+   <label>Full name<input name="customer_name" required maxlength="150" autocomplete="name"></label>
+   <label>Phone / WhatsApp<input name="phone" required maxlength="40" autocomplete="tel"></label>
+   <label>Email (optional)<input name="email" type="email" maxlength="254" autocomplete="email"></label>
+   <label>Country<input name="country" required maxlength="100" value="Pakistan" autocomplete="country-name"></label>
+   <label>Country code (2 letters)<input name="country_code" required maxlength="2" value="PK" placeholder="PK"></label>
+   <label>State / province / region<input name="region_name" maxlength="100" placeholder="e.g. Sindh"></label>
+   <label>City<input name="city" required maxlength="100" autocomplete="address-level2"></label>
+   <label>Postal code<input name="postal_code" maxlength="30" autocomplete="postal-code"></label>
+   <label class="wide">Full delivery address<textarea name="address" required maxlength="500" rows="3" autocomplete="street-address"></textarea></label>
+   <label class="wide">Delivery notes (optional)<textarea name="delivery_notes" maxlength="500" rows="2"></textarea></label>
+   <label>Payment method<select name="payment_method" required><option value="cod">Cash on delivery (Pakistan only)</option><option value="bank_transfer">Bank transfer (manual confirmation)</option></select></label>
+   <label class="trap" aria-hidden="true">Leave blank<input name="website" tabindex="-1" autocomplete="off"></label>
+  </div>
+  <button class="gold-button" type="submit" id="place-order">Place order</button>
+ </form>
+ <p id="checkout-message" class="shop-message" role="status"></p>
+</section></main>
+<footer><span>FABRIVA TEXTILES</span><span>Fabrics · Fashion · Worldwide</span></footer><script type="module" src="shop.js"></script></body></html>

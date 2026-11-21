@@ -59,3 +59,11 @@ Use this checklist only on the Cloudflare Pages Preview deployment for `feature/
 - [ ] Review existing products and order_items for legacy meter units before applying any schema constraint change. Do not silently rewrite historical order records.
 - [ ] Apply and verify the inventory-unit migration only in an isolated free test database; do not alter the shared Production Supabase project.
 - [ ] Test create/edit/list/cart/order quantity validation with whole-number piece, suit, roll and pack units.
+
+
+## Inventory validation follow-up — feature branch
+- [x] Browser inventory payload now rejects unsupported units (`meter`) and accepts only piece, suit, roll and pack.
+- [x] Browser inventory payload rejects fractional or negative stock and low-stock thresholds before any upload or API write.
+- [ ] Mirror these checks in the `admin-catalog` Edge Function and database constraints before enabling writes; the currently deployed shared Supabase function still accepts `meter` and fractional stock.
+- [ ] Mirror whole-unit validation in `place_fabriva_order`; its current database function still permits fractional quantities for `roll` and `pack` (it only checks piece, suit and pack in the inspected definition).
+- [ ] Do not deploy either backend change or apply migrations to the shared Production Supabase project. Verify only in an isolated staging database.

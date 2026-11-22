@@ -23,7 +23,7 @@
       <span class="brand-mark">M</span>
       <span class="brand-word"><strong>MARYAM LUXE</strong><small>TEXTILES</small></span>
     </a>
-    <nav class="main-nav" aria-label="Main navigation">
+    <nav class="main-nav" id="main-nav" aria-label="Main navigation">
       <a href="#ladies" data-i18n="navLadies">Ladies</a>
       <a href="shop.html">Shop & Orders</a>
       <a href="tracking.html" data-i18n="navTrack">Track My Order</a>
@@ -31,6 +31,19 @@
       <a href="#fabrics" data-i18n="navFabrics">Fabrics</a>
       <a href="#about" data-i18n="navAbout">Our story</a>
     </nav>
+    <div class="header-tools">
+      <button class="header-icon-button" id="home-search-toggle" type="button" aria-label="Search" aria-expanded="false" title="Search">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"></circle><path d="m16 16 5 5"></path></svg>
+      </button>
+      <button class="header-icon-button" id="home-menu-toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="main-nav" title="Menu">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18"></path></svg>
+      </button>
+    </div>
+    <div class="home-search-panel" id="home-search-panel" hidden>
+      <label for="home-search-input">Search the collection</label>
+      <input id="home-search-input" type="search" placeholder="Search ladies, gents, fabrics…">
+      <p id="home-search-message" role="status"></p>
+    </div>
     <label class="language-picker">
       <span class="sr-only">Choose language</span>
       <select id="language-select" aria-label="Choose language">

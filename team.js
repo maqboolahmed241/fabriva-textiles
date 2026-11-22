@@ -14,7 +14,29 @@ else{
  if(error||!profile?.is_owner){message.textContent="Only the main owner can manage administrators.";document.querySelector("#invite-form").hidden=true;}
  else{message.textContent="Owner access verified.";app.hidden=false;await loadTeam();}
 }
-async function api(action,extra={}){const {data:{session:s}}=await supabase.auth.getSession();const r=await fetch(SUPABASE_URL+"/functions/v1/owner-admin-management",{method:"POST",headers:{apikey:SUPABASE_PUBLISHABLE_KEY,Authorization:"Bearer "+s.access_token,"Content-Type":"application/json"},body:JSON.stringify({action,...extra})});const data=await r.json().catch(()=>({error:"Unexpected response"}));if(!r.ok)throw new Error(data.error||"Request failed");return data;}
+async function api(action,extra={}){
+ let {data:{session:s},error:sessionError}=await supabase.auth.getSession();
+ if(sessionError)throw new Error("Your sign-in could not be verified. Please sign in again.");
+ if(!s){location.replace("login.html");throw new Error("Your session has expired. Please sign in again.");}
+ // Installed PWAs can resume after sleeping with an old access token.
+ if(!s.expires_at||s.expires_at*1000<Date.now()+60000){
+  const refreshed=await supabase.auth.refreshSession();
+  if(refreshed.error||!refreshed.data.session)throw new Error("Your sign-in expired. Please sign in again.");
+  s=refreshed.data.session;
+ }
+ const send=()=>fetch(SUPABASE_URL+"/functions/v1/owner-admin-management",{method:"POST",headers:{apikey:SUPABASE_PUBLISHABLE_KEY,Authorization:"Bearer "+s.access_token,"Content-Type":"application/json"},body:JSON.stringify({action,...extra})});
+ let r=await send();
+ // Retry once if a sleeping PWA's saved token is no longer accepted.
+ if(r.status===401){
+  const refreshed=await supabase.auth.refreshSession();
+  if(refreshed.error||!refreshed.data.session)throw new Error("Your sign-in expired. Please sign in again, then reopen Admin Team.");
+  s=refreshed.data.session;
+  r=await send();
+ }
+ const data=await r.json().catch(()=>({error:"Unexpected response"}));
+ if(!r.ok)throw new Error(data.error||(r.status===401?"Please sign in again to manage administrators.":"Request failed"));
+ return data;
+}
 function getPermissions(root){return Object.fromEntries(permissions.map(([k])=>[k,!!root.querySelector('[name="'+k+'"]')?.checked]));}
 async function loadTeam(){list.textContent="Loading administrators…";try{const {admins=[]}=await api("list");list.replaceChildren();const total=admins.length;const additional=admins.filter(a=>!a.is_owner).length;const remaining=Math.max(0,MAX_ADDITIONAL_ADMINS-additional);capacity.textContent=`${total} of ${MAX_TOTAL_ACCOUNTS} admin accounts in use (including owner) · ${additional} of ${MAX_ADDITIONAL_ADMINS} additional admins · ${remaining} slot${remaining===1?"":"s"} remaining.`;const inviteButton=inviteForm.querySelector('button[type="submit"]');const full=total>=MAX_TOTAL_ACCOUNTS||additional>=MAX_ADDITIONAL_ADMINS;inviteButton.disabled=full;inviteButton.textContent=full?"Admin limit reached":"Send invitation";for(const admin of admins){const card=document.createElement("article");card.className="team-card";const heading=document.createElement("div");heading.className="team-heading";const who=document.createElement("div");const email=document.createElement("strong");email.textContent=admin.email||"Invited account";const role=document.createElement("small");role.textContent=admin.is_owner?"MAIN OWNER":"ADMINISTRATOR";who.append(email,role);heading.append(who);card.append(heading);
 if(admin.is_owner){const note=document.createElement("p");note.className="muted";note.textContent="Owner account — protected from removal and permission changes.";card.append(note);}

@@ -13,10 +13,10 @@
   <meta name="description" content="MARYAM LUXE — considered fabrics and clothing for ladies and gentlemen, with worldwide ambitions.">
   <title>MARYAM LUXE | Fabrics · Fashion · Worldwide</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="stylesheet" href="styles.css?v=mobile-header-2">
+  <link rel="stylesheet" href="styles.css?v=collection-links-1">
   <script src="store.js?v=admin-mark-only-3" defer></script>
-  <script src="header-controls.js?v=2" defer></script>
-  <script type="module" src="home-catalog.js"></script>
+  <script src="header-controls.js?v=3" defer></script>
+  <script type="module" src="home-catalog.js?v=2"></script>
 </head>
 <body>
   <header class="site-header">
@@ -71,24 +71,27 @@
         <p class="section-intro" data-i18n="collectionIntro">Explore the collections taking shape at MARYAM LUXE.</p>
       </div>
       <div class="collection-grid">
-        <article class="collection-card" id="ladies">
+        <a class="collection-card collection-link" id="ladies" href="shop.html?collection=ladies" aria-label="Open Ladies collection">
           <span class="card-index">01 / LADIES</span>
           <h3 data-i18n="ladiesTitle">The Ladies Collection</h3>
           <p data-i18n="ladiesText">One-piece, two-piece and three-piece suits, ready-made clothing and fabric products by piece or roll.</p>
           <ul><li data-i18n="onePiece">One-piece suits</li><li data-i18n="twoPiece">Two-piece suits</li><li data-i18n="threePiece">Three-piece suits</li></ul>
-        </article>
-        <article class="collection-card" id="gents">
+          <span class="collection-open">Explore ladies collection <span aria-hidden="true">→</span></span>
+        </a>
+        <a class="collection-card collection-link" id="gents" href="shop.html?collection=gents" aria-label="Open Gents collection">
           <span class="card-index">02 / GENTS</span>
           <h3 data-i18n="gentsTitle">The Gents Collection</h3>
           <p data-i18n="gentsText">Suit fabrics, full suits and everyday ready-made essentials.</p>
           <ul><li data-i18n="gentsSuits">One-piece, two-piece and full suits</li><li data-i18n="shirts">T-shirts</li><li data-i18n="denim">Jeans, trousers and pants</li></ul>
-        </article>
-        <article class="collection-card" id="fabrics">
+          <span class="collection-open">Explore gents collection <span aria-hidden="true">→</span></span>
+        </a>
+        <a class="collection-card collection-link" id="fabrics" href="shop.html?collection=fabrics" aria-label="Open Fabric collection">
           <span class="card-index">03 / FABRICS</span>
           <h3 data-i18n="fabricTitle">Fabric Collections</h3>
           <p data-i18n="fabricText">Discover fabric selections with clear descriptions, units and stock information.</p>
           <ul><li data-i18n="printed">Printed and digital print</li><li data-i18n="plain">Plain fabrics</li><li data-i18n="embroidered">Embroidered fabrics</li></ul>
-        </article>
+          <span class="collection-open">Explore fabric collection <span aria-hidden="true">→</span></span>
+        </a>
       </div>
     </section>
 

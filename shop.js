@@ -34,10 +34,44 @@ for(const [id,q] of entries){const p=products.find(x=>x.id===id),price=Number(p.
 if(!count)text(cartItems,"p","","Your bag is empty. Add products from the collection above.");cartCount.textContent=count+" item"+(count===1?"":"s");cartSummary.hidden=!count;checkoutForm.hidden=!count;cartSummary.replaceChildren();if(count){text(cartSummary,"span","","Estimated subtotal");text(cartSummary,"strong","",money(subtotal));text(cartSummary,"small","","Shipping is calculated after your delivery address is entered. Final prices and stock are verified securely when you place the order.");}}
 const paymentSelect=checkoutForm.querySelector('[name="payment_method"]');
 const transactionField=checkoutForm.querySelector("#transaction-field"),receiptField=checkoutForm.querySelector("#receipt-field");
-const transactionInput=checkoutForm.querySelector('[name="transaction_id"]'),receiptInput=checkoutForm.querySelector('[name="receipt"]');
-function updatePaymentFields(){const bank=paymentSelect.value==="bank_transfer";transactionField.hidden=!bank;receiptField.hidden=!bank;transactionInput.required=bank;receiptInput.required=bank;}
-paymentSelect.addEventListener("change",updatePaymentFields);updatePaymentFields();
-checkoutForm.addEventListener("submit",async e=>{e.preventDefault();if(demoMode){checkoutMessage.textContent="Demo mode is for display and local cart testing only. Real checkout is disabled.";return;}const button=document.querySelector("#place-order");const items=Object.entries(cart).filter(([,q])=>Number(q)>0).map(([product_id,quantity])=>({product_id,quantity:Number(quantity)}));if(!items.length){checkoutMessage.textContent="Your bag is empty.";return;}button.disabled=true;button.textContent="Submitting order…";checkoutMessage.textContent="Checking stock and delivery rate…";try{const formData=new FormData(checkoutForm);const payload=Object.fromEntries(formData.entries());const receiptFile=receiptInput.files?.[0]||null;delete payload.receipt;payload.country_code=String(payload.country_code||"").trim().toUpperCase();payload.region_name=String(payload.region_name||"").trim();payload.transaction_id=String(payload.transaction_id||"").trim();payload.items=items;
+const transactionInput=checkoutForm.querySelector('[name="transaction_id"]'),receiptInput=checkoutForm.querySelector('[name="receipt']");
+const paymentDetails=document.querySelector("#payment-account-details"),paymentHelp=document.querySelector("#payment-help");
+let activePaymentAccounts=[];
+function paymentLabel(method){return method==="jazzcash"?"JazzCash":method==="easypaisa"?"Easypaisa":"Bank transfer";}
+function renderPaymentAccount(){
+ const method=paymentSelect.value,channel=paymentSelect.selectedOptions[0]?.dataset.channel||"";
+ paymentDetails.replaceChildren();
+ const transfer=method==="bank_transfer";
+ paymentDetails.hidden=!transfer;
+ transactionField.hidden=!transfer;receiptField.hidden=!transfer;
+ transactionInput.required=transfer;receiptInput.required=transfer;
+ if(!transfer){paymentHelp.textContent="Cash on delivery is available for Pakistan addresses only.";return;}
+ const account=activePaymentAccounts.find(x=>x.method===channel);
+ if(!account){paymentHelp.textContent="This payment account is not available. Please choose another method.";return;}
+ const heading=document.createElement("h4");heading.textContent="Transfer payment to "+paymentLabel(channel);paymentDetails.append(heading);
+ const rows=[["Account holder",account.account_title],...(account.method==="bank_transfer"?[["Bank name",account.bank_name]]:[]),[account.method==="bank_transfer"?"Account number / IBAN":"Wallet / account number",account.account_number]];
+ for(const [label,value] of rows){if(!value)continue;const row=document.createElement("div");row.className="payment-account-row";const name=document.createElement("span");name.textContent=label;const val=document.createElement("strong");val.textContent=value;const copy=document.createElement("button");copy.type="button";copy.className="copy-payment-account";copy.textContent="Copy";copy.addEventListener("click",async()=>{try{await navigator.clipboard.writeText(value);copy.textContent="Copied ✓";setTimeout(()=>copy.textContent="Copy",1800);}catch{copy.textContent="Select and copy";}});row.append(name,val,copy);paymentDetails.append(row);}
+ if(account.instructions){const note=document.createElement("p");note.textContent=account.instructions;paymentDetails.append(note);}
+ paymentHelp.textContent="After transferring the amount, enter the transaction ID and upload a clear receipt image. The store will verify your payment manually.";
+}
+async function loadPaymentAccounts(){
+ const url=SUPABASE_URL+"/rest/v1/store_payment_accounts?select=method,account_title,account_number,bank_name,instructions,is_active&is_active=eq.true&order=method";
+ const response=await fetch(url,{headers:{apikey:SUPABASE_PUBLISHABLE_KEY}});
+ const data=await response.json();if(!response.ok)throw new Error(data.message||"Payment methods could not be loaded.");
+ activePaymentAccounts=Array.isArray(data)?data:[];
+ const selected=paymentSelect.value;
+ paymentSelect.replaceChildren();
+ const country=(checkoutForm.querySelector('[name="country_code"]').value||"PK").trim().toUpperCase();
+ if(country==="PK"){const cod=document.createElement("option");cod.value="cod";cod.textContent="Cash on delivery (Pakistan only)";paymentSelect.append(cod);}
+ for(const account of activePaymentAccounts){const option=document.createElement("option");option.value="bank_transfer";option.dataset.channel=account.method;option.textContent=paymentLabel(account.method)+" (manual transfer)";paymentSelect.append(option);}
+ if([...paymentSelect.options].some(x=>x.value===selected&&x.dataset.channel===(paymentSelect.selectedOptions[0]?.dataset.channel||"")))paymentSelect.value=selected;
+ if(!paymentSelect.options.length){const empty=document.createElement("option");empty.value="";empty.textContent="No payment methods currently available";paymentSelect.append(empty);paymentSelect.disabled=true;}else paymentSelect.disabled=false;
+ renderPaymentAccount();
+}
+paymentSelect.addEventListener("change",renderPaymentAccount);
+checkoutForm.querySelector('[name="country_code"]').addEventListener("change",loadPaymentAccounts);
+loadPaymentAccounts().catch(e=>{paymentHelp.textContent=e.message;});
+checkoutForm.addEventListener("submit",async e=>{e.preventDefault();if(demoMode){checkoutMessage.textContent="Demo mode is for display and local cart testing only. Real checkout is disabled.";return;}const button=document.querySelector("#place-order");const items=Object.entries(cart).filter(([,q])=>Number(q)>0).map(([product_id,quantity])=>({product_id,quantity:Number(quantity)}));if(!items.length){checkoutMessage.textContent="Your bag is empty.";return;}button.disabled=true;button.textContent="Submitting order…";checkoutMessage.textContent="Checking stock and delivery rate…";try{const formData=new FormData(checkoutForm);const payload=Object.fromEntries(formData.entries());const receiptFile=receiptInput.files?.[0]||null;delete payload.receipt;payload.country_code=String(payload.country_code||"").trim().toUpperCase();payload.region_name=String(payload.region_name||"").trim();payload.transaction_id=String(payload.transaction_id||"").trim();payload.payment_channel=paymentSelect.selectedOptions[0]?.dataset.channel||"cod";payload.items=items;
 if(payload.payment_method==="bank_transfer"){
  if(!payload.transaction_id||payload.transaction_id.length<3)throw new Error("Please enter a valid bank transaction ID.");
  if(!receiptFile)throw new Error("Please attach your payment receipt.");

@@ -33,3 +33,20 @@ searchInput?.addEventListener("keydown",event=>{
  if(match){searchMessage.textContent="Matching collection found.";match.scrollIntoView({behavior:"smooth",block:"center"});searchPanel.hidden=true;searchButton?.setAttribute("aria-expanded","false");}
  else{searchMessage.textContent="No matching collection found. Try Ladies, Gents or Fabrics.";}
 });
+
+ // Keep collection shortcuts explicit and independent of the menu's close
+ // handler. Preserve the selected language in localStorage, then navigate to
+ // the same-origin shop page with a validated collection key.
+ document.addEventListener("click",event=>{
+  const link=event.target?.closest?.('a[href*="shop.html?collection="]');
+  if(!link)return;
+  const destination=new URL(link.getAttribute("href"),window.location.href);
+  if(destination.origin!==window.location.origin||!destination.pathname.endsWith("/shop.html"))return;
+  const collection=destination.searchParams.get("collection");
+  if(!["ladies","gents","fabrics","unisex"].includes(collection))return;
+  event.preventDefault();
+  if(menuPanel&&!menuPanel.hidden)setMenu(false);
+  const language=(()=>{try{return localStorage.getItem("maryam_luxe_language_v1")||"en";}catch{return "en";}})();
+  destination.searchParams.set("lang",["en","ur","ar","fr","de","es"].includes(language)?language:"en");
+  window.location.assign(destination.href);
+ });

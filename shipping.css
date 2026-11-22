@@ -1,2 +1,39 @@
 .rate-list{display:grid;gap:10px}.rate-row{display:grid;grid-template-columns:1fr auto auto;gap:12px;align-items:center;border:1px solid #ded7ca;padding:14px;background:#fffefa}.rate-row strong{display:block;font:16px Georgia,serif}.rate-row small{font:11px Arial,sans-serif;color:#77736b}.rate-status{font:10px Arial,sans-serif;letter-spacing:.08em;color:#806943}.rate-row button{border:1px solid #ded7ca;background:transparent;padding:9px;font:10px Arial,sans-serif;color:#665f54}.rate-empty{font:13px Arial,sans-serif;color:#77736b}@media(max-width:580px){.rate-row{grid-template-columns:1fr auto}.rate-status{grid-column:1}.rate-row button{grid-column:2;grid-row:1/3}}
 .fx-actions{display:flex;gap:10px;flex-wrap:wrap;margin:16px 0}.fx-actions button{min-height:40px}.fx-actions button:disabled{opacity:.55;cursor:wait}#currency-panel{margin-bottom:20px}#fx-list{margin-top:14px}
+
+/* Delivery settings: responsive, clean two-column form */
+#rate-form{padding:clamp(20px,4vw,38px)}
+#rate-form .panel-heading{margin-bottom:24px}
+#rate-form .panel-heading h2{font-size:clamp(30px,4vw,44px);line-height:1.12;margin:12px 0 0}
+#rate-form .form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px 22px;margin:0 0 24px}
+#rate-form .form-grid>label{display:grid;align-content:start;gap:9px;min-width:0;font:12px/1.4 Arial,Helvetica,sans-serif;letter-spacing:.045em;color:#5e584e}
+#rate-form input:not([type=checkbox]),#rate-form select{display:block;width:100%;min-width:0;height:48px;padding:0 14px;border:1px solid #d9d1c3;border-radius:5px;background:#fffefa;color:#282722;font:15px Arial,Helvetica,sans-serif;outline:none;box-shadow:0 2px 8px #28272208}
+#rate-form input:focus,#rate-form select:focus{border-color:#ae9361;box-shadow:0 0 0 3px #ae936120}
+#rate-form input[readonly]{background:#f4f0e7;color:#776b57}
+#rate-form .check-label{display:flex;align-items:center;gap:12px;min-height:48px;padding:10px 14px;border:1px solid #e3dccf;background:#f8f5ee;border-radius:5px}
+#rate-form .check-label input{width:19px;height:19px;accent-color:#9b8052}
+#rate-form .gold-button{min-height:48px;padding:0 24px;border-radius:4px;letter-spacing:.1em}
+#rate-form .small-print{max-width:620px;margin-top:20px}
+#rate-form .optional-label{font:10px Arial,sans-serif;color:#9a8157;text-transform:uppercase;letter-spacing:.08em}
+#rate-form .country-field select{font-weight:600}
+#rate-form .country-field select option{padding:8px}
+#currency-panel .form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+#currency-panel .form-grid label{display:grid;gap:8px;font:12px Arial,sans-serif;color:#5e584e}
+#currency-panel input,#currency-panel select{width:100%;min-width:0;height:46px;padding:0 12px;border:1px solid #d9d1c3;border-radius:5px;background:#fffefa;font:14px Arial,sans-serif}
+.site-header .brand{min-width:0;letter-spacing:.08em}
+.site-header .brand span:last-child strong{font-size:clamp(13px,2.3vw,19px);letter-spacing:.14em;white-space:nowrap}
+.site-header .brand span:last-child small{font-size:9px;letter-spacing:.25em}
+@media(max-width:650px){
+ .dashboard{padding:28px 14px 60px}
+ .dash-heading{display:block}
+ .dash-heading h1{font-size:42px}
+ #rate-form .form-grid,#currency-panel .form-grid{grid-template-columns:1fr;gap:15px}
+ #rate-form{padding:22px 17px}
+ #rate-form .panel-heading h2{font-size:32px}
+ #rate-form .gold-button{width:100%}
+ .site-header{padding:10px 14px;gap:8px}
+ .site-header .brand{gap:8px}
+ .site-header .brand-mark{width:38px;height:38px;font-size:22px}
+ .site-header .brand span:last-child strong{font-size:12px;letter-spacing:.08em}
+ .header-actions .small-button{padding:9px 10px}
+}

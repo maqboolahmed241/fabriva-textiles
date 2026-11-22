@@ -7,10 +7,21 @@ de:{homeCollectionEyebrow:"DIE KOLLEKTION",homeCollectionTitle:"Für Sie ausgew�
 es:{homeCollectionEyebrow:"LA COLECCIÓN",homeCollectionTitle:"Seleccionado para ti",homeCollectionIntro:"Descubre las últimas prendas de MARYAM LUXE.",navLadies:"Mujer",navGents:"Hombre",navFabrics:"Telas",navTrack:"Seguir mi pedido",navAbout:"Nuestra historia",eyebrow:"TELAS · MODA · MUNDO",heroTitle:'Elegancia tejida<br><em>para cada viaje.</em>',heroIntro:"Una cuidada colección de telas y ropa para mujeres y hombres.",explore:"Explorar colecciones",launchNote:"Estamos preparando nuestra colección en línea. Los pedidos aún no están abiertos.",collectionEyebrow:"LA SELECCIÓN MARYAM LUXE",collectionTitle:"Descubre nuestras colecciones",collectionIntro:"Explora las colecciones que estamos preparando en MARYAM LUXE.",ladiesTitle:"Colección para mujer",ladiesText:"Conjuntos de una, dos y tres piezas, ropa confeccionada y telas por pieza o rollo.",onePiece:"Conjuntos de una pieza",twoPiece:"Conjuntos de dos piezas",threePiece:"Conjuntos de tres piezas",gentsTitle:"Colección para hombre",gentsText:"Telas para trajes, trajes completos y prendas listas para vestir.",gentsSuits:"Conjuntos de una, dos piezas y completos",shirts:"Camisetas",denim:"Jeans y pantalones",fabricTitle:"Colecciones de telas",fabricText:"Telas con descripciones, unidades e información de existencias claras.",printed:"Estampados e impresión digital",plain:"Telas lisas",embroidered:"Telas bordadas",nextChapter:"EL SIGUIENTE CAPÍTULO",comingTitle:"Un mundo de telas. Un destino especial.",comingText:"Preparamos fotografías, precios claros y una experiencia de compra segura para clientes de Pakistán y de todo el mundo.",status:"Tienda en preparación · Pedidos aún no disponibles",footer:"Telas · Moda · Mundo"}
 };
 const LANGUAGE_KEY="maryam_luxe_language_v1";
+function syncLanguageLinks(code){
+ document.querySelectorAll("a[href]").forEach(link=>{
+  try{
+   const target=new URL(link.getAttribute("href"),location.href);
+   if(target.origin!==location.origin || !target.pathname.endsWith(".html"))return;
+   target.searchParams.set("lang",code);
+   link.setAttribute("href",target.pathname.split("/").pop()+target.search+target.hash);
+  }catch{}
+ });
+}
+
 const supportedLanguages=["en","ur","ar","fr","de","es"];
 function readSavedLanguage(){try{const value=localStorage.getItem(LANGUAGE_KEY);return supportedLanguages.includes(value)?value:"en";}catch{return "en";}}
 const select=document.querySelector("#language-select");
-function setLanguage(code){code=supportedLanguages.includes(code)?code:"en";try{localStorage.setItem(LANGUAGE_KEY,code);}catch{}const words=translations[code]||translations.en;document.documentElement.lang=code;document.documentElement.dir=(code==="ur"||code==="ar")?"rtl":"ltr";document.querySelectorAll("[data-i18n]").forEach(el=>{const key=el.dataset.i18n;if(words[key])el.innerHTML=words[key];});select.value=code;window.dispatchEvent(new CustomEvent("maryam-language-change",{detail:{language:code}}));}
+function setLanguage(code){code=supportedLanguages.includes(code)?code:"en";try{localStorage.setItem(LANGUAGE_KEY,code);}catch{}syncLanguageLinks(code);const words=translations[code]||translations.en;document.documentElement.lang=code;document.documentElement.dir=(code==="ur"||code==="ar")?"rtl":"ltr";document.querySelectorAll("[data-i18n]").forEach(el=>{const key=el.dataset.i18n;if(words[key])el.innerHTML=words[key];});select.value=code;window.dispatchEvent(new CustomEvent("maryam-language-change",{detail:{language:code}}));}
 select.addEventListener("change",()=>setLanguage(select.value));
 setLanguage(readSavedLanguage());
 // Preserve the selected language on every internal page link.

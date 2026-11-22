@@ -49,3 +49,12 @@
 .payment-account-details>p{margin:12px 0 0;font:13px/1.6 Arial,sans-serif;color:#665f54}
 
 @media(max-width:760px){.site-header .main-nav a{white-space:nowrap;font-size:8px}}
+
+/* Always-visible three collection shortcuts on the shop page */
+.shop-collection-nav{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:0 0 28px}
+.shop-collection-tile{display:flex;flex-direction:column;gap:14px;min-height:142px;padding:20px;background:#fffefa;border:1px solid #ded7ca;border-top:3px solid #ae9361;text-decoration:none;transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease}
+.shop-collection-tile:hover,.shop-collection-tile:focus-visible{transform:translateY(-3px);border-color:#ae9361;box-shadow:0 10px 24px #28272212;outline:none}
+.shop-collection-tile>span{font:9px Arial,sans-serif;letter-spacing:.15em;color:#9a8054}
+.shop-collection-tile>strong{font:21px Georgia,serif;font-weight:400;color:#292824}
+.shop-collection-tile>b{margin-top:auto;font:10px Arial,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#806943}
+@media(max-width:650px){.shop-collection-nav{grid-template-columns:1fr;gap:9px}.shop-collection-tile{min-height:0;padding:16px 18px;gap:8px;display:grid;grid-template-columns:1fr auto;align-items:center}.shop-collection-tile>span{grid-column:1/-1}.shop-collection-tile>strong{font-size:19px}.shop-collection-tile>b{grid-column:2;grid-row:2}}

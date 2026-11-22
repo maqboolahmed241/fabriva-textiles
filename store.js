@@ -11,12 +11,20 @@ function setLanguage(code){const words=translations[code]||translations.en;docum
 select.addEventListener("change",()=>setLanguage(select.value));
 setLanguage("en");
 
-// One tap on the MARYAM LUXE mark opens secure administrator sign-in.
+// Only the square M monogram opens administrator sign-in. The brand name remains a normal home link.
 (() => {
-  const logo = document.querySelector(".site-header .brand");
-  if (!logo) return;
-  logo.addEventListener("click", (event) => {
+  const mark = document.querySelector(".site-header .brand-mark");
+  if (!mark) return;
+  mark.setAttribute("role", "button");
+  mark.setAttribute("tabindex", "0");
+  mark.setAttribute("aria-label", "Administrator sign in");
+  const openLogin = (event) => {
     event.preventDefault();
+    event.stopPropagation();
     window.location.href = "login.html";
+  };
+  mark.addEventListener("click", openLogin);
+  mark.addEventListener("keydown", (event) => {
+    if (event.key === "Enter" || event.key === " ") openLogin(event);
   });
 })();

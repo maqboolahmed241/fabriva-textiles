@@ -38,3 +38,12 @@
  .site-header .collection-menu-panel,.site-header .search-panel{top:calc(100% + 1px)}
  .site-header .search-panel{left:12px;right:12px;width:auto}
 }
+
+.payment-account-details{margin:12px 0;padding:16px;border:1px solid #d9d0c0;background:#f7f3eb;color:#292824}
+.payment-account-details[hidden]{display:none!important}
+.payment-account-details h4{margin:0 0 12px;font:18px Georgia,serif;font-weight:400}
+.payment-account-row{display:grid;grid-template-columns:1fr auto;gap:5px 12px;padding:10px 0;border-bottom:1px solid #e4dccf}
+.payment-account-row span{grid-column:1/-1;font:11px Arial,sans-serif;color:#756b5c}
+.payment-account-row strong{align-self:center;overflow-wrap:anywhere;font:15px Arial,sans-serif}
+.copy-payment-account{padding:7px 12px;border:1px solid #a78b5b;background:#fffefa;color:#665235;font:11px Arial,sans-serif;cursor:pointer}
+.payment-account-details>p{margin:12px 0 0;font:13px/1.6 Arial,sans-serif;color:#665f54}

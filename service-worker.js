@@ -1,26 +1,28 @@
-const CACHE_NAME = "maryam-luxe-shell-v7";
+const CACHE_NAME = "maryam-luxe-shell-v8";
 const APP_SHELL = [
   "./",
   "./index.html",
   "./styles.css",
+  "./styles.css?v=shop-now-2",
   "./store.js",
   "./home-catalog.js",
   "./manifest.webmanifest",
   "./icons/icon.svg",
   "./shop.html",
   "./shop.css",
+  "./shop.css?v=rtl-shop-fix-1",
   "./shop.js",
+  "./shop.js?v=collection-route-fix-1",
   "./config.js",
   "./cart-validation.js",
   "./visitor-tracker.js",
-  "./contact-widget.js"
+  "./visitor-tracker.js?v=1",
+  "./contact-widget.js",
+  "./contact-widget.js?v=1"
 ];
 
 async function cachedPage(request) {
-  // Match collection query URLs (shop.html?collection=ladies) to the cached shop shell.
-  const exact = await caches.match(request, { ignoreSearch: true });
-  if (exact) return exact;
-  return null;
+  return await caches.match(request, { ignoreSearch: true }) || null;
 }
 
 async function isUsableDocument(response) {
@@ -29,7 +31,7 @@ async function isUsableDocument(response) {
   if (!type.includes("text/html")) return false;
   try {
     const html = await response.clone().text();
-    return html.length > 500 && /<body[\s>]/i.test(html) && /<\/html>/i.test(html);
+    return html.length > 500 && /<body[\\s>]/i.test(html) && /<\\/html>/i.test(html);
   } catch {
     return false;
   }
@@ -46,9 +48,7 @@ self.addEventListener("install", event => {
 self.addEventListener("activate", event => {
   event.waitUntil(
     caches.keys()
-      .then(keys => Promise.all(
-        keys.filter(key => key !== CACHE_NAME).map(key => caches.delete(key))
-      ))
+      .then(keys => Promise.all(keys.filter(key => key !== CACHE_NAME).map(key => caches.delete(key))))
       .then(() => self.clients.claim())
   );
 });
@@ -59,22 +59,36 @@ self.addEventListener("fetch", event => {
 
   if (request.mode === "navigate") {
     event.respondWith((async () => {
+      const url = new URL(request.url);
+      const isShopShell = url.pathname.endsWith("/shop.html");
+      // Serve the already-cached shop shell immediately so collection navigation
+      // never flashes a blank page while GitHub Pages is responding.
+      if (isShopShell) {
+        const cached = await cachedPage(request);
+        if (cached) {
+          fetch(request).then(async response => {
+            if (await isUsableDocument(response)) {
+              const cache = await caches.open(CACHE_NAME);
+              await cache.put(new Request(url.origin + url.pathname), response.clone());
+            }
+          }).catch(() => {});
+          return cached;
+        }
+      }
       try {
         const response = await fetch(request);
         if (await isUsableDocument(response)) {
-          const page = response.clone();
-          const url = new URL(request.url);
-          if (url.pathname.endsWith("/") || url.pathname.endsWith("/index.html")) {
-            caches.open(CACHE_NAME).then(cache => cache.put("./index.html", page)).catch(() => {});
-          }
+          const cache = await caches.open(CACHE_NAME);
+          const key = new Request(url.origin + url.pathname);
+          await cache.put(key, response.clone());
           return response;
         }
       } catch {
-        // Fall back to the last known good page.
+        // Use the last known good page below.
       }
       const fallback = await cachedPage(request);
       return fallback || new Response(
-        "<!doctype html><html lang=\"en\"><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>MARYAM LUXE</title><body style=\"font:16px Arial;padding:24px;color:#282722\"><h1>MARYAM LUXE</h1><p>The page is temporarily unavailable. Please check your connection and refresh.</p></body></html>",
+        "<!doctype html><html lang=\\"en\\"><meta charset=\\"utf-8\\"><meta name=\\"viewport\\" content=\\"width=device-width,initial-scale=1\\"><title>MARYAM LUXE</title><body style=\\"font:16px Arial;padding:24px;color:#282722\\"><h1>MARYAM LUXE</h1><p>The page is temporarily unavailable. Please refresh.</p></body></html>",
         { headers: { "Content-Type": "text/html; charset=utf-8" }, status: 200 }
       );
     })());
@@ -88,6 +102,6 @@ self.addEventListener("fetch", event => {
         caches.open(CACHE_NAME).then(cache => cache.put(request, copy)).catch(() => {});
       }
       return response;
-    }).catch(() => caches.match(request).then(cached => cached || Response.error()))
+    }).catch(() => caches.match(request, { ignoreSearch: true }).then(cached => cached || Response.error()))
   );
 });

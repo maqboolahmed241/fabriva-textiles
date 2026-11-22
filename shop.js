@@ -19,6 +19,17 @@ const routeLanguage=routeParams.get("lang");
 if(["en","ur","ar","fr","de","es"].includes(routeLanguage)){
  try{localStorage.setItem(LANGUAGE_KEY,routeLanguage);}catch{}
 }
+// Keep the selected language when the shop page opens from any internal button.
+const startupLanguage=supportedLanguages.includes(routeLanguage)?routeLanguage:readSavedLanguage();
+setLanguage(startupLanguage);
+document.querySelectorAll("a[href]").forEach(link=>{
+ try{
+  const target=new URL(link.getAttribute("href"),location.href);
+  if(target.origin!==location.origin || !target.pathname.endsWith(".html"))return;
+  target.searchParams.set("lang",startupLanguage);
+  link.setAttribute("href",target.pathname.split("/").pop()+target.search+target.hash);
+ }catch{}
+});
 const demoMode=new URLSearchParams(location.search).get("demo")==="1";
 let products=[];
 const demoProducts=[

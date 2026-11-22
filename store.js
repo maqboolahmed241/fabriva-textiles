@@ -10,7 +10,7 @@ const LANGUAGE_KEY="maryam_luxe_language_v1";
 const supportedLanguages=["en","ur","ar","fr","de","es"];
 function readSavedLanguage(){try{const value=localStorage.getItem(LANGUAGE_KEY);return supportedLanguages.includes(value)?value:"en";}catch{return "en";}}
 const select=document.querySelector("#language-select");
-function setLanguage(code){code=supportedLanguages.includes(code)?code:"en";try{localStorage.setItem(LANGUAGE_KEY,code);}catch{}const words=translations[code]||translations.en;document.documentElement.lang=code;document.documentElement.dir=(code==="ur"||code==="ar")?"rtl":"ltr";document.querySelectorAll("[data-i18n]").forEach(el=>{const key=el.dataset.i18n;if(words[key])el.innerHTML=words[key];});select.value=code;}
+function setLanguage(code){code=supportedLanguages.includes(code)?code:"en";try{localStorage.setItem(LANGUAGE_KEY,code);}catch{}const words=translations[code]||translations.en;document.documentElement.lang=code;document.documentElement.dir=(code==="ur"||code==="ar")?"rtl":"ltr";document.querySelectorAll("[data-i18n]").forEach(el=>{const key=el.dataset.i18n;if(words[key])el.innerHTML=words[key];});select.value=code;window.dispatchEvent(new CustomEvent("maryam-language-change",{detail:{language:code}}));}
 select.addEventListener("change",()=>setLanguage(select.value));
 setLanguage(readSavedLanguage());
 

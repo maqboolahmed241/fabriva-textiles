@@ -13,6 +13,15 @@ const select=document.querySelector("#language-select");
 function setLanguage(code){code=supportedLanguages.includes(code)?code:"en";try{localStorage.setItem(LANGUAGE_KEY,code);}catch{}const words=translations[code]||translations.en;document.documentElement.lang=code;document.documentElement.dir=(code==="ur"||code==="ar")?"rtl":"ltr";document.querySelectorAll("[data-i18n]").forEach(el=>{const key=el.dataset.i18n;if(words[key])el.innerHTML=words[key];});select.value=code;window.dispatchEvent(new CustomEvent("maryam-language-change",{detail:{language:code}}));}
 select.addEventListener("change",()=>setLanguage(select.value));
 setLanguage(readSavedLanguage());
+// Preserve the selected language on every internal page link.
+document.querySelectorAll("a[href]").forEach(link=>{
+ try{
+  const target=new URL(link.getAttribute("href"),location.href);
+  if(target.origin!==location.origin || !target.pathname.endsWith(".html"))return;
+  target.searchParams.set("lang",readSavedLanguage());
+  link.setAttribute("href",target.pathname.split("/").pop()+target.search+target.hash);
+ }catch{}
+});
 
 // Only the square M monogram opens administrator sign-in. The brand name remains a normal home link.
 (() => {

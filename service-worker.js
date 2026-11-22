@@ -1,4 +1,4 @@
-const CACHE_NAME = "maryam-luxe-shell-v12";
+const CACHE_NAME = "maryam-luxe-shell-v13";
 const APP_SHELL = [
   "./",
   "./index.html",
@@ -57,36 +57,10 @@ self.addEventListener("fetch", event => {
   const request = event.request;
   if (request.method !== "GET" || new URL(request.url).origin !== self.location.origin) return;
 
-  if (request.mode === "navigate") {
-    event.respondWith((async () => {
-      const url = new URL(request.url);
-      // Use network-first navigation so collection links always receive the
-      // current GitHub Pages document instead of a stale cached shop shell.
-      // Fall back to the last known good document only when the network fails.
-      try {
-        const response = await fetch(request);
-        if (await isUsableDocument(response)) {
-          const cache = await caches.open(CACHE_NAME);
-          const key = new Request(url.origin + url.pathname);
-          await cache.put(key, response.clone());
-          return response;
-        }
-      } catch {
-        // Use the last known good page below.
-      }
-      const fallback = await cachedPage(request);
-      const fallbackHtml = `<!doctype html>
-<html lang="en">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>MARYAM LUXE</title></head>
-<body style="font:16px Arial;padding:24px;color:#282722"><h1>MARYAM LUXE</h1><p>The page is temporarily unavailable. Please refresh.</p></body>
-</html>`;
-      return fallback || new Response(
-        fallbackHtml,
-        { headers: { "Content-Type": "text/html; charset=utf-8" }, status: 200 }
-      );
-    })());
-    return;
-  }
+  // Let the browser handle document navigations directly. The previous
+  // navigation interception could serve a stale or incomplete document on
+  // some mobile browsers. Static assets remain cached below for offline use.
+  if (request.mode === "navigate") return;
 
   event.respondWith(
     fetch(request).then(response => {

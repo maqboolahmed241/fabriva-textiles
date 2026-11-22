@@ -1,4 +1,4 @@
-const CACHE_NAME = "maryam-luxe-shell-v11";
+const CACHE_NAME = "maryam-luxe-shell-v12";
 const APP_SHELL = [
   "./",
   "./index.html",
@@ -64,7 +64,7 @@ self.addEventListener("fetch", event => {
       // current GitHub Pages document instead of a stale cached shop shell.
       // Fall back to the last known good document only when the network fails.
       try {
-        const response = await fetch(new Request(request, { cache: "no-store" }));
+        const response = await fetch(request);
         if (await isUsableDocument(response)) {
           const cache = await caches.open(CACHE_NAME);
           const key = new Request(url.origin + url.pathname);

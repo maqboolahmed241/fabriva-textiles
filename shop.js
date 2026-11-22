@@ -35,7 +35,7 @@ function applyCollectionRoute(value,{updateHistory=true,scroll=true}={}){
  if(category)category.value=selected;
  if(updateHistory){const url=new URL(location.href);if(selected)url.searchParams.set("collection",selected);else url.searchParams.delete("collection");history.pushState({collection:selected},"",url.pathname+url.search+url.hash);}
  render();
- if(scroll)document.querySelector("#products")?.scrollIntoView({behavior:"smooth",block:"start"});
+ if(scroll)document.querySelector("#product-grid")?.scrollIntoView({behavior:"smooth",block:"start"});
 }
 document.querySelectorAll('a[href*="shop.html?collection="]').forEach(link=>link.addEventListener("click",event=>{
  const url=new URL(link.href,location.href);

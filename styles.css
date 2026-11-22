@@ -174,3 +174,10 @@ body.menu-open{overflow:hidden}
 .collection-card{border-top:3px solid var(--gold);box-shadow:0 6px 20px #28272208}
 .collection-open{font-weight:700}
 @media(max-width:760px){.hero-shop-now{margin-top:14px;padding:14px 26px}}
+
+/* Consistent right-to-left layout for Urdu and Arabic */
+html[dir="rtl"] body{direction:rtl}
+html[dir="rtl"] .site-header,html[dir="rtl"] .main-nav,html[dir="rtl"] .hero-content,html[dir="rtl"] .collection-grid,html[dir="rtl"] .home-product-info{direction:rtl}
+html[dir="rtl"] .main-nav a,html[dir="rtl"] [data-i18n],html[dir="rtl"] .hero-content,html[dir="rtl"] .collection-card,html[dir="rtl"] .home-product-info{text-align:right}
+html[dir="rtl"] .language-picker{direction:ltr}
+html[dir="rtl"] input,html[dir="rtl"] textarea,html[dir="rtl"] select{text-align:right}

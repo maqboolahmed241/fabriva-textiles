@@ -22,3 +22,19 @@
 .collection-menu-panel select{width:100%;padding:13px;border:1px solid #d9d1c3;background:#fffefa;color:#292824;font:15px Arial,sans-serif}
 .site-header{position:relative}
 @media(max-width:760px){.site-header .menu-icon-button{margin-inline-start:0}.collection-menu-panel{right:12px}}
+
+/* Shop header compact single-row controls */
+@media(max-width:760px){
+ .site-header{display:flex;flex-wrap:wrap;align-items:center;gap:6px 7px;padding:10px 12px}
+ .site-header>.brand{min-width:0;flex:1 1 auto;gap:8px;letter-spacing:.08em}
+ .site-header .brand-mark{width:34px;height:34px;font-size:20px}
+ .site-header .brand-word strong{font-size:13px;letter-spacing:.11em;white-space:nowrap}
+ .site-header .brand-word small{font-size:7px;letter-spacing:.28em}
+ .site-header .search-icon-button,.site-header .menu-icon-button{width:32px;height:32px;flex:0 0 32px;margin:0}
+ .site-header .search-icon-button svg,.site-header .menu-icon-button svg{width:18px;height:18px}
+ .site-header .language-picker{margin:0;flex:0 0 62px}
+ .site-header .language-picker select{width:62px;min-width:0;padding:8px 5px;font-size:10px}
+ .site-header .main-nav{order:10;flex:0 0 100%;width:100%;padding-top:9px;margin-top:4px}
+ .site-header .collection-menu-panel,.site-header .search-panel{top:calc(100% + 1px)}
+ .site-header .search-panel{left:12px;right:12px;width:auto}
+}

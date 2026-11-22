@@ -7,7 +7,7 @@ if(button){
     if(response.ok&&typeof phone==="string"&&phone.length>=8){
       const lang=document.documentElement.lang||"en";
       const hello={ur:"السلام علیکم! مجھے MARYAM LUXE کے بارے میں معلومات درکار ہیں۔",ar:"السلام عليكم، أود معرفة المزيد عن MARYAM LUXE.",fr:"Bonjour, je souhaite en savoir plus sur MARYAM LUXE.",de:"Hallo, ich möchte mehr über MARYAM LUXE erfahren.",es:"Hola, me gustaría obtener más información sobre MARYAM LUXE."};
-      button.href="https://wa.me/"+phone+"?text="+encodeURIComponent(hello[lang]||"Hello, I would like to know more about MARYAM LUXE.");
+      const internationalPhone=phone.startsWith("0")?"92"+phone.slice(1):phone;\n      button.href="https://wa.me/"+internationalPhone+"?text="+encodeURIComponent(hello[lang]||"Hello, I would like to know more about MARYAM LUXE.");
       button.hidden=false;
     }
   }catch(error){console.error("WhatsApp contact is unavailable",error);}

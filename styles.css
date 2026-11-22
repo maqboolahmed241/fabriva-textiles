@@ -160,3 +160,8 @@ body.menu-open{overflow:hidden}
 .home-product-order:hover,.home-product-order:focus-visible{background:#a38b61;color:#fff!important;transform:translateY(-1px);outline:none}
 .home-product-order:focus-visible{outline:2px solid #a38b61;outline-offset:3px}
 .shop-card-highlight{outline:2px solid #a38b61;outline-offset:4px;box-shadow:0 12px 30px rgba(163,139,97,.18);transition:outline-color .2s ease,box-shadow .2s ease}
+
+.home-product-shop-now{display:inline-flex;align-items:center;justify-content:center;gap:12px;margin-top:12px;min-height:44px;padding:0 20px;background:#292824;border:1px solid #292824;color:#fff!important;text-decoration:none!important;font:11px var(--sans);letter-spacing:.14em;text-transform:uppercase;transition:background .18s ease,border-color .18s ease,transform .18s ease}
+.home-product-shop-now:after{content:"→";font-size:17px;line-height:1}
+.home-product-shop-now:hover,.home-product-shop-now:focus-visible{background:#9b8054;border-color:#9b8054;transform:translateY(-1px);outline:none}
+.home-product-shop-now:focus-visible{outline:2px solid #9b8054;outline-offset:3px}

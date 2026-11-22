@@ -116,4 +116,10 @@ if(payload.payment_method==="bank_transfer"){
 if(demoMode){checkoutForm.hidden=true;document.querySelector("#checkout-message").textContent="Demo mode: cart testing only. Checkout and database writes are disabled.";}
 const requestedCollection=new URLSearchParams(location.search).get("collection");
 if(["ladies","gents","unisex","fabrics"].includes(requestedCollection)&&category)category.value=requestedCollection;
-try{setLanguage(readSavedLanguage());}catch(error){console.error("MARYAM LUXE language initialization failed:",error);document.documentElement.lang="en";document.documentElement.dir="ltr";if(message)message.textContent="Language display could not be applied. Showing the collection in English.";}load().catch(error=>{console.error("MARYAM LUXE shop startup failed:",error);if(message)message.textContent="The collection could not start. Please refresh the page.";});
+try{setLanguage(readSavedLanguage());}catch(error){console.error("MARYAM LUXE language initialization failed:",error);document.documentElement.lang="en";document.documentElement.dir="ltr";if(message)message.textContent="Language display could not be applied. Showing the collection in English.";}load().then(()=>{
+ if(window.__ML_SHOP_DIAGNOSTIC__){window.__ML_SHOP_DIAGNOSTIC__.ready=true;window.__ML_SHOP_DIAGNOSTIC__.finishedAt=Date.now();}
+}).catch(error=>{
+ console.error("MARYAM LUXE shop startup failed:",error);
+ if(window.__ML_SHOW_DEBUG__)window.__ML_SHOW_DEBUG__("Shop startup failed",error&&error.stack||error);
+ if(message)message.textContent="The collection could not start: "+(error&&error.message||"Unknown error");
+});

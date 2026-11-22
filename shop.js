@@ -1,5 +1,7 @@
+if(window.__ML_STAGE__)window.__ML_STAGE__("Shop module entered; imports succeeded");
 import {SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY} from "./config.js";
 import {sanitizeCart} from "./cart-validation.js";
+if(window.__ML_STAGE__)window.__ML_STAGE__("Shop module reading page controls");
 const message=document.querySelector("#shop-message"),grid=document.querySelector("#product-grid"),search=document.querySelector("#search"),category=document.querySelector("#category"),searchToggle=document.querySelector("#search-toggle"),searchPanel=document.querySelector("#search-panel"),menuToggle=document.querySelector("#collection-menu-toggle"),menuPanel=document.querySelector("#site-menu-panel");
 const words={
 en:{bagSecure:"SECURE CHECKOUT",bagTitle:"Your shopping bag",bagItem:"item",bagItems:"items",bagEmpty:"Your bag is empty. Add products from the collection above.",bagSubtotal:"Estimated subtotal",bagShipping:"Shipping is calculated after your delivery address is entered. Final prices and stock are verified securely when you place the order.",home:"Home",shop:"Shop",track:"Track order",back:"Back to home",eyebrow:"THE MARYAM LUXE EDIT",title:"Discover the collection.",intro:"Thoughtfully selected fabrics and clothing. Browse available pieces and current stock.",search:"Search collection",searchHint:"Search products, fabrics or category",category:"Collection",all:"All collections",ladies:"Ladies",gents:"Gents",unisex:"Unisex",fabrics:"Fabrics",refresh:"Refresh",loading:"Loading available products…",available:"products available",none:"Our collection is being prepared. Please visit again soon.",noMatch:"No products match your search.",note:"Order information",noteText:"Orders are accepted only when products and delivery rates are configured. Pakistan COD and manual bank transfer are supported; online card payments are not connected.",stock:"In stock",limited:"Limited stock",demo:"DEMO · NOT FOR SALE",out:"Out of stock"},
@@ -116,7 +118,9 @@ if(payload.payment_method==="bank_transfer"){
 if(demoMode){checkoutForm.hidden=true;document.querySelector("#checkout-message").textContent="Demo mode: cart testing only. Checkout and database writes are disabled.";}
 const requestedCollection=new URLSearchParams(location.search).get("collection");
 if(["ladies","gents","unisex","fabrics"].includes(requestedCollection)&&category)category.value=requestedCollection;
-try{setLanguage(readSavedLanguage());}catch(error){console.error("MARYAM LUXE language initialization failed:",error);document.documentElement.lang="en";document.documentElement.dir="ltr";if(message)message.textContent="Language display could not be applied. Showing the collection in English.";}load().then(()=>{
+if(window.__ML_STAGE__)window.__ML_STAGE__("Shop controls initialized; applying language");
+try{setLanguage(readSavedLanguage());}catch(error){console.error("MARYAM LUXE language initialization failed:",error);document.documentElement.lang="en";document.documentElement.dir="ltr";if(message)message.textContent="Language display could not be applied. Showing the collection in English.";}if(window.__ML_STAGE__)window.__ML_STAGE__("Language applied; loading product catalogue");
+load().then(()=>{
  if(window.__ML_SHOP_DIAGNOSTIC__){window.__ML_SHOP_DIAGNOSTIC__.ready=true;window.__ML_SHOP_DIAGNOSTIC__.finishedAt=Date.now();}
 }).catch(error=>{
  console.error("MARYAM LUXE shop startup failed:",error);

@@ -85,3 +85,21 @@ html,body{width:100%;max-width:100%;overflow-x:clip}
 @media(max-width:360px){
  .shop-grid{grid-template-columns:minmax(0,1fr)}
 }
+
+
+/* RTL shop layout: prevent the collection tiles and page shell overflowing mobile */
+html[dir="rtl"] .shop-main{box-sizing:border-box;width:100%;max-width:1240px;margin-inline:auto}
+html[dir="rtl"] .shop-collection-nav{grid-template-columns:repeat(3,minmax(0,1fr));min-width:0}
+html[dir="rtl"] .shop-collection-tile{min-width:0;overflow-wrap:anywhere}
+html[dir="rtl"] .shop-grid{grid-template-columns:repeat(3,minmax(0,1fr));min-width:0}
+html[dir="rtl"] .shop-card,html[dir="rtl"] .shop-card-body{min-width:0;max-width:100%;overflow-wrap:anywhere}
+html[dir="rtl"] .shop-card img{max-width:100%;height:auto}
+@media(max-width:760px){
+ html[dir="rtl"] .shop-main{padding-inline:14px}
+ html[dir="rtl"] .shop-collection-nav{grid-template-columns:minmax(0,1fr);gap:10px}
+ html[dir="rtl"] .shop-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+ html[dir="rtl"] .shop-collection-tile{width:100%;min-height:0;box-sizing:border-box}
+}
+@media(max-width:380px){
+ html[dir="rtl"] .shop-grid{grid-template-columns:minmax(0,1fr)}
+}

@@ -5,10 +5,48 @@
 <div id="message" class="notice" role="status">Checking access…</div><section id="delivery-app" hidden>
 <form id="rate-form" class="panel"><div class="panel-heading"><div><p class="eyebrow">NEW DELIVERY RATE</p><h2>Add a destination</h2></div></div>
 <div class="form-grid">
-<label>Country name<input name="country_name" required maxlength="80" placeholder="Pakistan"></label>
-<label>Country code<input name="country_code" required maxlength="2" minlength="2" placeholder="PK" pattern="[A-Za-z]{2}"></label>
+<label class="country-field">Destination country<select id="country-select" aria-label="Select destination country"><option value="PK" selected>🇵🇰 Pakistan</option>
+<option value="AE" >🇦🇪 United Arab Emirates</option>
+<option value="SA" >🇸🇦 Saudi Arabia</option>
+<option value="QA" >🇶🇦 Qatar</option>
+<option value="KW" >🇰🇼 Kuwait</option>
+<option value="BH" >🇧🇭 Bahrain</option>
+<option value="OM" >🇴🇲 Oman</option>
+<option value="GB" >🇬🇧 United Kingdom</option>
+<option value="US" >🇺🇸 United States</option>
+<option value="CA" >🇨🇦 Canada</option>
+<option value="AU" >🇦🇺 Australia</option>
+<option value="DE" >🇩🇪 Germany</option>
+<option value="FR" >🇫🇷 France</option>
+<option value="IT" >🇮🇹 Italy</option>
+<option value="ES" >🇪🇸 Spain</option>
+<option value="NL" >🇳🇱 Netherlands</option>
+<option value="BE" >🇧🇪 Belgium</option>
+<option value="CH" >🇨🇭 Switzerland</option>
+<option value="SE" >🇸🇪 Sweden</option>
+<option value="NO" >🇳🇴 Norway</option>
+<option value="DK" >🇩🇰 Denmark</option>
+<option value="TR" >🇹🇷 Türkiye</option>
+<option value="MY" >🇲🇾 Malaysia</option>
+<option value="SG" >🇸🇬 Singapore</option>
+<option value="CN" >🇨🇳 China</option>
+<option value="JP" >🇯🇵 Japan</option>
+<option value="IN" >🇮🇳 India</option>
+<option value="BD" >🇧🇩 Bangladesh</option>
+<option value="LK" >🇱🇰 Sri Lanka</option>
+<option value="AF" >🇦🇫 Afghanistan</option>
+<option value="ZA" >🇿🇦 South Africa</option>
+<option value="NZ" >🇳🇿 New Zealand</option>
+<option value="IE" >🇮🇪 Ireland</option>
+<option value="AT" >🇦🇹 Austria</option>
+<option value="GR" >🇬🇷 Greece</option>
+<option value="PT" >🇵🇹 Portugal</option>
+<option value="PL" >🇵🇱 Poland</option>
+<option value="RU" >🇷🇺 Russia</option>
+<option value="US" >🇺🇸 United States</option></select><input type="hidden" name="country_name" value="Pakistan"></label>
+<label>Country code<input name="country_code" value="PK" readonly aria-readonly="true"></label>
 <label>Province / region<input name="region_name" required maxlength="100" value="All regions" placeholder="Sindh"></label>
-<label>City (optional)<input name="city_name" maxlength="100" placeholder="Karachi"></label>
+<label>City <span class="optional-label">Optional</span><input name="city_name" maxlength="100" placeholder="Karachi"></label>
 <label>Currency<select name="currency"><option value="PKR">PKR</option><option value="USD">USD</option><option value="AED">AED</option><option value="GBP">GBP</option><option value="EUR">EUR</option></select></label>
 <label>Delivery charge<input name="amount" type="number" min="0" step="0.01" required></label>
 <label>Free delivery above (optional)<input name="free_over" type="number" min="0" step="0.01"></label>

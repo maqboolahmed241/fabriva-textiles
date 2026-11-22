@@ -37,3 +37,13 @@
  .site-header .brand span:last-child strong{font-size:12px;letter-spacing:.08em}
  .header-actions .small-button{padding:9px 10px}
 }
+
+#rate-form .form-grid{grid-template-columns:repeat(2,minmax(0,1fr));align-items:start}
+#rate-form .form-grid>label{min-width:0;display:flex;flex-direction:column;gap:9px;line-height:1.45}
+#rate-form .form-grid>label input,#rate-form .form-grid>label select{width:100%;max-width:100%;display:block}
+#rate-form .form-grid .check-label{display:flex;flex-direction:row;align-items:center;min-height:48px}
+#rate-form .form-grid .check-label input{width:20px;min-width:20px;height:20px}
+#rate-form .form-grid{padding:4px 0 18px}
+#rate-form .form-grid>label:nth-child(1),#rate-form .form-grid>label:nth-child(2){background:#f8f5ee;padding:14px;border:1px solid #e7e0d4;border-radius:6px}
+#rate-form .gold-button{display:block;min-width:220px}
+@media(max-width:650px){#rate-form .form-grid{grid-template-columns:minmax(0,1fr);gap:14px}#rate-form .form-grid>label{width:100%}#rate-form .form-grid>label:nth-child(1),#rate-form .form-grid>label:nth-child(2){padding:12px}}

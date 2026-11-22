@@ -10,7 +10,7 @@ const APP_SHELL = [
   "./icons/icon.svg",
   "./shop.html",
   "./shop.css",
-  "./shop.css?v=android-rtl-viewport-guard-2",
+  "./shop.css?v=android-rtl-flex-layout-3",
   "./shop.js",
   "./shop.js?v=clean-startup-2",
   "./config.js",

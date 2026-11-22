@@ -129,3 +129,27 @@ footer{padding:24px clamp(20px,6vw,88px);display:flex;justify-content:space-betw
 .collection-open{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:24px;padding-top:15px;border-top:1px solid var(--line);color:#8e744b;font:11px var(--sans);letter-spacing:.12em;text-transform:uppercase}
 .collection-open span{font-size:20px;transition:transform .2s ease}
 .collection-link:hover .collection-open span{transform:translateX(5px)}
+
+/* Shared premium navigation drawer for homepage and shop */
+.site-menu-panel{position:fixed;inset:0;z-index:1000;display:flex;justify-content:flex-end}
+.site-menu-panel[hidden]{display:none!important}
+.site-menu-backdrop{position:absolute;inset:0;width:100%;height:100%;border:0;background:rgba(22,20,17,.48);backdrop-filter:blur(2px);cursor:pointer}
+.site-menu-drawer{position:relative;z-index:1;width:min(430px,88vw);height:100%;overflow-y:auto;overscroll-behavior:contain;padding:30px clamp(22px,5vw,38px) 28px;background:#fbf8f1;border-left:1px solid #d8cfbd;box-shadow:-18px 0 48px rgba(24,22,18,.16);animation:menuDrawerIn .24s ease-out}
+@keyframes menuDrawerIn{from{transform:translateX(28px);opacity:.7}to{transform:translateX(0);opacity:1}}
+.site-menu-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;padding-bottom:22px;border-bottom:1px solid #ded6c8}
+.site-menu-heading .eyebrow{margin:0 0 8px;color:#a38b61;font-size:10px;letter-spacing:.2em}
+.site-menu-heading h2{margin:0;color:#292824;font:32px/1.1 Georgia,serif;font-weight:400}
+.site-menu-close{width:40px;height:40px;flex:0 0 40px;border:1px solid #d8cfbd;border-radius:50%;background:#fffefa;color:#6f5b3b;font:30px/1 Arial,sans-serif;cursor:pointer}
+.site-menu-section{padding:22px 0 8px;border-bottom:1px solid #e5ded2}
+.site-menu-label{margin:0 0 9px;color:#a38b61;font:10px Arial,sans-serif;letter-spacing:.19em}
+.site-menu-section>a{display:grid;grid-template-columns:30px 1fr 18px;align-items:center;gap:10px;padding:13px 0;color:#292824;text-decoration:none;border-bottom:1px solid #eee9e0;transition:color .15s ease,padding .15s ease}
+.site-menu-section>a:last-child{border-bottom:0}
+.site-menu-section>a>span{color:#a38b61;font:11px Arial,sans-serif}
+.site-menu-section>a strong{font:17px Georgia,serif;font-weight:400}
+.site-menu-section>a b{color:#9a8056;font:18px Arial,sans-serif;font-weight:400}
+.site-menu-section>a:hover,.site-menu-section>a:focus-visible{color:#9a8056;padding-left:5px;outline:none}
+.site-menu-section>a:focus-visible{outline:2px solid #a38b61;outline-offset:3px}
+.site-menu-footer{margin:22px 0 0;color:#81796d;font:11px Arial,sans-serif;letter-spacing:.08em;line-height:1.7}
+body.menu-open{overflow:hidden}
+@media(max-width:760px){.site-menu-drawer{width:min(420px,92vw);padding:24px 22px}.site-menu-heading h2{font-size:29px}.site-menu-section>a strong{font-size:16px}}
+@media(prefers-reduced-motion:reduce){.site-menu-drawer{animation:none}.site-menu-section>a{transition:none}}

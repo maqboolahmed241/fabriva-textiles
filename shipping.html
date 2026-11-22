@@ -22,4 +22,25 @@
 <p id="fx-message" class="muted" role="status">Rates have not been loaded.</p><div id="fx-list" class="rate-list"></div>
 <p class="muted small-print">Rates are reference rates, not bank or card settlement quotes. Last successful rates remain stored if the provider is unavailable. Currency checkout is not enabled until server-side totals and destination shipping have been tested.</p></section>
 <section class="panel"><div class="panel-heading"><div><p class="eyebrow">CONFIGURED DESTINATIONS</p><h2>Delivery rate list</h2></div><button id="refresh" class="small-button">Refresh</button></div><div id="rate-list" class="rate-list"></div></section></section></main>
-<footer><span>MARYAM LUXE</span><span>Private development · Not live</span></footer><script type="module" src="shipping.js?v=20261122-access-diagnostics-3"></script></body></html>
+<footer><span>MARYAM LUXE</span><span>Private development · Not live</span></footer><script>
+(function(){
+  var box=document.getElementById("message");
+  window.addEventListener("error",function(event){
+    if(box && box.textContent.indexOf("Checking access")!==-1){
+      box.textContent="Delivery settings could not start: "+(event.message||"A script failed to load.")+". Please send this message to support.";
+    }
+  });
+  window.addEventListener("unhandledrejection",function(event){
+    if(box && box.textContent.indexOf("Checking access")!==-1){
+      var reason=event.reason;
+      box.textContent="Delivery settings startup error: "+(reason&&reason.message?reason.message:String(reason||"Unknown error"))+".";
+    }
+  });
+  window.setTimeout(function(){
+    if(box && box.textContent.trim()==="Checking access…"){
+      box.textContent="Delivery settings script did not start. Check the network connection or blocked JavaScript module, then send this message to support.";
+    }
+  },8000);
+})();
+</script>
+<script type="module" src="shipping.js?v=20261122-startup-watchdog-4"></script></body></html>

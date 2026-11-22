@@ -38,3 +38,13 @@
 .visitor-stats-grid .stat-card strong{font-size:clamp(22px,4.2vw,30px);margin:7px 0 3px}
 .visitor-stats-grid .stat-card span{font-size:8px;letter-spacing:.13em}
 .visitor-stats-grid .stat-card small{font-size:9px}
+
+
+/* Mobile admin setup actions: clear, full-size section buttons */
+.setup-list>div{grid-template-columns:34px minmax(0,1fr) auto;min-width:0}
+.setup-list>div>div{min-width:0}
+.setup-list>div>.small-button{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-width:132px;min-height:48px;padding:13px 18px;box-sizing:border-box;border:1px solid #a58a5d;border-radius:3px;background:#282724;color:#fffefa;text-decoration:none;text-align:center;white-space:nowrap;font:600 12px/1.2 Arial,sans-serif;letter-spacing:.08em}
+.setup-list>div>.small-button::after{content:"→";font-size:16px;line-height:1}
+.setup-list>div>.small-button:focus-visible{outline:3px solid #b79a65;outline-offset:3px}
+.setup-list>div>.small-button:active{background:#9d8152;transform:translateY(1px)}
+@media(max-width:650px){.setup-list>div{grid-template-columns:28px minmax(0,1fr);gap:12px 14px;padding:20px 0}.setup-list>div>.small-button{grid-column:2;justify-self:start;width:min(100%,220px);min-width:160px;min-height:50px;margin-top:5px;font-size:13px}.setup-list b{font-size:15px}.setup-list p{font-size:13px;line-height:1.65}}

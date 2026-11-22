@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>MARYAM LUXE - Site Diagnostic</title></head>
+<body style="margin:0;padding:18px;background:#fff;color:#111;font:16px/1.5 Arial,sans-serif">
+<h1>MARYAM LUXE — Site Diagnostic</h1>
+<p id="status">Diagnostic page loaded. Running checks…</p>
+<pre id="details" style="white-space:pre-wrap;overflow-wrap:anywhere;background:#f3f3f3;padding:12px;border:1px solid #aaa"></pre>
+<p><a href="shop.html?collection=ladies&lang=ur">Open Urdu Ladies Collection</a></p>
+<p><a href="shop.html?collection=ladies&lang=ar">Open Arabic Ladies Collection</a></p>
+<p><a href="index.html">Return to Home</a></p>
+<script>
+(function(){
+var out=document.getElementById("details"),status=document.getElementById("status"),lines=[];
+function log(s){lines.push(s);out.textContent=lines.join("\n");}
+window.addEventListener("error",function(e){log("WINDOW ERROR: "+(e.message||"resource error")+" | "+(e.filename||"")+" line "+(e.lineno||""));status.textContent="A browser JavaScript/resource error was detected.";},true);
+window.addEventListener("unhandledrejection",function(e){log("PROMISE ERROR: "+(e.reason&&e.reason.stack||e.reason||"unknown"));status.textContent="A promise error was detected.";});
+log("URL: "+location.href);
+log("Document: "+document.readyState);
+log("Browser: "+navigator.userAgent);
+try{log("Saved language: "+(localStorage.getItem("maryam_luxe_language_v1")||"(none)"));}catch(e){log("LOCAL STORAGE ERROR: "+e.message);}
+log("Service worker controller: "+(navigator.serviceWorker&&navigator.serviceWorker.controller?"yes":"no"));
+if(!window.fetch){log("FETCH API: unavailable");}
+else{
+ Promise.all(["shop.html","shop.js?v=debug-watchdog-5","config.js","styles.css?v=shop-now-2"].map(async path=>{
+  try{var r=await fetch(path,{cache:"no-store"});var t=await r.text();log("ASSET "+path+" => HTTP "+r.status+"; type="+r.headers.get("content-type")+"; bytes="+t.length+"; starts="+t.slice(0,45).replace(/\s+/g," "));}
+  catch(e){log("ASSET "+path+" => FETCH ERROR: "+(e.message||e));}
+ })).then(()=>{status.textContent="Checks complete. Send a screenshot of this page.";});
+}
+})();
+</script></body></html>

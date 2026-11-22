@@ -20,7 +20,7 @@ if (visitorId) {
   const supabase = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
     auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false }
   });
-  const pagePath = location.pathname + location.search;
+  const pagePath = location.pathname;
   supabase.rpc("record_store_visit", {
     p_visitor_id: visitorId,
     p_page_path: pagePath.slice(0, 300)

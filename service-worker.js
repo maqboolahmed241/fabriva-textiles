@@ -1,4 +1,4 @@
-const CACHE_NAME = "maryam-luxe-shell-v16";
+const CACHE_NAME = "maryam-luxe-shell-v17";
 const APP_SHELL = [
   "./",
   "./index.html",
@@ -12,7 +12,7 @@ const APP_SHELL = [
   "./shop.css",
   "./shop.css?v=rtl-shop-fix-2",
   "./shop.js",
-  "./shop.js?v=stage-probe-6",
+  "./shop.js?v=native-navigation-1",
   "./config.js",
   "./cart-validation.js",
   "./visitor-tracker.js",

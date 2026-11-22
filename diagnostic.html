@@ -4,6 +4,21 @@
 <h1>MARYAM LUXE — Site Diagnostic</h1>
 <p id="status">Diagnostic page loaded. Running checks…</p>
 <pre id="details" style="white-space:pre-wrap;overflow-wrap:anywhere;background:#f3f3f3;padding:12px;border:1px solid #aaa"></pre>
+<button id="run-module-test" type="button" style="padding:12px 18px;font-size:16px">Run shop.js module test</button>
+<script>
+document.getElementById("run-module-test").addEventListener("click",async function(){
+ var status=document.getElementById("status"),out=document.getElementById("details");
+ status.textContent="Testing shop.js module…";
+ try{
+  await import("./shop.js?v=module-probe-7");
+  status.textContent="shop.js module imported and executed without an uncaught startup error.";
+  out.textContent+="\nMODULE TEST: SUCCESS";
+ }catch(e){
+  status.textContent="shop.js module failed.";
+  out.textContent+="\nMODULE TEST ERROR:\n"+(e&&e.stack||e&&e.message||String(e));
+ }
+});
+</script>
 <p><a href="shop.html?collection=ladies&lang=ur">Open Urdu Ladies Collection</a></p>
 <p><a href="shop.html?collection=ladies&lang=ar">Open Arabic Ladies Collection</a></p>
 <p><a href="index.html">Return to Home</a></p>

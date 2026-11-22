@@ -44,4 +44,34 @@ if(id){await call("update",{id,product});const old=products.find(p=>p.id===id)?.
 finally{button.disabled=false;if(!form.elements.product_id.value)button.textContent="Save product";else button.textContent="Save changes";}});
 document.querySelector("#translate-content").addEventListener("click",async()=>{const status=document.querySelector("#translation-status"),button=document.querySelector("#translate-content");const source=form.elements.source_language.value;const title=form.elements.source_title.value.trim();const description=form.elements.source_description.value.trim();if(!title){status.textContent="Please enter the product name first.";return;}button.disabled=true;status.textContent="Translating. Please wait…";translatedTitle={[source]:title};translatedDescription={[source]:description};try{for(const target of languages){if(target===source)continue;for(const [kind,value] of [["title",title],["description",description]]){if(!value){if(kind==="description")translatedDescription[target]="";continue;}const url="https://api.mymemory.translated.net/get?q="+encodeURIComponent(value)+"&langpair="+source+"|"+target;const response=await fetch(url);if(!response.ok)throw new Error("Translation service is temporarily unavailable.");const data=await response.json();if(data.responseStatus!==200||!data.responseData?.translatedText)throw new Error(data.responseDetails||"Translation failed.");if(kind==="title")translatedTitle[target]=data.responseData.translatedText;else translatedDescription[target]=data.responseData.translatedText;}}document.querySelector("#translation-results").hidden=false;document.querySelector("#translation-results").textContent="Translated into: "+languages.map(l=>l.toUpperCase()).join(", ");status.textContent="Translation complete. Please review the wording before saving."; }catch(error){status.textContent="Some translations could not be completed: "+error.message+" You can retry or save the source language only."; }finally{button.disabled=false;}});
 form.elements.product_image.addEventListener("change",()=>{const file=form.elements.product_image.files?.[0],preview=document.querySelector("#photo-preview");if(!file){preview.hidden=true;return;}preview.src=URL.createObjectURL(file);preview.hidden=false;});
+
+document.querySelector("#add-demo-collections").addEventListener("click",async()=>{
+ const button=document.querySelector("#add-demo-collections");
+ if(!(profile?.is_owner||(profile?.can_edit_products&&profile?.can_change_prices&&profile?.can_adjust_stock))){
+  message.textContent="Demo collection setup requires owner access, or product-edit, price-change and stock permissions. No products were changed.";return;
+ }
+ const demoItems=[
+  {sku:"DEMO-GENTS-SUIT-2026-01",audience:"gents",category:"DEMO · Gents Collection",product_type:"full_suit",title:{en:"DEMO — Gents Classic Suit",ur:"ڈیمو — مردانہ کلاسک سوٹ",ar:"عرض تجريبي — بدلة رجالية كلاسيكية",fr:"DÉMO — Costume classique homme",de:"DEMO — Klassischer Herrenanzug",es:"DEMO — Traje clásico de hombre"},description:{en:"Sample product for collection and checkout testing only. Not for sale.",ur:"صرف کلیکشن اور چیک آؤٹ ٹیسٹ کے لیے نمونہ؛ فروخت کے لیے نہیں۔"},price:6500,sale_price:5990,stock_qty:8,unit:"suit"},
+  {sku:"DEMO-GENTS-SHIRT-2026-02",audience:"gents",category:"DEMO · Gents Collection",product_type:"tshirt",title:{en:"DEMO — Gents Premium Shirt",ur:"ڈیمو — مردانہ پریمیم شرٹ",ar:"عرض تجريبي — قميص رجالي فاخر",fr:"DÉMO — Chemise homme premium",de:"DEMO — Premium-Herrenhemd",es:"DEMO — Camisa premium de hombre"},description:{en:"Sample shirt for cart and order-flow testing only. Not for sale.",ur:"کارٹ اور آرڈر ٹیسٹ کے لیے نمونہ شرٹ؛ فروخت کے لیے نہیں۔"},price:1850,sale_price:null,stock_qty:15,unit:"piece"},
+  {sku:"DEMO-FABRIC-LAWN-2026-03",audience:"unisex",category:"DEMO · Fabrics · Lawn",product_type:"fabric_by_meter",title:{en:"DEMO — Premium Lawn Fabric",ur:"ڈیمو — پریمیم لان فیبرک",ar:"عرض تجريبي — قماش لاون فاخر",fr:"DÉMO — Tissu lawn premium",de:"DEMO — Premium-Lawnstoff",es:"DEMO — Tela lawn premium"},description:{en:"Sample fabric priced per meter. For checkout testing only.",ur:"فی میٹر قیمت والا نمونہ کپڑا؛ صرف چیک آؤٹ ٹیسٹ کے لیے۔"},price:950,sale_price:null,stock_qty:30,unit:"meter"},
+  {sku:"DEMO-FABRIC-CAMBRIC-2026-04",audience:"unisex",category:"DEMO · Fabrics · Cambric",product_type:"fabric_by_meter",title:{en:"DEMO — Soft Cambric Fabric",ur:"ڈیمو — نرم کیمبرک فیبرک",ar:"عرض تجريبي — قماش كامبريك ناعم",fr:"DÉMO — Tissu cambric doux",de:"DEMO — Weicher Cambric-Stoff",es:"DEMO — Tela cambric suave"},description:{en:"Sample cambric priced per meter. Not for sale.",ur:"فی میٹر قیمت والا نمونہ کیمبرک؛ فروخت کے لیے نہیں۔"},price:1150,sale_price:1050,stock_qty:24,unit:"meter"},
+  {sku:"DEMO-FABRIC-EMBROIDERED-2026-05",audience:"unisex",category:"DEMO · Fabrics · Embroidered",product_type:"fabric_by_meter",title:{en:"DEMO — Embroidered Fabric",ur:"ڈیمو — کڑھائی والا فیبرک",ar:"عرض تجريبي — قماش مطرز",fr:"DÉMO — Tissu brodé",de:"DEMO — Bestickter Stoff",es:"DEMO — Tela bordada"},description:{en:"Sample embroidered fabric priced per meter, for testing only.",ur:"فی میٹر قیمت والا کڑھائی کا نمونہ؛ صرف جانچ کے لیے۔"},price:1750,sale_price:null,stock_qty:18,unit:"meter"}
+ ];
+ const existing=new Set(products.map(p=>p.sku).filter(Boolean));
+ const pending=demoItems.filter(p=>!existing.has(p.sku));
+ if(!pending.length){message.textContent="Demo Gents and Fabrics collections are already installed. Refreshing the catalogue.";await loadProducts();return;}
+ button.disabled=true;message.textContent="Adding clearly labelled demo products…";
+ let added=0;
+ try{
+  for(const item of pending){
+   await call("create",{product:{...item,currency:"PKR",image_paths:[],is_active:true,is_limited_stock:false,low_stock_threshold:2}});
+   added++;
+  }
+  message.textContent=added+" demo products added. They are clearly marked DEMO and can be removed later from this catalogue.";
+  await loadProducts();
+ }catch(error){
+  message.textContent=added+" demo products added before an error: "+(error.message||"Please refresh and review the catalogue.");
+  await loadProducts();
+ }finally{button.disabled=false;}
+});
 document.querySelector("#refresh").addEventListener("click",loadProducts);document.querySelector("#signout").addEventListener("click",async()=>{await supabase.auth.signOut();location.replace("login.html");});

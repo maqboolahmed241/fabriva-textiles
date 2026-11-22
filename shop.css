@@ -137,3 +137,14 @@ html[dir="rtl"] .product-tracking-badge{left:auto;right:12px;padding:6px 6px 6px
  #product-grid.shop-grid>.shop-card>.shop-image{display:block;width:100%!important;max-width:100%!important;height:auto!important;aspect-ratio:4/5;object-fit:cover}
  #product-grid.shop-grid>.shop-card>.shop-card-body{display:block;width:100%!important;max-width:100%!important;min-width:0!important;direction:rtl!important;text-align:right}
 }
+
+
+/* Viewport-anchored RTL layout and on-page runtime error report */
+@media(max-width:760px){
+ html,body{position:relative!important;width:100vw!important;min-width:0!important;max-width:100vw!important;margin:0!important;padding:0!important;overflow-x:hidden!important}
+ body>.shop-main{position:relative!important;left:0!important;right:0!important;inset-inline:0!important;display:block!important;width:100vw!important;max-width:100vw!important;min-width:0!important;margin:0!important;padding:24px 12px 56px!important;transform:none!important}
+ body>.shop-main>#product-grid.shop-grid{position:relative!important;left:0!important;right:0!important;display:flex!important;flex-flow:column nowrap!important;align-items:stretch!important;justify-content:flex-start!important;direction:ltr!important;width:100%!important;max-width:100%!important;min-width:0!important;margin:0!important;padding:0!important;gap:14px!important}
+ body>.shop-main>#product-grid.shop-grid>.shop-card{position:relative!important;inset-inline:0!important;flex:0 0 auto!important;align-self:stretch!important;display:block!important;width:100%!important;max-width:100%!important;min-width:0!important;margin:0!important;transform:none!important;direction:rtl!important}
+ body>.shop-main>#product-grid.shop-grid>.shop-card>.shop-image{display:block!important;width:100%!important;max-width:100%!important;height:auto!important;aspect-ratio:4/5!important;object-fit:cover!important}
+ body>.shop-main>#product-grid.shop-grid>.shop-card>.shop-card-body{display:block!important;width:100%!important;max-width:100%!important;min-width:0!important;direction:rtl!important;text-align:right!important}
+}

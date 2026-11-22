@@ -103,3 +103,11 @@ html[dir="rtl"] .shop-card img{max-width:100%;height:auto}
 @media(max-width:380px){
  html[dir="rtl"] .shop-grid{grid-template-columns:minmax(0,1fr)}
 }
+
+
+/* MARYAM LUXE unique product reference badge: sits over each product photo */
+.shop-card{position:relative;overflow:hidden}
+.product-tracking-badge{position:absolute;top:12px;left:12px;z-index:3;display:inline-flex;align-items:center;gap:7px;max-width:calc(100% - 24px);padding:6px 10px 6px 6px;border:1px solid rgba(184,153,91,.9);border-radius:4px;background:linear-gradient(135deg,#211f1b 0%,#393329 100%);box-shadow:0 3px 12px rgba(0,0,0,.22);color:#f8f0dc;font:600 10px/1.2 Arial,sans-serif;letter-spacing:.08em;overflow-wrap:anywhere}
+.product-tracking-badge .tracking-mark{display:grid;place-items:center;flex:0 0 25px;height:25px;border:1px solid #c8ad72;border-radius:3px;background:linear-gradient(145deg,#d8c18a,#a8894e);color:#211f1b;font:800 10px/1 Arial,sans-serif;letter-spacing:.03em}
+.product-tracking-badge .tracking-value{min-width:0;overflow-wrap:anywhere;color:#fff8e8;font:700 10px/1.25 ui-monospace,monospace;letter-spacing:.06em}
+html[dir="rtl"] .product-tracking-badge{left:auto;right:12px;padding:6px 6px 6px 10px}

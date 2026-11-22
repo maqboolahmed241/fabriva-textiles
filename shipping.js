@@ -26,7 +26,18 @@ form.addEventListener("submit",async e=>{e.preventDefault();const b=form.querySe
 document.querySelector("#refresh").addEventListener("click",load);document.querySelector("#signout").addEventListener("click",async()=>{await db.auth.signOut();location.replace("login.html");});
 
 async function requireAdmin(){
-  const {data:{session},error:sessionError}=await db.auth.getSession();
+  const stage=(label)=>{msg.textContent="Checking access · "+label+"…";};
+  const bounded=async(promise,label)=>{
+    let timer;
+    try{
+      return await Promise.race([
+        promise,
+        new Promise((_,reject)=>{timer=setTimeout(()=>reject(new Error("Access check timed out while "+label+". Please sign out, sign in again, then reload this page. If it repeats, share this exact message with support.")),12000);})
+      ]);
+    }finally{clearTimeout(timer);}
+  };
+  stage("loading administrator session");
+  const {data:{session},error:sessionError}=await bounded(db.auth.getSession(),"loading the administrator session");
   if(sessionError)throw sessionError;
   if(!session){
     msg.textContent="Your administrator session has expired. Please sign in again.";
@@ -34,9 +45,11 @@ async function requireAdmin(){
     const link=document.createElement("a");link.className="gold-button";link.href="login.html";link.textContent="Administrator sign in";msg.append(" ",link);
     return false;
   }
-  const {data:{user},error:userError}=await db.auth.getUser();
+  stage("verifying account identity");
+  const {data:{user},error:userError}=await bounded(db.auth.getUser(),"verifying account identity");
   if(userError||!user){await db.auth.signOut();msg.textContent="Please sign in again to manage delivery rates.";app.hidden=true;return false;}
-  const {data:profile,error}=await db.from("admin_profiles").select("is_owner,can_manage_settings").eq("user_id",user.id).maybeSingle();
+  stage("checking delivery-settings permission");
+  const {data:profile,error}=await bounded(db.from("admin_profiles").select("is_owner,can_manage_settings").eq("user_id",user.id).maybeSingle(),"checking admin_profiles permissions");
   if(error)throw error;
   if(!profile||!(profile.is_owner||profile.can_manage_settings)){
     msg.textContent="This account does not have permission to manage delivery settings.";

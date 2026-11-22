@@ -1,4 +1,4 @@
-const CACHE_NAME = "maryam-luxe-shell-v6";
+const CACHE_NAME = "maryam-luxe-shell-v7";
 const APP_SHELL = [
   "./",
   "./index.html",
@@ -6,13 +6,21 @@ const APP_SHELL = [
   "./store.js",
   "./home-catalog.js",
   "./manifest.webmanifest",
-  "./icons/icon.svg"
+  "./icons/icon.svg",
+  "./shop.html",
+  "./shop.css",
+  "./shop.js",
+  "./config.js",
+  "./cart-validation.js",
+  "./visitor-tracker.js",
+  "./contact-widget.js"
 ];
 
 async function cachedPage(request) {
-  const exact = await caches.match(request);
+  // Match collection query URLs (shop.html?collection=ladies) to the cached shop shell.
+  const exact = await caches.match(request, { ignoreSearch: true });
   if (exact) return exact;
-  return caches.match("./index.html");
+  return null;
 }
 
 async function isUsableDocument(response) {

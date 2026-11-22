@@ -31,7 +31,7 @@ async function isUsableDocument(response) {
   if (!type.includes("text/html")) return false;
   try {
     const html = await response.clone().text();
-    return html.length > 500 && /<body[\\s>]/i.test(html) && /<\\/html>/i.test(html);
+    return html.length > 500 && /<body[\s>]/i.test(html) && /<\/html>/i.test(html);
   } catch {
     return false;
   }

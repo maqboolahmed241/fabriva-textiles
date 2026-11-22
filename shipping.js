@@ -2,7 +2,7 @@ import {createClient} from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2
 import {SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY} from "./config.js";
 import {validateShippingRate} from "./shipping-validation.js";
 
-const db=createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY,{auth:{persistSession:true,autoRefreshToken:true}});
+const db=createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
 const msg=document.querySelector("#message"),app=document.querySelector("#delivery-app"),form=document.querySelector("#rate-form"),list=document.querySelector("#rate-list");
 const fxMessage=document.querySelector("#fx-message"),fxList=document.querySelector("#fx-list"),fxCurrency=document.querySelector("#fx-currency"),fxRate=document.querySelector("#fx-manual-rate");
 const countrySelect=document.querySelector("#country-select"),countryNameHidden=document.querySelector("#country-name-hidden"),countryCodeHidden=document.querySelector("#country-code-hidden");
@@ -24,3 +24,36 @@ document.querySelector("#fx-refresh").addEventListener("click",()=>runFx("refres
 async function load(){list.replaceChildren();const {data,error}=await db.from("shipping_rates").select("*").order("country_name").order("city_name");if(error){list.textContent="Could not load delivery rates.";return;}if(!data.length){const p=document.createElement("p");p.className="rate-empty";p.textContent="No delivery rates configured yet. Add city or country rates above.";list.append(p);return;}for(const rate of data){const row=document.createElement("div");row.className="rate-row";const info=document.createElement("div"),name=document.createElement("strong"),detail=document.createElement("small"),status=document.createElement("span"),toggle=document.createElement("button");name.textContent=rate.country_name+(rate.country_code==="PK"?(rate.city_name?" · "+rate.city_name:" · All cities"):" · All cities");detail.textContent="PKR "+Number(rate.amount).toLocaleString()+" delivery"+(rate.free_over?" · Free over PKR "+Number(rate.free_over).toLocaleString():"");status.className="rate-status";status.textContent=rate.is_active?"ACTIVE":"INACTIVE";toggle.textContent=rate.is_active?"Deactivate":"Activate";toggle.addEventListener("click",async()=>{toggle.disabled=true;const {error}=await db.from("shipping_rates").update({is_active:!rate.is_active,updated_at:new Date().toISOString()}).eq("id",rate.id);if(error)msg.textContent="Could not update rate. Check your permission and try again.";await load();});info.append(name,detail);row.append(info,status,toggle);list.append(row);}}
 form.addEventListener("submit",async e=>{e.preventDefault();const b=form.querySelector('button[type="submit"]');b.disabled=true;const city=deliveryMode==="pakistan"?form.elements.city_name.value.trim():"";const country=countryNameHidden.value,code=countryCodeHidden.value;const amount=Number(form.elements.amount.value),freeRaw=form.elements.free_over.value;const freeOver=freeRaw===""?null:Number(freeRaw);if(deliveryMode==="international"&&(!countrySelect.value||code==="PK")){msg.textContent="Choose an international country.";b.disabled=false;return;}if(deliveryMode==="pakistan"&&!city){msg.textContent="Enter a Pakistan city for this delivery rate.";b.disabled=false;return;}let validated;try{validated=validateShippingRate({country_name:country,country_code:code,region_name:"All regions",currency:"PKR",amount:form.elements.amount.value,free_over:freeRaw});}catch(error){msg.textContent=error.message||"Enter valid delivery amounts.";b.disabled=false;return;}const payload={...validated,city_name:city||null,is_active:form.elements.is_active.checked};const {error}=await db.from("shipping_rates").insert(payload);if(error){msg.textContent=error.code==="23505"?"This city or country rate already exists.":error.message;}else{msg.textContent="Delivery rate saved.";form.reset();countrySelect.value="";form.elements.city_name.disabled=false;setMode("pakistan");await load();}b.disabled=false;});
 document.querySelector("#refresh").addEventListener("click",load);document.querySelector("#signout").addEventListener("click",async()=>{await db.auth.signOut();location.replace("login.html");});
+
+async function requireAdmin(){
+  const {data:{session},error:sessionError}=await db.auth.getSession();
+  if(sessionError)throw sessionError;
+  if(!session){
+    msg.textContent="Your administrator session has expired. Please sign in again.";
+    app.hidden=true;
+    const link=document.createElement("a");link.className="gold-button";link.href="login.html";link.textContent="Administrator sign in";msg.append(" ",link);
+    return false;
+  }
+  const {data:{user},error:userError}=await db.auth.getUser();
+  if(userError||!user){await db.auth.signOut();msg.textContent="Please sign in again to manage delivery rates.";app.hidden=true;return false;}
+  const {data:profile,error}=await db.from("admin_profiles").select("is_owner,can_manage_settings").eq("user_id",user.id).maybeSingle();
+  if(error)throw error;
+  if(!profile||!(profile.is_owner||profile.can_manage_settings)){
+    msg.textContent="This account does not have permission to manage delivery settings.";
+    app.hidden=true;return false;
+  }
+  return true;
+}
+(async()=>{
+  try{
+    if(await requireAdmin()){
+      app.hidden=false;
+      msg.textContent="Administrator access verified. Delivery settings are private.";
+      await load();
+      await loadFx();
+    }
+  }catch(error){
+    app.hidden=true;
+    msg.textContent=error?.message||"Could not verify administrator access. Please sign in again.";
+  }
+})();

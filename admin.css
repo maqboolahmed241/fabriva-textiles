@@ -28,3 +28,13 @@
 .visitor-stats-grid .stat-card strong{font-size:clamp(25px,5vw,36px);overflow-wrap:anywhere;margin:10px 0 5px}
 .visitor-stats-grid .stat-card span{font-size:9px;line-height:1.5}
 .visitor-stats-grid .stat-card small{font-size:10px;line-height:1.5}
+
+/* Slightly smaller visitor overview */
+.visitor-panel{padding:16px;margin:16px 0}
+.visitor-panel .panel-heading{margin-bottom:10px}
+.visitor-panel .panel-heading h2{font-size:26px}
+.visitor-stats-grid{gap:8px}
+.visitor-stats-grid .stat-card{padding:12px 14px}
+.visitor-stats-grid .stat-card strong{font-size:clamp(22px,4.2vw,30px);margin:7px 0 3px}
+.visitor-stats-grid .stat-card span{font-size:8px;letter-spacing:.13em}
+.visitor-stats-grid .stat-card small{font-size:9px}

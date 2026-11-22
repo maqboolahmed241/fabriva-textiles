@@ -8,10 +8,10 @@ form?.addEventListener("submit",async(event)=>{
  const email=document.querySelector("#email").value.trim();
  const password=document.querySelector("#password").value;
  const {data,error}=await supabase.auth.signInWithPassword({email,password});
- if(error){message.textContent="Sign-in failed. Check your email and password, then try again.";return;}
+ if(error){message.textContent="Sign-in failed: "+(error.message||"Check your email and password, then try again.");return;}
  const {data:profile,error:profileError}=await supabase.from("admin_profiles").select("user_id,is_owner,role").eq("user_id",data.user.id).maybeSingle();
  if(profileError||!profile){await supabase.auth.signOut();message.textContent="This account has not been approved as a MARYAM LUXE administrator.";return;}
- window.location.replace("admin.html");
+ message.textContent="Sign-in successful. Opening admin panel…";window.location.replace("admin.html");
 });
 const {data:{session}}=await supabase.auth.getSession();
 if(session) window.location.replace("admin.html");

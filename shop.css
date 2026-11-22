@@ -11,3 +11,14 @@
 .search-panel input{width:100%;padding:12px;border:1px solid #d9d1c3;background:#fffefa;font:14px Arial,sans-serif}
 .shop-tools{grid-template-columns:minmax(0,1fr) auto;align-items:end}
 @media(max-width:760px){.shop-tools{grid-template-columns:1fr}.search-panel{grid-column:auto}.site-header .search-icon-button{margin-inline-start:auto}}
+
+
+.menu-icon-button{width:38px;height:38px;display:grid;place-items:center;border:1px solid var(--line);background:transparent;color:var(--ink);cursor:pointer;flex:0 0 auto}
+.menu-icon-button svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round}
+.menu-icon-button:hover{border-color:var(--gold);color:#8e744b}
+.collection-menu-panel{position:absolute;z-index:50;top:calc(100% + 1px);right:16px;width:min(280px,calc(100vw - 32px));padding:18px;background:#fbf9f4;border:1px solid #d9d0c0;box-shadow:0 12px 28px rgba(35,32,27,.12)}
+.collection-menu-panel[hidden]{display:none}
+.collection-menu-panel label{display:grid;gap:9px;font:12px Arial,sans-serif;color:#665f54;letter-spacing:.04em}
+.collection-menu-panel select{width:100%;padding:13px;border:1px solid #d9d1c3;background:#fffefa;color:#292824;font:15px Arial,sans-serif}
+.site-header{position:relative}
+@media(max-width:760px){.site-header .menu-icon-button{margin-inline-start:0}.collection-menu-panel{right:12px}}

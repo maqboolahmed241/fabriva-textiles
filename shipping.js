@@ -71,4 +71,3 @@ async function requireAdmin(){
     msg.textContent=error?.message||"Could not verify administrator access. Please sign in again.";
   }
 })();
-}

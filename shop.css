@@ -47,3 +47,5 @@
 .payment-account-row strong{align-self:center;overflow-wrap:anywhere;font:15px Arial,sans-serif}
 .copy-payment-account{padding:7px 12px;border:1px solid #a78b5b;background:#fffefa;color:#665235;font:11px Arial,sans-serif;cursor:pointer}
 .payment-account-details>p{margin:12px 0 0;font:13px/1.6 Arial,sans-serif;color:#665f54}
+
+@media(max-width:760px){.site-header .main-nav a{white-space:nowrap;font-size:8px}}

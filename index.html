@@ -13,9 +13,9 @@
   <meta name="description" content="MARYAM LUXE — considered fabrics and clothing for ladies and gentlemen, with worldwide ambitions.">
   <title>MARYAM LUXE | Fabrics · Fashion · Worldwide</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="stylesheet" href="styles.css?v=collection-links-1">
+  <link rel="stylesheet" href="styles.css?v=drawer-menu-1">
   <script src="store.js?v=admin-mark-only-3" defer></script>
-  <script src="header-controls.js?v=3" defer></script>
+  <script src="header-controls.js?v=drawer-menu-1" defer></script>
   <script type="module" src="home-catalog.js?v=2"></script>
 </head>
 <body>
@@ -36,7 +36,7 @@
       <button class="header-icon-button" id="home-search-toggle" type="button" aria-label="Search" aria-expanded="false" title="Search">
         <span class="search-glyph" aria-hidden="true"></span>
       </button>
-      <button class="header-icon-button" id="home-menu-toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="main-nav" title="Menu">
+      <button class="header-icon-button" id="home-menu-toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="site-menu-panel" title="Menu">
         <span class="menu-glyph" aria-hidden="true"><i></i><i></i><i></i></span>
       </button>
     </div>
@@ -53,6 +53,27 @@
       </select>
     </label>
   </header>
+  <div class="site-menu-panel" id="site-menu-panel" hidden>
+  <button class="site-menu-backdrop" type="button" data-menu-close aria-label="Close menu"></button>
+  <nav class="site-menu-drawer" aria-label="Store menu">
+    <div class="site-menu-heading"><div><p class="eyebrow">MARYAM LUXE</p><h2>Explore menu</h2></div><button class="site-menu-close" type="button" data-menu-close aria-label="Close menu">×</button></div>
+    <section class="site-menu-section"><p class="site-menu-label">COLLECTIONS</p>
+      <a href="shop.html?collection=ladies"><span>01</span><strong>Ladies Collection</strong><b>→</b></a>
+      <a href="shop.html?collection=gents"><span>02</span><strong>Gents Collection</strong><b>→</b></a>
+      <a href="shop.html?collection=fabrics"><span>03</span><strong>Fabric Collection</strong><b>→</b></a>
+      <a href="shop.html"><span>04</span><strong>Shop All Products</strong><b>→</b></a>
+    </section>
+    <section class="site-menu-section"><p class="site-menu-label">ORDERS & SERVICES</p>
+      <a href="tracking.html"><span>↗</span><strong>Track My Order</strong><b>→</b></a>
+      <a href="index.html#new-arrivals"><span>✦</span><strong>New Arrivals</strong><b>→</b></a>
+    </section>
+    <section class="site-menu-section"><p class="site-menu-label">DISCOVER</p>
+      <a href="index.html"><span>⌂</span><strong>Home</strong><b>→</b></a>
+      <a href="index.html#about"><span>✧</span><strong>Our Story</strong><b>→</b></a>
+    </section>
+    <p class="site-menu-footer">A thoughtful destination for fabrics & fashion.</p>
+  </nav>
+</div>
 
   <main id="top">
     <section class="hero">

@@ -34,7 +34,8 @@ for(const [id,q] of entries){const p=products.find(x=>x.id===id),price=Number(p.
 if(!count)text(cartItems,"p","","Your bag is empty. Add products from the collection above.");cartCount.textContent=count+" item"+(count===1?"":"s");cartSummary.hidden=!count;checkoutForm.hidden=!count;cartSummary.replaceChildren();if(count){text(cartSummary,"span","","Estimated subtotal");text(cartSummary,"strong","",money(subtotal));text(cartSummary,"small","","Shipping is calculated after your delivery address is entered. Final prices and stock are verified securely when you place the order.");}}
 const paymentSelect=checkoutForm.querySelector('[name="payment_method"]');
 const transactionField=checkoutForm.querySelector("#transaction-field"),receiptField=checkoutForm.querySelector("#receipt-field");
-const transactionInput=checkoutForm.querySelector('[name="transaction_id"]'),receiptInput=checkoutForm.querySelector('[name="receipt']");
+const transactionInput=checkoutForm.elements.namedItem("transaction_id");
+const receiptInput=checkoutForm.elements.namedItem("receipt");
 const paymentDetails=document.querySelector("#payment-account-details"),paymentHelp=document.querySelector("#payment-help");
 let activePaymentAccounts=[];
 function paymentLabel(method){return method==="jazzcash"?"JazzCash":method==="easypaisa"?"Easypaisa":"Bank transfer";}

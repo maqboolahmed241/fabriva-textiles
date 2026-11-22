@@ -60,3 +60,10 @@ footer{padding:24px clamp(20px,6vw,88px);display:flex;justify-content:space-betw
 .home-shop-link{display:flex;width:max-content;margin:0 auto}
 @media(max-width:760px){.home-products{padding:58px 18px}.home-product-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.home-product-info{padding:13px}.home-product-info h3{font-size:18px}}
 @media(max-width:420px){.home-product-grid{grid-template-columns:1fr 1fr}.home-product-image,.home-product-placeholder{aspect-ratio:3/4}.home-product-info h3{font-size:16px}}
+
+/* Floating WhatsApp contact shortcut */
+.floating-whatsapp{position:fixed;right:20px;bottom:24px;z-index:1000;width:58px;height:58px;border-radius:50%;display:grid;place-items:center;background:#20b968;color:#fff;box-shadow:0 5px 20px #0003;text-decoration:none}
+.floating-whatsapp svg{width:34px;height:34px;fill:currentColor}
+.floating-whatsapp[hidden]{display:none!important}
+[dir=rtl] .floating-whatsapp{right:auto;left:20px}
+@media(max-width:600px){.floating-whatsapp{width:54px;height:54px;right:15px;bottom:18px}}

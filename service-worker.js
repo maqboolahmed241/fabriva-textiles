@@ -21,7 +21,7 @@ async function isUsableDocument(response) {
   if (!type.includes("text/html")) return false;
   try {
     const html = await response.clone().text();
-    return html.length > 500 && /<body[\\s>]/i.test(html) && /<\\/html>/i.test(html);
+    return html.length > 500 && /<body[\s>]/i.test(html) && /<\/html>/i.test(html);
   } catch {
     return false;
   }
@@ -61,8 +61,8 @@ self.addEventListener("fetch", event => {
           }
           return response;
         }
-      } catch (error) {
-        // Use the last known good page when the network is unavailable.
+      } catch {
+        // Fall back to the last known good page.
       }
       const fallback = await cachedPage(request);
       return fallback || new Response(

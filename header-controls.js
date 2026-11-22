@@ -1,18 +1,23 @@
 const menuButton=document.querySelector("#home-menu-toggle");
 const nav=document.querySelector("#main-nav");
+const menuPanel=document.querySelector("#site-menu-panel");
 const searchButton=document.querySelector("#home-search-toggle");
 const searchPanel=document.querySelector("#home-search-panel");
 const searchInput=document.querySelector("#home-search-input");
 const searchMessage=document.querySelector("#home-search-message");
-menuButton?.addEventListener("click",()=>{
- const open=nav.classList.toggle("is-open");
+function setMenu(open){
+ if(!menuPanel||!menuButton)return;
+ menuPanel.hidden=!open;
  menuButton.setAttribute("aria-expanded",String(open));
  menuButton.setAttribute("aria-label",open?"Close menu":"Open menu");
-});
-nav?.querySelectorAll("a").forEach(link=>link.addEventListener("click",()=>{
- nav.classList.remove("is-open");
- menuButton?.setAttribute("aria-expanded","false");
-}));
+ document.body.classList.toggle("menu-open",open);
+ if(open)menuPanel.querySelector(".site-menu-close")?.focus();
+ else menuButton.focus();
+}
+menuButton?.addEventListener("click",()=>setMenu(menuPanel?.hidden??true));
+menuPanel?.querySelectorAll("[data-menu-close]").forEach(button=>button.addEventListener("click",()=>setMenu(false)));
+menuPanel?.querySelectorAll(".site-menu-drawer a").forEach(link=>link.addEventListener("click",()=>setMenu(false)));
+document.addEventListener("keydown",event=>{if(event.key==="Escape"&&menuPanel&&!menuPanel.hidden)setMenu(false);});
 searchButton?.addEventListener("click",()=>{
  const open=searchPanel.hidden;
  searchPanel.hidden=!open;

@@ -31,7 +31,7 @@ async function isUsableDocument(response) {
   if (!type.includes("text/html")) return false;
   try {
     const html = await response.clone().text();
-    return html.length > 500 && /<body[\\s>]/i.test(html) && /<\\/html>/i.test(html);
+    return html.length > 500 && /<body[\s>]/i.test(html) && /<\/html>/i.test(html);
   } catch {
     return false;
   }
@@ -88,7 +88,7 @@ self.addEventListener("fetch", event => {
       }
       const fallback = await cachedPage(request);
       return fallback || new Response(
-        "<!doctype html><html lang=\\"en\\"><meta charset=\\"utf-8\\"><meta name=\\"viewport\\" content=\\"width=device-width,initial-scale=1\\"><title>MARYAM LUXE</title><body style=\\"font:16px Arial;padding:24px;color:#282722\\"><h1>MARYAM LUXE</h1><p>The page is temporarily unavailable. Please refresh.</p></body></html>",
+        `<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>MARYAM LUXE</title><body style="font:16px Arial;padding:24px;color:#282722"><h1>MARYAM LUXE</h1><p>The page is temporarily unavailable. Please refresh.</p></body></html>`,
         { headers: { "Content-Type": "text/html; charset=utf-8" }, status: 200 }
       );
     })());

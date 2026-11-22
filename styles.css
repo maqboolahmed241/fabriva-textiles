@@ -153,3 +153,10 @@ footer{padding:24px clamp(20px,6vw,88px);display:flex;justify-content:space-betw
 body.menu-open{overflow:hidden}
 @media(max-width:760px){.site-menu-drawer{width:min(420px,92vw);padding:24px 22px}.site-menu-heading h2{font-size:29px}.site-menu-section>a strong{font-size:16px}}
 @media(prefers-reduced-motion:reduce){.site-menu-drawer{animation:none}.site-menu-section>a{transition:none}}
+
+/* Clickable availability badge takes customers straight to ordering */
+.home-product-order{display:inline-flex;align-items:center;gap:8px;text-decoration:none!important;cursor:pointer;border:1px solid #a38b61;background:#f5efe3;color:#78613e!important;padding:10px 15px;transition:background .18s ease,color .18s ease,transform .18s ease}
+.home-product-order:after{content:"→";font-size:16px}
+.home-product-order:hover,.home-product-order:focus-visible{background:#a38b61;color:#fff!important;transform:translateY(-1px);outline:none}
+.home-product-order:focus-visible{outline:2px solid #a38b61;outline-offset:3px}
+.shop-card-highlight{outline:2px solid #a38b61;outline-offset:4px;box-shadow:0 12px 30px rgba(163,139,97,.18);transition:outline-color .2s ease,box-shadow .2s ease}

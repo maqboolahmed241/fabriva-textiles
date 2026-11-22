@@ -1,4 +1,4 @@
-const CACHE_NAME = "maryam-luxe-shell-v9";
+const CACHE_NAME = "maryam-luxe-shell-v10";
 const APP_SHELL = [
   "./",
   "./index.html",
@@ -60,21 +60,9 @@ self.addEventListener("fetch", event => {
   if (request.mode === "navigate") {
     event.respondWith((async () => {
       const url = new URL(request.url);
-      const isShopShell = url.pathname.endsWith("/shop.html");
-      // Serve the already-cached shop shell immediately so collection navigation
-      // never flashes a blank page while GitHub Pages is responding.
-      if (isShopShell) {
-        const cached = await cachedPage(request);
-        if (cached) {
-          fetch(request).then(async response => {
-            if (await isUsableDocument(response)) {
-              const cache = await caches.open(CACHE_NAME);
-              await cache.put(new Request(url.origin + url.pathname), response.clone());
-            }
-          }).catch(() => {});
-          return cached;
-        }
-      }
+      // Use network-first navigation so collection links always receive the
+      // current GitHub Pages document instead of a stale cached shop shell.
+      // Fall back to the last known good document only when the network fails.
       try {
         const response = await fetch(request);
         if (await isUsableDocument(response)) {

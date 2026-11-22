@@ -4,6 +4,8 @@ import {validateShippingRate} from "./shipping-validation.js";
 const db=createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY,{auth:{persistSession:true,autoRefreshToken:true}});
 const msg=document.querySelector("#message"),app=document.querySelector("#delivery-app"),form=document.querySelector("#rate-form"),list=document.querySelector("#rate-list");
 const fxMessage=document.querySelector("#fx-message"),fxList=document.querySelector("#fx-list"),fxCurrency=document.querySelector("#fx-currency"),fxRate=document.querySelector("#fx-manual-rate");
+const countrySelect=document.querySelector("#country-select");
+countrySelect.addEventListener("change",()=>{const o=countrySelect.selectedOptions[0];form.elements.country_code.value=o.value;form.elements.country_name.value=o.textContent.replace(/^\\S+\\s+/,"").trim();if(o.value!=="PK"){form.elements.currency.value=({AE:"AED",SA:"SAR",GB:"GBP",US:"USD",CA:"USD",AU:"USD",DE:"EUR",FR:"EUR",IT:"EUR",ES:"EUR",NL:"EUR",BE:"EUR",CH:"EUR",SG:"USD",MY:"USD",CN:"USD",JP:"USD"})[o.value]||"USD";}});
 const {data:{session}}=await db.auth.getSession();if(!session){location.replace("login.html");}
 else{const {data:p,error}=await db.from("admin_profiles").select("is_owner,can_manage_settings").eq("user_id",session.user.id).maybeSingle();if(error||!p||!(p.is_owner||p.can_manage_settings)){msg.textContent="You do not have permission to manage delivery settings.";await db.auth.signOut();}else{msg.textContent="Access verified. Delivery settings are private.";app.hidden=false;await load();await loadFx();}}
 

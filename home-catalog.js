@@ -3,6 +3,26 @@ const grid=document.querySelector("#home-product-grid");
 const message=document.querySelector("#home-products-message");
 const lang=()=>document.documentElement.lang||"en";
 const money=(value,currency="PKR")=>new Intl.NumberFormat("en-PK",{style:"currency",currency:currency||"PKR",maximumFractionDigits:0}).format(Number(value||0));
+let cachedProducts=[];
 function add(parent,tag,cls,value){const el=document.createElement(tag);if(cls)el.className=cls;el.textContent=value??"";parent.append(el);return el;}
-async function loadHomeCollection(){try{const response=await fetch(SUPABASE_URL+"/functions/v1/public-catalog",{headers:{apikey:SUPABASE_PUBLISHABLE_KEY}});const data=await response.json();if(!response.ok)throw new Error(data.error||"Collection is temporarily unavailable.");const products=(data.products||[]).slice(0,6);grid.replaceChildren();if(!products.length){message.textContent=lang()==="ur"?"نئی کلیکشن جلد دستیاب ہوگی۔":lang()==="ar"?"ستتوفر المجموعة الجديدة قريباً.":"New arrivals will appear here as soon as products are published.";return;}message.textContent=lang()==="ur"?"تازہ کلیکشن":lang()==="ar"?"لمحة عن المجموعة":"A first look at the collection";for(const p of products){const card=document.createElement("article");card.className="home-product-card";if(p.images?.[0]){const img=document.createElement("img");img.className="home-product-image";img.loading="lazy";img.alt=p.title?.[lang()]||p.title?.en||"MARYAM LUXE";img.src=p.images[0];card.append(img);}else add(card,"div","home-product-placeholder","M");const info=document.createElement("div");info.className="home-product-info";add(info,"small","",p.category||p.product_type||"MARYAM LUXE");add(info,"h3","",p.title?.[lang()]||p.title?.en||p.title?.ur||"New arrival");const price=add(info,"p","home-product-price",Number(p.price)>0?money(p.sale_price??p.price,p.currency):"Coming soon");if(Number(p.price)>0&&p.sale_price!==null&&p.sale_price!==undefined){const del=document.createElement("del");del.textContent=money(p.price,p.currency);price.append(del);}const inStock=Number(p.stock_qty)>0;const tag=add(info,"span","home-product-tag",inStock?(lang()==="ur"?"دستیاب":lang()==="ar"?"متوفر":"Available"):(lang()==="ur"?"صرف نمونہ":lang()==="ar"?"معاينة · غير للبيع":"Preview · Not for sale"));if(inStock){const shopLink=add(info,"a","home-product-shop-now",lang()==="ur"?"ابھی خریدیں":lang()==="ar"?"تسوق الآن":"Shop Now");shopLink.href="shop.html?product="+encodeURIComponent(p.id)+"#products";shopLink.setAttribute("aria-label",(p.title?.[lang()]||p.title?.en||"Product")+" — Shop Now");}card.append(info);grid.append(card);}}catch(error){message.textContent=error.message||"Could not load the collection.";}}
+function renderHomeCollection(){
+ if(!grid||!message)return;
+ const language=lang();grid.replaceChildren();
+ if(!cachedProducts.length){message.textContent=language==="ur"?"نئی کلیکشن جلد دستیاب ہوگی۔":language==="ar"?"ستتوفر المجموعة الجديدة قريباً.":"New arrivals will appear here as soon as products are published.";return;}
+ message.textContent=language==="ur"?"تازہ کلیکشن":language==="ar"?"لمحة عن المجموعة":"A first look at the collection";
+ for(const p of cachedProducts){
+  const card=document.createElement("article");card.className="home-product-card";
+  if(p.images?.[0]){const img=document.createElement("img");img.className="home-product-image";img.loading="lazy";img.alt=p.title?.[language]||p.title?.en||"MARYAM LUXE";img.src=p.images[0];card.append(img);}else add(card,"div","home-product-placeholder","M");
+  const info=document.createElement("div");info.className="home-product-info";
+  add(info,"small","",p.category||p.product_type||"MARYAM LUXE");add(info,"h3","",p.title?.[language]||p.title?.en||p.title?.ur||"New arrival");
+  const price=add(info,"p","home-product-price",Number(p.price)>0?money(p.sale_price??p.price,p.currency):"Coming soon");
+  if(Number(p.price)>0&&p.sale_price!==null&&p.sale_price!==undefined){const del=document.createElement("del");del.textContent=money(p.price,p.currency);price.append(del);}
+  const inStock=Number(p.stock_qty)>0;
+  add(info,"span","home-product-tag",inStock?(language==="ur"?"دستیاب":language==="ar"?"متوفر":"Available"):(language==="ur"?"صرف نمونہ":language==="ar"?"معاينة · غير للبيع":"Preview · Not for sale"));
+  if(inStock){const link=add(info,"a","home-product-shop-now",language==="ur"?"ابھی خریدیں":language==="ar"?"تسوق الآن":"Shop Now");link.href="shop.html?product="+encodeURIComponent(p.id)+"#products";link.setAttribute("aria-label",(p.title?.[language]||p.title?.en||"Product")+" — Shop Now");}
+  card.append(info);grid.append(card);
+ }
+}
+async function loadHomeCollection(){try{const response=await fetch(SUPABASE_URL+"/functions/v1/public-catalog",{headers:{apikey:SUPABASE_PUBLISHABLE_KEY}});const data=await response.json();if(!response.ok)throw new Error(data.error||"Collection is temporarily unavailable.");cachedProducts=(data.products||[]).slice(0,6);renderHomeCollection();}catch(error){message.textContent=error.message||"Could not load the collection.";}}
+window.addEventListener("maryam-language-change",renderHomeCollection);
 loadHomeCollection();

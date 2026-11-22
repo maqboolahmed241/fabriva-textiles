@@ -128,3 +128,12 @@ html[dir="rtl"] .product-tracking-badge{left:auto;right:12px;padding:6px 6px 6px
  #product-grid .shop-card-body{width:100%!important;max-width:100%!important;min-width:0!important}
  .checkout-panel,.shop-tools,.shop-collection-nav{width:100%;max-width:100%;min-width:0}
 }
+
+
+/* Android RTL final: flex layout avoids right-aligned single CSS grid track */
+@media(max-width:760px){
+ #product-grid.shop-grid{display:flex!important;flex-direction:column!important;direction:ltr!important;align-items:stretch!important;justify-content:flex-start!important;gap:14px;width:100%!important;max-width:100%!important;margin:0!important;padding:0!important}
+ #product-grid.shop-grid>.shop-card{display:block!important;flex:0 0 100%!important;width:100%!important;max-width:100%!important;min-width:0!important;margin:0!important;align-self:stretch!important;direction:rtl!important}
+ #product-grid.shop-grid>.shop-card>.shop-image{display:block;width:100%!important;max-width:100%!important;height:auto!important;aspect-ratio:4/5;object-fit:cover}
+ #product-grid.shop-grid>.shop-card>.shop-card-body{display:block;width:100%!important;max-width:100%!important;min-width:0!important;direction:rtl!important;text-align:right}
+}

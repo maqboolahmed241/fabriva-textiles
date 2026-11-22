@@ -18,3 +18,13 @@
 #payments>.gold-button,#contacts>.gold-button{width:100%;max-width:360px;min-height:52px}
 #message a.gold-button{display:inline-flex;margin:12px 0;text-decoration:none;align-items:center;justify-content:center}
 @media(max-width:650px){#payments.panel,#contacts.panel{padding:20px 16px}.payment-method-card{padding:16px 13px}.settings-card-head h3{font-size:22px}#payments>.gold-button,#contacts>.gold-button{max-width:none}}
+
+/* Compact four-tile visitor overview */
+.visitor-panel{margin:20px 0;padding:clamp(18px,3vw,28px)}
+.visitor-panel .panel-heading{margin-bottom:16px}
+.visitor-panel .panel-heading h2{font-size:clamp(25px,4vw,34px);margin:6px 0 0}
+.visitor-stats-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.visitor-stats-grid .stat-card{min-width:0;padding:clamp(13px,2.5vw,20px);border-radius:3px}
+.visitor-stats-grid .stat-card strong{font-size:clamp(25px,5vw,36px);overflow-wrap:anywhere;margin:10px 0 5px}
+.visitor-stats-grid .stat-card span{font-size:9px;line-height:1.5}
+.visitor-stats-grid .stat-card small{font-size:10px;line-height:1.5}

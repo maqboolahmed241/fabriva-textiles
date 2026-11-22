@@ -11,21 +11,12 @@ function setLanguage(code){const words=translations[code]||translations.en;docum
 select.addEventListener("change",()=>setLanguage(select.value));
 setLanguage("en");
 
-// Hidden administrator shortcut: tap the MARYAM LUXE logo five times quickly.
-// The destination still requires Supabase administrator authentication.
+// One tap on the MARYAM LUXE mark opens secure administrator sign-in.
 (() => {
   const logo = document.querySelector(".site-header .brand");
   if (!logo) return;
-  let taps = 0;
-  let reset = 0;
   logo.addEventListener("click", (event) => {
-    taps += 1;
-    window.clearTimeout(reset);
-    reset = window.setTimeout(() => { taps = 0; }, 1800);
-    if (taps >= 5) {
-      event.preventDefault();
-      taps = 0;
-      window.location.href = "login.html";
-    }
+    event.preventDefault();
+    window.location.href = "login.html";
   });
 })();

@@ -58,3 +58,8 @@
 .shop-collection-tile>strong{font:21px Georgia,serif;font-weight:400;color:#292824}
 .shop-collection-tile>b{margin-top:auto;font:10px Arial,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#806943}
 @media(max-width:650px){.shop-collection-nav{grid-template-columns:1fr;gap:9px}.shop-collection-tile{min-height:0;padding:16px 18px;gap:8px;display:grid;grid-template-columns:1fr auto;align-items:center}.shop-collection-tile>span{grid-column:1/-1}.shop-collection-tile>strong{font-size:19px}.shop-collection-tile>b{grid-column:2;grid-row:2}}
+
+/* Stable RTL presentation without reloading the shop */
+html[dir="rtl"] .shop-main,html[dir="rtl"] .shop-intro,html[dir="rtl"] .shop-note,html[dir="rtl"] .checkout-panel{direction:rtl;text-align:right}
+html[dir="rtl"] .shop-card,html[dir="rtl"] .shop-card-body,html[dir="rtl"] .checkout-form,html[dir="rtl"] .cart-items{text-align:right}
+html[dir="rtl"] .language-picker{direction:ltr}

@@ -61,11 +61,14 @@ async function loadPaymentAccounts(){
  const data=await response.json();if(!response.ok)throw new Error(data.message||"Payment methods could not be loaded.");
  activePaymentAccounts=Array.isArray(data)?data:[];
  const selected=paymentSelect.value;
+ const selectedChannel=paymentSelect.selectedOptions[0]?.dataset.channel||"";
  paymentSelect.replaceChildren();
  const country=(checkoutForm.querySelector('[name="country_code"]').value||"PK").trim().toUpperCase();
  if(country==="PK"){const cod=document.createElement("option");cod.value="cod";cod.textContent="Cash on delivery (Pakistan only)";paymentSelect.append(cod);}
  for(const account of activePaymentAccounts){const option=document.createElement("option");option.value="bank_transfer";option.dataset.channel=account.method;option.textContent=paymentLabel(account.method);paymentSelect.append(option);}
- if([...paymentSelect.options].some(x=>x.value===selected&&x.dataset.channel===(paymentSelect.selectedOptions[0]?.dataset.channel||"")))paymentSelect.value=selected;
+ const matching=[...paymentSelect.options].find(x=>x.value===selected&&(selected!=="bank_transfer"||x.dataset.channel===selectedChannel));
+ if(matching)paymentSelect.value=matching.value,matching.selected=true;
+ else if(paymentSelect.options.length)paymentSelect.selectedIndex=0;
  if(!paymentSelect.options.length){const empty=document.createElement("option");empty.value="";empty.textContent="No payment methods currently available";paymentSelect.append(empty);paymentSelect.disabled=true;}else paymentSelect.disabled=false;
  renderPaymentAccount();
 }

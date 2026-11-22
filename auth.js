@@ -13,5 +13,4 @@ form?.addEventListener("submit",async(event)=>{
  if(profileError||!profile){await supabase.auth.signOut();message.textContent="This account has not been approved as a MARYAM LUXE administrator.";return;}
  message.textContent="Sign-in successful. Opening admin panel…";window.location.replace("admin.html");
 });
-const {data:{session}}=await supabase.auth.getSession();
-if(session) window.location.replace("admin.html");
+// Always require the email and password form; do not bypass this screen using an old session.

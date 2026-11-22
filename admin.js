@@ -49,6 +49,12 @@ try {
       $("#product-count").textContent = !productAccess ? "Restricted" : productCount.error ? "Unavailable" : String(productCount.count ?? 0);
       $("#order-count").textContent = !orderAccess ? "Restricted" : orderCount.error ? "Unavailable" : String(orderCount.count ?? 0);
 
+      const { data: visitorStats, error: visitorStatsError } = await supabase.rpc("get_store_visitor_stats");
+      $("#visitor-unique").textContent = visitorStatsError ? "Unavailable" : String(visitorStats?.unique_visitors ?? 0);
+      $("#visitor-views").textContent = visitorStatsError ? "Unavailable" : String(visitorStats?.total_views ?? 0);
+      $("#visitor-today").textContent = visitorStatsError ? "Unavailable" : String(visitorStats?.today_visitors ?? 0);
+      $("#visitor-month").textContent = visitorStatsError ? "Unavailable" : String(visitorStats?.month_visitors ?? 0);
+
       $("#team-link").hidden = !teamAccess;
       $("#products-link").hidden = !productAccess;
       $("#orders-link").hidden = !orderAccess;

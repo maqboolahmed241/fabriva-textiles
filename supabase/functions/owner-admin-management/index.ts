@@ -4,7 +4,7 @@ const corsHeaders = {"Access-Control-Allow-Origin":"*","Access-Control-Allow-Hea
 Deno.serve(withSupabase({auth:"user"}, async (req,ctx) => {
   if(req.method==="OPTIONS") return new Response("ok",{headers:corsHeaders});
   if(req.method!=="POST") return Response.json({error:"Method not allowed"},{status:405,headers:corsHeaders});
-  const userId=ctx.userClaims?.sub;
+  const userId=ctx.userClaims?.id;
   if(!userId) return Response.json({error:"Sign-in required"},{status:401,headers:corsHeaders});
   const {data:owner,error:ownerError}=await ctx.supabase.from("admin_profiles").select("user_id,is_owner").eq("user_id",userId).maybeSingle();
   if(ownerError||!owner||owner.is_owner!==true) return Response.json({error:"Only the main owner can manage administrators"},{status:403,headers:corsHeaders});

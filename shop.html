@@ -59,26 +59,4 @@
  </form>
  <p id="checkout-message" class="shop-message" role="status"></p>
 </section></main>
-<footer><span>MARYAM LUXE</span><span>Fabrics · Fashion · Worldwide</span></footer><script>
-(function(){
- var trace=document.createElement("pre");
- trace.id="ml-startup-trace";
- trace.style.cssText="position:fixed;z-index:2147483647;left:6px;right:6px;top:6px;max-height:42vh;overflow:auto;padding:12px;border:3px solid #b42318;background:#fff;color:#111;font:13px/1.5 monospace;white-space:pre-wrap;overflow-wrap:anywhere";
- trace.textContent="MARYAM LUXE STARTUP TRACE\\nHTML loaded; waiting for shop.js module";
- document.addEventListener("DOMContentLoaded",function(){document.body.appendChild(trace);});
- window.__ML_STAGE__=function(value){trace.textContent="MARYAM LUXE STARTUP TRACE\\n"+value+"\\n"+location.href;};
- window.addEventListener("error",function(e){window.__ML_STAGE__("BROWSER ERROR: "+(e.message||"resource load error")+"\\n"+(e.filename||"")+" line "+(e.lineno||""));},true);
- window.addEventListener("unhandledrejection",function(e){window.__ML_STAGE__("PROMISE ERROR: "+(e.reason&&(e.reason.stack||e.reason.message)||e.reason||"unknown"));});
- setTimeout(function(){if(!window.__ML_SHOP_DIAGNOSTIC__||!window.__ML_SHOP_DIAGNOSTIC__.ready)window.__ML_STAGE__("STOPPED: shop.js did not finish startup within 12 seconds. Last checkpoint: "+trace.textContent);},12000);
- window.__ML_SHOP_DIAGNOSTIC__={startedAt:Date.now(),ready:false,errors:[]};
- function panel(title,detail){
-  var id="ml-debug-panel",p=document.getElementById(id);
-  if(!p){p=document.createElement("div");p.id=id;p.setAttribute("role","alert");p.style.cssText="position:fixed;z-index:2147483647;inset:8px 8px auto 8px;max-height:45vh;overflow:auto;padding:14px;border:3px solid #b42318;border-radius:8px;background:#fff;color:#111;font:14px/1.5 monospace;white-space:pre-wrap;overflow-wrap:anywhere;box-shadow:0 4px 24px #0006";(document.body||document.documentElement).appendChild(p);}
-  p.textContent="MARYAM LUXE DEBUG\n"+title+"\n"+String(detail||"No additional details").slice(0,1200)+"\nPage: "+location.href+"\nTime: "+new Date().toISOString();
- }
- window.__ML_SHOW_DEBUG__=panel;
- window.addEventListener("error",function(e){var d=e.message||((e.target&&(e.target.src||e.target.href))?"Resource failed: "+(e.target.src||e.target.href):"Unknown window error");window.__ML_SHOP_DIAGNOSTIC__.errors.push(String(d));panel("JavaScript/resource error",d);},true);
- window.addEventListener("unhandledrejection",function(e){var d=e.reason&&(e.reason.stack||e.reason.message)||e.reason||"Unknown promise rejection";window.__ML_SHOP_DIAGNOSTIC__.errors.push(String(d));panel("Unhandled promise rejection",d);});
- setTimeout(function(){if(!window.__ML_SHOP_DIAGNOSTIC__.ready){panel("Shop JavaScript did not finish startup","The shop module did not report ready within 12 seconds. Check network access, module imports, JavaScript syntax, and browser support.");}},12000);
-})();
-</script><script type="module" src="visitor-tracker.js?v=1"></script><script type="module" src="shop.js?v=native-navigation-1"></script><script type="module" src="contact-widget.js?v=1"></script></body></html>
+<footer><span>MARYAM LUXE</span><span>Fabrics · Fashion · Worldwide</span></footer><script type="module" src="visitor-tracker.js?v=1"></script><script type="module" src="shop.js?v=clean-startup-2"></script><script type="module" src="contact-widget.js?v=1"></script></body></html>

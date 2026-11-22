@@ -13,6 +13,12 @@ const LANGUAGE_KEY="maryam_luxe_language_v1";
 const supportedLanguages=["en","ur","ar","fr","de","es"];
 function readSavedLanguage(){try{const value=localStorage.getItem(LANGUAGE_KEY);return supportedLanguages.includes(value)?value:"en";}catch{return "en";}}
 function setLanguage(code){code=supportedLanguages.includes(code)?code:"en";try{localStorage.setItem(LANGUAGE_KEY,code);}catch{}const w=words[code]||words.en;const rtl=code==="ur"||code==="ar";document.documentElement.setAttribute("lang",code);document.documentElement.setAttribute("dir",rtl?"rtl":"ltr");document.body?.classList.toggle("language-rtl",rtl);document.body?.classList.toggle("language-ltr",!rtl);const put=(id,value)=>{const el=document.querySelector(id);if(el)el.textContent=value;};put(".main-nav a[href='index.html']",w.home);put(".main-nav a[href='#products']",w.shop);put(".main-nav a[href='tracking.html']",w.track);put(".shop-home",w.back);put(".checkout-heading .eyebrow",w.bagSecure);const bagTitle=document.querySelector(".checkout-heading h2");if(bagTitle){bagTitle.replaceChildren(document.createTextNode(w.bagTitle));}put(".shop-intro .eyebrow",w.eyebrow);put(".shop-intro h1",w.title);put(".shop-intro>p:last-child",w.intro);put(".search-label span",w.search);if(search)search.placeholder=w.searchHint;put("#site-menu-panel .site-menu-label",w.category);const options=category?.options||[];[w.all,w.ladies,w.gents,w.unisex,w.fabrics||"Fabrics"].forEach((label,index)=>{if(options[index])options[index].textContent=label;});put("#refresh",w.refresh);put(".shop-note strong",w.note);put(".shop-note p",w.noteText);const picker=document.querySelector("#shop-language");if(picker)picker.value=code;window.dispatchEvent(new CustomEvent("maryam-language-change",{detail:{language:code}}));try{if(typeof render==="function"&&grid&&message)render();}catch(error){console.error("Language render failed",error);if(message)message.textContent=w.none;}}
+// Read the language explicitly carried by the home collection link first.
+const routeParams=new URLSearchParams(location.search);
+const routeLanguage=routeParams.get("lang");
+if(["en","ur","ar","fr","de","es"].includes(routeLanguage)){
+ try{localStorage.setItem(LANGUAGE_KEY,routeLanguage);}catch{}
+}
 const demoMode=new URLSearchParams(location.search).get("demo")==="1";
 let products=[];
 const demoProducts=[

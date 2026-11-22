@@ -121,3 +121,11 @@ footer{padding:24px clamp(20px,6vw,88px);display:flex;justify-content:space-betw
  .header-icon-button{width:36px;height:36px;padding:0}
 }
 @media(max-width:390px){.header-icon-button{width:33px;height:33px}}
+
+/* Homepage collection cards are clear, accessible navigation links */
+.collection-link{display:block;color:inherit;text-decoration:none;cursor:pointer;position:relative;transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease}
+.collection-link:hover,.collection-link:focus-visible{transform:translateY(-3px);border-color:var(--gold);box-shadow:0 12px 28px #28272212;outline:none}
+.collection-link:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+.collection-open{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:24px;padding-top:15px;border-top:1px solid var(--line);color:#8e744b;font:11px var(--sans);letter-spacing:.12em;text-transform:uppercase}
+.collection-open span{font-size:20px;transition:transform .2s ease}
+.collection-link:hover .collection-open span{transform:translateX(5px)}

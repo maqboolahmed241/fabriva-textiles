@@ -16,7 +16,8 @@ Deno.serve(async req=>{
   const body=await req.json();
   if(body.action==="subscribe"){
    const sub=body.subscription;
-   if(!sub?.endpoint||!sub?.keys?.p256dh||!sub?.keys?.auth||!sub.endpoint.startsWith("https://"))return reply({error:"Invalid push subscription."},400);
+   if(!sub?.endpoint||!sub?.keys?.p256dh||!sub?.keys?.auth)return reply({error:"Invalid push subscription."},400);
+   let endpointHost="";try{const endpointUrl=new URL(sub.endpoint);endpointHost=endpointUrl.hostname;if(endpointUrl.protocol!=="https:"||!["fcm.googleapis.com","updates.push.services.mozilla.com","web.push.apple.com","wns.windows.com"].includes(endpointHost))return reply({error:"Unsupported push service endpoint."},400);}catch{return reply({error:"Invalid push service endpoint."},400);}
    const {error}=await db.from("customer_push_subscriptions").upsert({endpoint:sub.endpoint,subscription:sub,user_agent:String(req.headers.get("user-agent")||"").slice(0,500),is_active:true,updated_at:new Date().toISOString()},{onConflict:"endpoint"});
    if(error)throw error;
    return reply({ok:true});

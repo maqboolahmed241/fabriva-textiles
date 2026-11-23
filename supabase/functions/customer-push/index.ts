@@ -1,6 +1,28 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.4";
 import { send, vapidPublicKey } from "jsr:@daaku/webpush@0.2.0";
 
+// Supabase Edge Runtime may not yet expose the newer TypedArray base64 helpers.
+// The webpush package uses these helpers internally, so provide Web-API-compatible fallbacks.
+const typedArray = Uint8Array as typeof Uint8Array & {
+  fromBase64?: (value: string, options?: { alphabet?: "base64" | "base64url" }) => Uint8Array;
+};
+if (!typedArray.fromBase64) {
+  typedArray.fromBase64 = (value, options) => {
+    let normalized = value.replace(/\\s/g, "");
+    if (options?.alphabet === "base64url") normalized = normalized.replace(/-/g, "+").replace(/_/g, "/");
+    normalized += "=".repeat((4 - normalized.length % 4) % 4);
+    const binary = atob(normalized);
+    return Uint8Array.from(binary, (char) => char.charCodeAt(0));
+  };
+}
+if (!(Uint8Array.prototype as Uint8Array & { toBase64?: () => string }).toBase64) {
+  (Uint8Array.prototype as Uint8Array & { toBase64: () => string }).toBase64 = function () {
+    let binary = "";
+    for (const byte of this) binary += String.fromCharCode(byte);
+    return btoa(binary);
+  };
+}
+
 const cors = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",

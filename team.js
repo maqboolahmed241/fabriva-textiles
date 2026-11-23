@@ -71,7 +71,7 @@ inviteForm.addEventListener("submit",async e=>{
  const email=String(new FormData(form).get("email")||"").trim().toLowerCase();
  const password=String(new FormData(form).get("password")||"");
  const confirmation=String(new FormData(form).get("confirm_password")||"");
- if(password.length<12||password.length>72){message.textContent="Use a password between 12 and 72 characters.";return;}
+ if(password.length<6||password.length>15){message.textContent="Use a password between 6 and 15 characters.";return;}
  if(password!==confirmation){message.textContent="The passwords do not match.";return;}
  button.disabled=true;button.textContent="Creating account…";
  try{

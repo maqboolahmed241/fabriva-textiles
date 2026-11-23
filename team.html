@@ -1,11 +1,15 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Admin Team | FABRIVA TEXTILES</title><link rel="stylesheet" href="styles.css"><link rel="stylesheet" href="admin.css"><link rel="stylesheet" href="catalog.css"></head>
 <body class="admin-body"><header class="site-header"><a class="brand" href="admin.html"><span class="brand-mark">F</span><span><strong>FABRIVA</strong><small>TEXTILES</small></span></a><div class="header-actions"><span class="header-note">OWNER CONTROLS</span><button id="signout" class="small-button">Sign out</button></div></header>
-<main class="dashboard"><div class="dash-heading"><div><p class="eyebrow">ACCESS CONTROL</p><h1>Admin <em>team</em></h1><p class="muted">Invite up to three additional administrators and set individual permissions.</p></div><a class="back-link" href="admin.html">← Dashboard</a></div>
+<main class="dashboard"><div class="dash-heading"><div><p class="eyebrow">ACCESS CONTROL</p><h1>Admin <em>team</em></h1><p class="muted">Create up to three additional administrators and set individual permissions.</p></div><a class="back-link" href="admin.html">← Dashboard</a></div>
 <div id="team-message" class="notice" role="status">Verifying owner access…</div>
 <section id="team-app" hidden>
-<form id="invite-form" class="panel"><p class="eyebrow">NEW ADMINISTRATOR</p><h2>Invite by email</h2><div class="form-grid"><label>Email address<input name="email" type="email" required maxlength="254" placeholder="admin@example.com"></label></div>
-<p class="muted">Select only the access this person needs. Invitations are sent by Supabase Auth.</p>
-<div id="permission-options" class="permission-grid"></div><button type="submit" class="gold-button">Send invitation</button></form>
-<section class="panel"><div class="panel-heading"><div><p class="eyebrow">TEAM MEMBERS</p><h2>Current administrators</h2></div><button id="refresh-team" class="small-button">Refresh</button></div><div id="team-list" class="team-list"></div></section>
+<form id="invite-form" class="panel"><p class="eyebrow">NEW ADMINISTRATOR</p><h2>Create admin account</h2><div class="form-grid">
+<label>Email address<input name="email" type="email" required maxlength="254" autocomplete="email" placeholder="admin@example.com"></label>
+<label>Initial password<input name="password" type="password" required minlength="6" maxlength="15" autocomplete="new-password" placeholder="6 to 15 characters"></label>
+<label>Confirm password<input name="confirm_password" type="password" required minlength="6" maxlength="15" autocomplete="new-password" placeholder="Enter the same password again"></label>
+</div>
+<p class="muted">Set a password between 6 and 15 characters. Share the login details privately. The password is never saved in the admin list or activity log.</p>
+<div id="permission-options" class="permission-grid"></div><button type="submit" class="gold-button">Create admin account</button></form>
+<section class="panel"><div class="panel-heading"><div><p class="eyebrow">TEAM MEMBERS</p><h2>Current administrators</h2><p id="team-capacity" class="muted" aria-live="polite">Up to 3 additional admins (4 accounts including owner).</p></div><button id="refresh-team" class="small-button">Refresh</button></div><div id="team-list" class="team-list"></div></section>
 </section></main><footer><span>FABRIVA TEXTILES</span><span>Private owner controls</span></footer><script type="module" src="team.js"></script></body></html>

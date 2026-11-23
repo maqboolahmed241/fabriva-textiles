@@ -80,7 +80,7 @@ Deno.serve(async (req) => {
     }
 
     if (body.action === "send") {
-      const token = (req.headers.get("Authorization") || "").replace(/^Bearer\\s+/i, "");
+      const token = (req.headers.get("Authorization") || "").replace(/^Bearer\s+/i, "");
       if (!token) return reply({ error: "Sign-in required." }, 401);
       const { data: { user }, error: userError } = await db.auth.getUser(token);
       if (userError || !user) return reply({ error: "Invalid administrator session." }, 401);

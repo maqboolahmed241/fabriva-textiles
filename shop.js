@@ -66,28 +66,55 @@ function saveCart(){localStorage.setItem(CART_KEY,JSON.stringify(cart));}
 function addToCart(id){const p=products.find(x=>x.id===id);if(!p)return false;const next=Number(cart[id]||0)+1;if(next>Number(p.stock_qty)){checkoutMessage.textContent="Requested quantity exceeds available stock.";return false;}cart[id]=next;saveCart();renderCart();checkoutMessage.textContent="Product added to your bag.";return true;}
 function renderCart(){cart=sanitizeCart(cart,products);const entries=Object.entries(cart);saveCart();cartItems.replaceChildren();let subtotal=0,count=0;
 for(const [id,q] of entries){const p=products.find(x=>x.id===id),price=Number(p.sale_price??p.price),line=price*Number(q);subtotal+=line;count+=Number(q);const row=document.createElement("div");row.className="cart-row";const info=document.createElement("div");text(info,"strong","",p.title?.[document.documentElement.lang]||p.title?.en||"Product");text(info,"small","",money(price,p.currency)+" × "+q+" "+p.unit);const controls=document.createElement("div");controls.className="cart-controls";const minus=document.createElement("button");minus.type="button";minus.textContent="−";minus.setAttribute("aria-label","Decrease quantity");minus.addEventListener("click",()=>{if(cart[id]<=1)delete cart[id];else cart[id]-=1;saveCart();renderCart();});const qty=text(controls,"span","",String(q));const plus=document.createElement("button");plus.type="button";plus.textContent="+";plus.setAttribute("aria-label","Increase quantity");plus.disabled=Number(q)>=Number(p.stock_qty);plus.addEventListener("click",()=>{if(Number(cart[id])<Number(p.stock_qty)){cart[id]=Number(cart[id])+1;saveCart();renderCart();}});const remove=document.createElement("button");remove.type="button";remove.className="remove-cart";remove.textContent="Remove";remove.addEventListener("click",()=>{delete cart[id];saveCart();renderCart();});controls.append(minus,qty,plus,remove);row.append(info,controls);cartItems.append(row);}
-const w=words[document.documentElement.lang]||words.en;if(!count)text(cartItems,"p","",w.bagEmpty);cartCount.textContent=count+" "+(count===1?w.bagItem:w.bagItems);cartSummary.hidden=!count;checkoutForm.hidden=!count;cartSummary.replaceChildren();if(count){text(cartSummary,"span","",w.bagSubtotal);text(cartSummary,"strong","",money(subtotal));text(cartSummary,"small","",w.bagShipping);}}
+const w=words[document.documentElement.lang]||words.en;if(!count)text(cartItems,"p","",w.bagEmpty);cartCount.textContent=count+" "+(count===1?w.bagItem:w.bagItems);cartSummary.hidden=!count;checkoutForm.hidden=!count;cartSummary.replaceChildren();if(count){text(cartSummary,"span","",w.bagSubtotal);text(cartSummary,"strong","",money(subtotal));text(cartSummary,"small","",w.bagShipping);const estimate=text(cartSummary,"p","shipping-estimate","Select your delivery country to see shipping.");estimate.id="shipping-estimate";refreshShippingEstimate();}}
 const countryPicker=checkoutForm.querySelector("#checkout-country");
 const countryNameInput=checkoutForm.elements.namedItem("country");
 const countryCodeInput=checkoutForm.elements.namedItem("country_code");
 let activeShippingRates=[];
+let activeDeliveryRates=[];
 function applyCheckoutCountry(){
  const selected=countryPicker.selectedOptions[0];
  const code=selected?.value||"";
  countryCodeInput.value=code;
  countryNameInput.value=selected?.dataset.countryName||"";
+ refreshShippingEstimate();
  loadPaymentAccounts().catch(error=>{if(paymentHelp)paymentHelp.textContent=error.message||"Payment options could not be refreshed.";});
+}
+function refreshShippingEstimate(){
+ const output=document.querySelector("#shipping-estimate");
+ if(!output)return;
+ const code=String(countryCodeInput?.value||"").trim().toUpperCase();
+ const city=String(checkoutForm?.elements.namedItem("city")?.value||"").trim();
+ const subtotal=Object.entries(cart||{}).reduce((sum,[id,qty])=>{
+  const product=products.find(item=>String(item.id)===String(id));
+  return sum+(product?Number(product.sale_price??product.price)*Number(qty):0);
+ },0);
+ if(!code){output.textContent="Select your delivery country to see shipping.";return;}
+ let rate=null;
+ if(code==="PK"){
+  if(!city){output.textContent="Enter your city to calculate Pakistan delivery charges.";return;}
+  const normalized=city.toLocaleLowerCase();
+  rate=activeDeliveryRates.find(item=>item.country_code==="PK"&&String(item.city_name||"").trim().toLocaleLowerCase()===normalized)
+    ||activeDeliveryRates.find(item=>item.country_code==="PK"&&!String(item.city_name||"").trim());
+ }else{
+  rate=activeDeliveryRates.find(item=>item.country_code===code&&!String(item.city_name||"").trim());
+ }
+ if(!rate){output.textContent="Delivery rate is not configured or active for this destination. Please contact the store.";return;}
+ const freeOver=rate.free_over===null||rate.free_over===""?null:Number(rate.free_over);
+ const shipping=freeOver!==null&&subtotal>=freeOver?0:Number(rate.amount||0);
+ output.textContent=(shipping===0?"Free delivery":("Delivery: "+money(shipping,"PKR")))+(freeOver!==null?" · Free over "+money(freeOver,"PKR"):"");
 }
 async function loadShippingCountries(){
  countryPicker.disabled=true;
  countryPicker.replaceChildren();
  const loading=document.createElement("option");loading.value="";loading.textContent="Loading available countries…";countryPicker.append(loading);
- const url=SUPABASE_URL+"/rest/v1/shipping_rates?select=country_code,country_name,currency,city_name,region_name&is_active=eq.true&currency=eq.PKR&order=country_name";
+ const url=SUPABASE_URL+"/rest/v1/shipping_rates?select=country_code,country_name,currency,city_name,region_name,amount,free_over,is_active&is_active=eq.true&currency=eq.PKR&order=country_name";
  const response=await fetch(url,{headers:{apikey:SUPABASE_PUBLISHABLE_KEY},signal:AbortSignal.timeout(12000)});
  const data=await response.json().catch(()=>[]);
  if(!response.ok)throw new Error(data.message||"Delivery countries could not be loaded.");
+ activeDeliveryRates=Array.isArray(data)?data:[];
  const unique=new Map();
- for(const rate of Array.isArray(data)?data:[]){
+ for(const rate of activeDeliveryRates){
   const code=String(rate.country_code||"").trim().toUpperCase();
   const name=String(rate.country_name||"").trim();
   if(!/^[A-Z]{2}$/.test(code)||!name)continue;
@@ -102,10 +129,12 @@ async function loadShippingCountries(){
  const preferred=activeShippingRates.find(x=>x.code==="PK")||activeShippingRates[0];
  if(preferred){countryPicker.value=preferred.code;applyCheckoutCountry();}
  else{countryNameInput.value="";countryCodeInput.value="";paymentSelect.disabled=true;}
+ refreshShippingEstimate();
  countryPicker.disabled=!activeShippingRates.length?true:false;
  if(!activeShippingRates.length)checkoutMessage.textContent="No active delivery countries are configured yet. Please contact the store.";
 }
 countryPicker.addEventListener("change",applyCheckoutCountry);
+checkoutForm.elements.namedItem("city")?.addEventListener("input",refreshShippingEstimate);
 const paymentSelect=checkoutForm.querySelector('[name="payment_method"]');
 const transactionField=checkoutForm.querySelector("#transaction-field"),receiptField=checkoutForm.querySelector("#receipt-field");
 const transactionInput=checkoutForm.elements.namedItem("transaction_id");

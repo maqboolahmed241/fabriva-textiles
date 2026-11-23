@@ -1,14 +1,13 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.4";
 import { send, vapidPublicKey } from "jsr:@daaku/webpush@0.2.0";
 
-// Supabase Edge Runtime may not yet expose the newer TypedArray base64 helpers.
-// The webpush package uses these helpers internally, so provide Web-API-compatible fallbacks.
+// Polyfill the TypedArray base64 helpers used by the webpush package on older runtimes.
 const typedArray = Uint8Array as typeof Uint8Array & {
   fromBase64?: (value: string, options?: { alphabet?: "base64" | "base64url" }) => Uint8Array;
 };
 if (!typedArray.fromBase64) {
   typedArray.fromBase64 = (value, options) => {
-    let normalized = value.replace(/\\s/g, "");
+    let normalized = value.replace(/\s/g, "");
     if (options?.alphabet === "base64url") normalized = normalized.replace(/-/g, "+").replace(/_/g, "/");
     normalized += "=".repeat((4 - normalized.length % 4) % 4);
     const binary = atob(normalized);
@@ -19,7 +18,9 @@ if (!(Uint8Array.prototype as Uint8Array & { toBase64?: (options?: { alphabet?: 
   (Uint8Array.prototype as Uint8Array & { toBase64: (options?: { alphabet?: "base64" | "base64url"; omitPadding?: boolean }) => string }).toBase64 = function (options) {
     let binary = "";
     for (const byte of this) binary += String.fromCharCode(byte);
-    let encoded = btoa(binary);\n    if (options?.alphabet === "base64url") encoded = encoded.replace(/\\+/g, "-").replace(/\\//g, "_");\n    return options?.omitPadding ? encoded.replace(/=+$/, "") : encoded;
+    let encoded = btoa(binary);
+    if (options?.alphabet === "base64url") encoded = encoded.replace(/\+/g, "-").replace(/\//g, "_");
+    return options?.omitPadding ? encoded.replace(/=+$/, "") : encoded;
   };
 }
 

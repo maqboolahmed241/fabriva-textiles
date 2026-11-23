@@ -11,14 +11,13 @@ const {data:{session}}=await supabase.auth.getSession();
 if(!session){location.replace("login.html");}
 else{
  const {data:profile,error}=await supabase.from("admin_profiles").select("is_owner").eq("user_id",session.user.id).maybeSingle();
- if(error||!profile?.is_owner){message.textContent="Only the main owner can manage administrators.";document.querySelector("#invite-form").hidden=true;}
+ if(error||!profile?.is_owner){message.textContent="Only the main owner can manage administrators.";inviteForm.hidden=true;}
  else{message.textContent="Owner access verified.";app.hidden=false;await loadTeam();}
 }
 async function api(action,extra={}){
  let {data:{session:s},error:sessionError}=await supabase.auth.getSession();
  if(sessionError)throw new Error("Your sign-in could not be verified. Please sign in again.");
  if(!s){location.replace("login.html");throw new Error("Your session has expired. Please sign in again.");}
- // Installed PWAs can resume after sleeping with an old access token.
  if(!s.expires_at||s.expires_at*1000<Date.now()+60000){
   const refreshed=await supabase.auth.refreshSession();
   if(refreshed.error||!refreshed.data.session)throw new Error("Your sign-in expired. Please sign in again.");
@@ -26,22 +25,61 @@ async function api(action,extra={}){
  }
  const send=()=>fetch(SUPABASE_URL+"/functions/v1/owner-admin-management",{method:"POST",headers:{apikey:SUPABASE_PUBLISHABLE_KEY,Authorization:"Bearer "+s.access_token,"Content-Type":"application/json"},body:JSON.stringify({action,...extra})});
  let r=await send();
- // Retry once if a sleeping PWA's saved token is no longer accepted.
  if(r.status===401){
   const refreshed=await supabase.auth.refreshSession();
   if(refreshed.error||!refreshed.data.session)throw new Error("Your sign-in expired. Please sign in again, then reopen Admin Team.");
-  s=refreshed.data.session;
-  r=await send();
+  s=refreshed.data.session;r=await send();
  }
  const data=await r.json().catch(()=>({error:"Unexpected response"}));
  if(!r.ok)throw new Error(data.error||(r.status===401?"Please sign in again to manage administrators.":"Request failed"));
  return data;
 }
 function getPermissions(root){return Object.fromEntries(permissions.map(([k])=>[k,!!root.querySelector('[name="'+k+'"]')?.checked]));}
-async function loadTeam(){list.textContent="Loading administrators…";try{const {admins=[]}=await api("list");list.replaceChildren();const total=admins.length;const additional=admins.filter(a=>!a.is_owner).length;const remaining=Math.max(0,MAX_ADDITIONAL_ADMINS-additional);capacity.textContent=`${total} of ${MAX_TOTAL_ACCOUNTS} admin accounts in use (including owner) · ${additional} of ${MAX_ADDITIONAL_ADMINS} additional admins · ${remaining} slot${remaining===1?"":"s"} remaining.`;const inviteButton=inviteForm.querySelector('button[type="submit"]');const full=total>=MAX_TOTAL_ACCOUNTS||additional>=MAX_ADDITIONAL_ADMINS;inviteButton.disabled=full;inviteButton.textContent=full?"Admin limit reached":"Send invitation";for(const admin of admins){const card=document.createElement("article");card.className="team-card";const heading=document.createElement("div");heading.className="team-heading";const who=document.createElement("div");const email=document.createElement("strong");email.textContent=admin.email||"Invited account";const role=document.createElement("small");role.textContent=admin.is_owner?"MAIN OWNER":"ADMINISTRATOR";who.append(email,role);heading.append(who);card.append(heading);
-if(admin.is_owner){const note=document.createElement("p");note.className="muted";note.textContent="Owner account — protected from removal and permission changes.";card.append(note);}
-else{const grid=document.createElement("div");grid.className="permission-grid compact";for(const [key,label] of permissions){const wrap=document.createElement("label");wrap.className="permission-option";const input=document.createElement("input");input.type="checkbox";input.name=key;input.checked=admin[key]===true;const span=document.createElement("span");span.textContent=label;wrap.append(input,span);grid.append(wrap);}const actions=document.createElement("div");actions.className="team-actions";const save=document.createElement("button");save.className="small-button";save.textContent="Save permissions";save.addEventListener("click",async()=>{save.disabled=true;try{await api("set_permissions",{user_id:admin.user_id,permissions:getPermissions(grid)});message.textContent="Permissions updated."; }catch(e){message.textContent=e.message;}finally{save.disabled=false;}});const remove=document.createElement("button");remove.className="small-button danger-button";remove.textContent="Remove admin";remove.addEventListener("click",async()=>{if(!confirm("Remove this administrator and revoke their account access?"))return;remove.disabled=true;try{await api("remove",{user_id:admin.user_id});message.textContent="Administrator removed.";await loadTeam();}catch(e){message.textContent=e.message;remove.disabled=false;}});actions.append(save,remove);card.append(grid,actions);}list.append(card);}}
-catch(e){list.textContent=e.message;capacity.textContent="Could not verify team capacity. Refresh before inviting another admin.";const inviteButton=inviteForm.querySelector('button[type="submit"]');inviteButton.disabled=true;inviteButton.textContent="Capacity check unavailable";}}
-document.querySelector("#invite-form").addEventListener("submit",async e=>{e.preventDefault();const form=e.currentTarget,button=form.querySelector("button[type=submit]");button.disabled=true;button.textContent="Sending…";try{await api("invite",{email:new FormData(form).get("email"),permissions:getPermissions(form)});message.textContent="Invitation sent. The new admin has been added with the selected permissions.";form.reset();}catch(err){message.textContent=err.message;}finally{await loadTeam();}});
+async function loadTeam(){
+ list.textContent="Loading administrators…";
+ try{
+  const {admins=[]}=await api("list");list.replaceChildren();
+  const total=admins.length,additional=admins.filter(a=>!a.is_owner).length,remaining=Math.max(0,MAX_ADDITIONAL_ADMINS-additional);
+  capacity.textContent=`${total} of ${MAX_TOTAL_ACCOUNTS} admin accounts in use (including owner) · ${additional} of ${MAX_ADDITIONAL_ADMINS} additional admins · ${remaining} slot${remaining===1?"":"s"} remaining.`;
+  const createButton=inviteForm.querySelector('button[type="submit"]'),full=total>=MAX_TOTAL_ACCOUNTS||additional>=MAX_ADDITIONAL_ADMINS;
+  createButton.disabled=full;createButton.textContent=full?"Admin limit reached":"Create admin account";
+  for(const admin of admins){
+   const card=document.createElement("article");card.className="team-card";
+   const heading=document.createElement("div");heading.className="team-heading";const who=document.createElement("div");
+   const email=document.createElement("strong");email.textContent=admin.email||"Admin account";
+   const role=document.createElement("small");role.textContent=admin.is_owner?"MAIN OWNER":"ADMINISTRATOR";who.append(email,role);heading.append(who);card.append(heading);
+   if(admin.is_owner){const note=document.createElement("p");note.className="muted";note.textContent="Owner account — protected from removal and permission changes.";card.append(note);}
+   else{
+    const grid=document.createElement("div");grid.className="permission-grid compact";
+    for(const [key,label] of permissions){const wrap=document.createElement("label");wrap.className="permission-option";const input=document.createElement("input");input.type="checkbox";input.name=key;input.checked=admin[key]===true;const span=document.createElement("span");span.textContent=label;wrap.append(input,span);grid.append(wrap);}
+    const actions=document.createElement("div");actions.className="team-actions";
+    const save=document.createElement("button");save.className="small-button";save.textContent="Save permissions";
+    save.addEventListener("click",async()=>{save.disabled=true;try{await api("set_permissions",{user_id:admin.user_id,permissions:getPermissions(grid)});message.textContent="Permissions updated.";}catch(e){message.textContent=e.message;}finally{save.disabled=false;}});
+    const remove=document.createElement("button");remove.className="small-button danger-button";remove.textContent="Remove admin";
+    remove.addEventListener("click",async()=>{if(!confirm("Remove this administrator and revoke their account access?"))return;remove.disabled=true;try{await api("remove",{user_id:admin.user_id});message.textContent="Administrator removed.";await loadTeam();}catch(e){message.textContent=e.message;remove.disabled=false;}});
+    actions.append(save,remove);card.append(grid,actions);
+   }
+   list.append(card);
+  }
+ }catch(e){
+  list.textContent=e.message;capacity.textContent="Could not verify team capacity. Refresh before creating another admin.";
+  const createButton=inviteForm.querySelector('button[type="submit"]');createButton.disabled=true;createButton.textContent="Capacity check unavailable";
+ }
+}
+inviteForm.addEventListener("submit",async e=>{
+ e.preventDefault();const form=e.currentTarget,button=form.querySelector('button[type="submit"]');
+ const email=String(new FormData(form).get("email")||"").trim().toLowerCase();
+ const password=String(new FormData(form).get("password")||"");
+ const confirmation=String(new FormData(form).get("confirm_password")||"");
+ if(password.length<6||password.length>15){message.textContent="Use a password between 6 and 15 characters.";return;}
+ if(password!==confirmation){message.textContent="The passwords do not match.";return;}
+ button.disabled=true;button.textContent="Creating account…";
+ try{
+  await api("create_admin",{email,password,permissions:getPermissions(form)});
+  message.textContent="Admin account created. Share the email and initial password privately with the new administrator.";
+  form.reset();
+ }catch(err){message.textContent=err.message;}
+ finally{await loadTeam();}
+});
 document.querySelector("#refresh-team").addEventListener("click",loadTeam);
 document.querySelector("#signout").addEventListener("click",async()=>{await supabase.auth.signOut();location.replace("login.html");});

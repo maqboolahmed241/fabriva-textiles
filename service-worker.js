@@ -1,4 +1,4 @@
-const CACHE_NAME = "maryam-luxe-shell-v29";
+const CACHE_NAME = "maryam-luxe-shell-v30";
 const APP_SHELL = [
   "./",
   "./index.html",
@@ -19,7 +19,8 @@ const APP_SHELL = [
   "./visitor-tracker.js",
   "./visitor-tracker.js?v=1",
   "./contact-widget.js",
-  "./contact-widget.js?v=1"
+  "./contact-widget.js?v=1",
+  "./push-optin.js"
 ];
 
 async function cachedPage(request) {
@@ -72,4 +73,25 @@ self.addEventListener("fetch", event => {
       return response;
     }).catch(() => caches.match(request, { ignoreSearch: true }).then(cached => cached || Response.error()))
   );
+});
+
+
+self.addEventListener("push", event => {
+  let data = { title: "MARYAM LUXE", body: "A new collection is waiting for you.", url: "./shop.html" };
+  try { if (event.data) data = { ...data, ...event.data.json() }; } catch {}
+  event.waitUntil(self.registration.showNotification(data.title, {
+    body: data.body, icon: "./icons/icon.svg", badge: "./icons/icon.svg",
+    data: { url: data.url || "./shop.html" }, tag: "maryam-luxe-collection"
+  }));
+});
+
+self.addEventListener("notificationclick", event => {
+  event.notification.close();
+  const target = new URL(event.notification.data?.url || "./shop.html", self.registration.scope).href;
+  event.waitUntil(self.clients.matchAll({ type: "window", includeUncontrolled: true }).then(list => {
+    for (const client of list) {
+      if (new URL(client.url).origin === self.location.origin) { client.navigate(target); return client.focus(); }
+    }
+    return self.clients.openWindow(target);
+  }));
 });

@@ -53,8 +53,9 @@
    <label>Full name<input name="customer_name" required maxlength="150" autocomplete="name"></label>
    <label>Phone / WhatsApp<input name="phone" required maxlength="40" autocomplete="tel"></label>
    <label>Email (optional)<input name="email" type="email" maxlength="254" autocomplete="email"></label>
-   <label>Country<input name="country" required maxlength="100" value="Pakistan" autocomplete="country-name"></label>
-   <label>Country code (2 letters)<input name="country_code" required maxlength="2" value="PK" placeholder="PK"></label>
+   <label>Country<select id="checkout-country" name="country_picker" required><option value="">Loading available countries…</option></select></label>
+   <input type="hidden" name="country" value="">
+   <input type="hidden" name="country_code" value="">
    <label>State / province / region<input name="region_name" required minlength="2" maxlength="100" placeholder="e.g. Sindh" autocomplete="address-level1"></label>
    <label>City<input name="city" required maxlength="100" autocomplete="address-level2"></label>
    <label>Postal code<input name="postal_code" maxlength="30" autocomplete="postal-code"></label>
@@ -71,4 +72,4 @@
  </form>
  <p id="checkout-message" class="shop-message" role="status"></p>
 </section></main>
-<footer><span>MARYAM LUXE</span><span>Fabrics · Fashion · Worldwide</span></footer><script type="module" src="visitor-tracker.js?v=1"></script><script type="module" src="shop.js?v=shop-startup-null-guard-2"></script><script type="module" src="contact-widget.js?v=1"></script></body></html>
+<footer><span>MARYAM LUXE</span><span>Fabrics · Fashion · Worldwide</span></footer><script type="module" src="visitor-tracker.js?v=1"></script><script type="module" src="shop.js?v=checkout-countries-from-active-rates-1"></script><script type="module" src="contact-widget.js?v=1"></script></body></html>

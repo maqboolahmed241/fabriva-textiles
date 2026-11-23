@@ -1,4 +1,4 @@
-const CACHE_NAME = "maryam-luxe-shell-v28";
+const CACHE_NAME = "maryam-luxe-shell-v29";
 const APP_SHELL = [
   "./",
   "./index.html",

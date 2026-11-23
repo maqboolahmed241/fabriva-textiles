@@ -118,8 +118,14 @@ Deno.serve(async (req) => {
       const title = String(body.title || "").trim().slice(0, 90);
       const message = String(body.body || "").trim().slice(0, 220);
       const destination = String(body.url || "./shop.html");
-      if (!title || !message || (!destination.startsWith("/") && !destination.startsWith("./") &&
-        !destination.startsWith("https://maqboolahmed241.github.io/fabriva-textiles/"))) {
+      let destinationUrl: URL;
+      try {
+        destinationUrl = new URL(destination, "https://maqboolahmed241.github.io/fabriva-textiles/");
+      } catch {
+        return reply({ error: "Enter a valid store destination." }, 400);
+      }
+      if (!title || !message || destinationUrl.origin !== "https://maqboolahmed241.github.io" ||
+        !destinationUrl.pathname.startsWith("/fabriva-textiles/")) {
         return reply({ error: "Enter a title, message and a safe store link." }, 400);
       }
       if (!privateJwkText || !subject) return reply({ error: "Push credentials are not configured." }, 503);

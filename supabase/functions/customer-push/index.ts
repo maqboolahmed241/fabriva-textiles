@@ -95,6 +95,7 @@ Deno.serve(async (req) => {
         preference_id: preferenceId,
         endpoint: sub.endpoint,
         subscription: sub,
+        user_agent: String(body.userAgent || "").slice(0, 500) || null,
         enabled: true,
         updated_at: new Date().toISOString(),
       }, { onConflict: "endpoint" });

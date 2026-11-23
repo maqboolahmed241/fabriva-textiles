@@ -148,3 +148,8 @@ html[dir="rtl"] .product-tracking-badge{left:auto;right:12px;padding:6px 6px 6px
  body>.shop-main>#product-grid.shop-grid>.shop-card>.shop-image{display:block!important;width:100%!important;max-width:100%!important;height:auto!important;aspect-ratio:4/5!important;object-fit:cover!important}
  body>.shop-main>#product-grid.shop-grid>.shop-card>.shop-card-body{display:block!important;width:100%!important;max-width:100%!important;min-width:0!important;direction:rtl!important;text-align:right!important}
 }
+
+
+/* Checkout country dropdown sizing */
+#checkout-country{min-height:46px;cursor:pointer}
+#checkout-country:disabled{opacity:.7;cursor:not-allowed}

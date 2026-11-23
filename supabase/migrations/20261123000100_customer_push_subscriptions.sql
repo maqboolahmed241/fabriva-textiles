@@ -1,12 +1,7 @@
--- Customer web-push subscriptions. No public table access: all writes/sends go through the Edge Function.
-create table if not exists public.customer_push_subscriptions (
-  id uuid primary key default gen_random_uuid(),
-  endpoint text not null unique,
-  subscription jsonb not null,
-  user_agent text,
-  is_active boolean not null default true,
-  created_at timestamptz not null default now(),
-  updated_at timestamptz not null default now()
-);
-alter table public.customer_push_subscriptions enable row level security;
-revoke all on public.customer_push_subscriptions from anon, authenticated;
+-- The customer notification foundation migration already creates these tables.
+-- Keep this follow-up migration additive and compatible with that schema.
+alter table public.customer_push_subscriptions
+  add column if not exists user_agent text;
+
+-- The existing schema uses enabled as the canonical subscription status.
+-- No duplicate is_active flag is introduced.

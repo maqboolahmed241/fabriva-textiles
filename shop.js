@@ -67,6 +67,45 @@ function addToCart(id){const p=products.find(x=>x.id===id);if(!p)return false;co
 function renderCart(){cart=sanitizeCart(cart,products);const entries=Object.entries(cart);saveCart();cartItems.replaceChildren();let subtotal=0,count=0;
 for(const [id,q] of entries){const p=products.find(x=>x.id===id),price=Number(p.sale_price??p.price),line=price*Number(q);subtotal+=line;count+=Number(q);const row=document.createElement("div");row.className="cart-row";const info=document.createElement("div");text(info,"strong","",p.title?.[document.documentElement.lang]||p.title?.en||"Product");text(info,"small","",money(price,p.currency)+" × "+q+" "+p.unit);const controls=document.createElement("div");controls.className="cart-controls";const minus=document.createElement("button");minus.type="button";minus.textContent="−";minus.setAttribute("aria-label","Decrease quantity");minus.addEventListener("click",()=>{if(cart[id]<=1)delete cart[id];else cart[id]-=1;saveCart();renderCart();});const qty=text(controls,"span","",String(q));const plus=document.createElement("button");plus.type="button";plus.textContent="+";plus.setAttribute("aria-label","Increase quantity");plus.disabled=Number(q)>=Number(p.stock_qty);plus.addEventListener("click",()=>{if(Number(cart[id])<Number(p.stock_qty)){cart[id]=Number(cart[id])+1;saveCart();renderCart();}});const remove=document.createElement("button");remove.type="button";remove.className="remove-cart";remove.textContent="Remove";remove.addEventListener("click",()=>{delete cart[id];saveCart();renderCart();});controls.append(minus,qty,plus,remove);row.append(info,controls);cartItems.append(row);}
 const w=words[document.documentElement.lang]||words.en;if(!count)text(cartItems,"p","",w.bagEmpty);cartCount.textContent=count+" "+(count===1?w.bagItem:w.bagItems);cartSummary.hidden=!count;checkoutForm.hidden=!count;cartSummary.replaceChildren();if(count){text(cartSummary,"span","",w.bagSubtotal);text(cartSummary,"strong","",money(subtotal));text(cartSummary,"small","",w.bagShipping);}}
+const countryPicker=checkoutForm.querySelector("#checkout-country");
+const countryNameInput=checkoutForm.elements.namedItem("country");
+const countryCodeInput=checkoutForm.elements.namedItem("country_code");
+let activeShippingRates=[];
+function applyCheckoutCountry(){
+ const selected=countryPicker.selectedOptions[0];
+ const code=selected?.value||"";
+ countryCodeInput.value=code;
+ countryNameInput.value=selected?.dataset.countryName||"";
+ loadPaymentAccounts().catch(error=>{if(paymentHelp)paymentHelp.textContent=error.message||"Payment options could not be refreshed.";});
+}
+async function loadShippingCountries(){
+ countryPicker.disabled=true;
+ countryPicker.replaceChildren();
+ const loading=document.createElement("option");loading.value="";loading.textContent="Loading available countries…";countryPicker.append(loading);
+ const url=SUPABASE_URL+"/rest/v1/shipping_rates?select=country_code,country_name,currency,city_name,region_name&is_active=eq.true&currency=eq.PKR&order=country_name";
+ const response=await fetch(url,{headers:{apikey:SUPABASE_PUBLISHABLE_KEY},signal:AbortSignal.timeout(12000)});
+ const data=await response.json().catch(()=>[]);
+ if(!response.ok)throw new Error(data.message||"Delivery countries could not be loaded.");
+ const unique=new Map();
+ for(const rate of Array.isArray(data)?data:[]){
+  const code=String(rate.country_code||"").trim().toUpperCase();
+  const name=String(rate.country_name||"").trim();
+  if(!/^[A-Z]{2}$/.test(code)||!name)continue;
+  if(!unique.has(code))unique.set(code,name);
+ }
+ activeShippingRates=[...unique.entries()].map(([code,name])=>({code,name}));
+ countryPicker.replaceChildren();
+ const placeholder=document.createElement("option");placeholder.value="";placeholder.textContent=activeShippingRates.length?"Select delivery country":"No active delivery countries — contact the store";countryPicker.append(placeholder);
+ for(const country of activeShippingRates){
+  const option=document.createElement("option");option.value=country.code;option.dataset.countryName=country.name;option.textContent=country.name+" ("+country.code+")";countryPicker.append(option);
+ }
+ const preferred=activeShippingRates.find(x=>x.code==="PK")||activeShippingRates[0];
+ if(preferred){countryPicker.value=preferred.code;applyCheckoutCountry();}
+ else{countryNameInput.value="";countryCodeInput.value="";paymentSelect.disabled=true;}
+ countryPicker.disabled=!activeShippingRates.length?true:false;
+ if(!activeShippingRates.length)checkoutMessage.textContent="No active delivery countries are configured yet. Please contact the store.";
+}
+countryPicker.addEventListener("change",applyCheckoutCountry);
 const paymentSelect=checkoutForm.querySelector('[name="payment_method"]');
 const transactionField=checkoutForm.querySelector("#transaction-field"),receiptField=checkoutForm.querySelector("#receipt-field");
 const transactionInput=checkoutForm.elements.namedItem("transaction_id");
@@ -108,8 +147,8 @@ async function loadPaymentAccounts(){
  renderPaymentAccount();
 }
 paymentSelect?.addEventListener("change",renderPaymentAccount);
-checkoutForm.querySelector('[name="country_code"]')?.addEventListener("change",loadPaymentAccounts);
-if(paymentSelect&&paymentDetails&&paymentHelp)loadPaymentAccounts().catch(e=>{paymentHelp.textContent=e.message;});
+
+if(paymentSelect&&paymentDetails&&paymentHelp)loadShippingCountries().catch(e=>{countryPicker.replaceChildren();const option=document.createElement("option");option.value="";option.textContent="Could not load delivery countries";countryPicker.append(option);countryPicker.disabled=true;checkoutMessage.textContent=e.message||"Delivery countries could not be loaded.";});
 checkoutForm?.addEventListener("submit",async e=>{e.preventDefault();if(demoMode){checkoutMessage.textContent="Demo mode is for display and local cart testing only. Real checkout is disabled.";return;}const button=document.querySelector("#place-order");const items=Object.entries(cart).filter(([,q])=>Number(q)>0).map(([product_id,quantity])=>({product_id,quantity:Number(quantity)}));if(!items.length){checkoutMessage.textContent="Your bag is empty.";return;}button.disabled=true;button.textContent="Submitting order…";checkoutMessage.textContent="Checking stock and delivery rate…";try{const formData=new FormData(checkoutForm);const payload=Object.fromEntries(formData.entries());const receiptFile=receiptInput.files?.[0]||null;delete payload.receipt;payload.country_code=String(payload.country_code||"").trim().toUpperCase();payload.region_name=String(payload.region_name||"").trim();payload.transaction_id=String(payload.transaction_id||"").trim();payload.payment_channel=paymentSelect.selectedOptions[0]?.dataset.channel||"cod";payload.customer_language=document.documentElement.lang||"en";payload.items=items;
 if(payload.payment_method==="bank_transfer"){
  if(!payload.transaction_id||payload.transaction_id.length<3)throw new Error("Please enter a valid bank transaction ID.");
@@ -118,7 +157,7 @@ if(payload.payment_method==="bank_transfer"){
  const uploadResponse=await fetch(SUPABASE_URL+"/functions/v1/payment-receipt",{method:"POST",headers:{apikey:SUPABASE_PUBLISHABLE_KEY},body:uploadData});
  const uploadResult=await uploadResponse.json();if(!uploadResponse.ok||!uploadResult.ok)throw new Error(uploadResult.error||"Receipt upload failed.");
  payload.payment_receipt_path=uploadResult.path;
-}else{delete payload.transaction_id;delete payload.payment_receipt_path;}const response=await fetch(SUPABASE_URL+"/functions/v1/place-order",{method:"POST",headers:{apikey:SUPABASE_PUBLISHABLE_KEY,"Content-Type":"application/json"},body:JSON.stringify(payload)});const result=await response.json();if(!response.ok||!result.ok)throw new Error(result.error||"Order could not be placed.");cart={};saveCart();renderCart();checkoutForm.reset();checkoutForm.querySelector('[name="country"]').value="Pakistan";checkoutForm.querySelector('[name="country_code"]').value="PK";checkoutMessage.textContent="Thank you. Your order "+result.order_number+" has been received. Total: "+money(result.total,result.currency)+". We will contact you to confirm delivery.";await load();}catch(err){checkoutMessage.textContent=err.message||"Order could not be placed. Please try again.";}finally{button.disabled=false;button.textContent="Place order";}});
+}else{delete payload.transaction_id;delete payload.payment_receipt_path;}const response=await fetch(SUPABASE_URL+"/functions/v1/place-order",{method:"POST",headers:{apikey:SUPABASE_PUBLISHABLE_KEY,"Content-Type":"application/json"},body:JSON.stringify(payload)});const result=await response.json();if(!response.ok||!result.ok)throw new Error(result.error||"Order could not be placed.");cart={};saveCart();renderCart();checkoutForm.reset();countryPicker.value="";countryNameInput.value="";countryCodeInput.value="";loadShippingCountries().catch(()=>{});checkoutMessage.textContent="Thank you. Your order "+result.order_number+" has been received. Total: "+money(result.total,result.currency)+". We will contact you to confirm delivery.";await load();}catch(err){checkoutMessage.textContent=err.message||"Order could not be placed. Please try again.";}finally{button.disabled=false;button.textContent="Place order";}});
 if(demoMode){checkoutForm.hidden=true;document.querySelector("#checkout-message").textContent="Demo mode: cart testing only. Checkout and database writes are disabled.";}
 const requestedCollection=new URLSearchParams(location.search).get("collection");
 if(["ladies","gents","unisex","fabrics"].includes(requestedCollection)&&category)category.value=requestedCollection;

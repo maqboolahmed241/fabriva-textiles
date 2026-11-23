@@ -15,11 +15,11 @@ if (!typedArray.fromBase64) {
     return Uint8Array.from(binary, (char) => char.charCodeAt(0));
   };
 }
-if (!(Uint8Array.prototype as Uint8Array & { toBase64?: () => string }).toBase64) {
-  (Uint8Array.prototype as Uint8Array & { toBase64: () => string }).toBase64 = function () {
+if (!(Uint8Array.prototype as Uint8Array & { toBase64?: (options?: { alphabet?: "base64" | "base64url"; omitPadding?: boolean }) => string }).toBase64) {
+  (Uint8Array.prototype as Uint8Array & { toBase64: (options?: { alphabet?: "base64" | "base64url"; omitPadding?: boolean }) => string }).toBase64 = function (options) {
     let binary = "";
     for (const byte of this) binary += String.fromCharCode(byte);
-    return btoa(binary);
+    let encoded = btoa(binary);\n    if (options?.alphabet === "base64url") encoded = encoded.replace(/\\+/g, "-").replace(/\\//g, "_");\n    return options?.omitPadding ? encoded.replace(/=+$/, "") : encoded;
   };
 }
 

@@ -181,3 +181,5 @@ html[dir="rtl"] .site-header,html[dir="rtl"] .main-nav,html[dir="rtl"] .hero-con
 html[dir="rtl"] .main-nav a,html[dir="rtl"] [data-i18n],html[dir="rtl"] .hero-content,html[dir="rtl"] .collection-card,html[dir="rtl"] .home-product-info{text-align:right}
 html[dir="rtl"] .language-picker{direction:ltr}
 html[dir="rtl"] input,html[dir="rtl"] textarea,html[dir="rtl"] select{text-align:right}
+
+.push-optin-section{max-width:850px;margin:60px auto;padding:clamp(24px,5vw,48px);border:1px solid #ded7ca;background:#fffefa;text-align:center}.push-optin-section h2{font:clamp(30px,5vw,44px)/1.1 Georgia,serif;font-weight:400;margin:12px 0}.push-optin-section>p:not(.eyebrow){color:#77736b;font:15px/1.7 Arial,sans-serif}.push-optin-section button{border:0;cursor:pointer}.push-optin-section #push-status{min-height:24px;font-size:13px}

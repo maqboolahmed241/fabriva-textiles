@@ -181,3 +181,20 @@ html[dir="rtl"] .site-header,html[dir="rtl"] .main-nav,html[dir="rtl"] .hero-con
 html[dir="rtl"] .main-nav a,html[dir="rtl"] [data-i18n],html[dir="rtl"] .hero-content,html[dir="rtl"] .collection-card,html[dir="rtl"] .home-product-info{text-align:right}
 html[dir="rtl"] .language-picker{direction:ltr}
 html[dir="rtl"] input,html[dir="rtl"] textarea,html[dir="rtl"] select{text-align:right}
+
+
+/* Premium newsletter signup — scoped to the newsletter section only */
+.newsletter-section{padding:76px 22px 82px;background:#292824;color:#f8f4eb;text-align:center}
+.newsletter-inner{max-width:690px;margin:auto}
+.newsletter-section .eyebrow{color:#c5aa78}
+.newsletter-section h2{font:clamp(32px,5vw,48px)/1.12 Georgia,serif;font-weight:400;max-width:650px;margin:16px auto;color:#fbf8f1}
+.newsletter-section p:not(.eyebrow){font:13px/1.8 Arial,sans-serif;color:#d1c9ba}
+.newsletter-form{max-width:520px;margin:28px auto 0;display:grid;gap:14px;text-align:start}
+.newsletter-form>input{width:100%;min-height:54px;padding:0 17px;border:1px solid #8e7956;background:#fdfbf6;color:#292824;font:15px Arial,sans-serif;border-radius:0}
+.newsletter-consent{display:flex;align-items:flex-start;gap:10px;color:#d8d0c1;font:11px/1.6 Arial,sans-serif}
+.newsletter-consent input{width:17px;height:17px;flex:0 0 17px;accent-color:#b79a65;margin:1px 0 0}
+.newsletter-submit{min-height:52px;padding:0 22px;border:1px solid #b79a65;background:#b79a65;color:#211f1b;font:700 11px Arial,sans-serif;letter-spacing:.13em;text-transform:uppercase;cursor:pointer}
+.newsletter-submit:disabled{opacity:.65;cursor:wait}
+.newsletter-status{min-height:20px;margin:0!important;color:#e8d6ad!important}
+[dir=rtl] .newsletter-form{text-align:right}
+@media(max-width:600px){.newsletter-section{padding:58px 20px 64px}.newsletter-form>input{font-size:16px}}

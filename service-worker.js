@@ -1,4 +1,4 @@
-const CACHE_NAME = "maryam-luxe-shell-v32";
+const CACHE_NAME = "maryam-luxe-shell-v33";
 const APP_SHELL = [
   "./",
   "./index.html",
@@ -10,7 +10,7 @@ const APP_SHELL = [
   "./icons/icon.svg",
   "./shop.html",
   "./shop.css",
-  "./shop.css?v=customer-updates-1",
+  "./shop.css?v=customer-updates-4",
   "./shop.css?v=viewport-anchored-debug-1",
   "./shop.js",
   "./shop.js?v=checkout-countries-from-active-rates-1",
@@ -21,7 +21,7 @@ const APP_SHELL = [
   "./visitor-tracker.js?v=1",
   "./contact-widget.js",
   "./contact-widget.js?v=1",
-  "./customer-notifications.js?v=3"
+  "./customer-notifications.js?v=4"
 ];
 
 async function cachedPage(request) {

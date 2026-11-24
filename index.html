@@ -135,7 +135,20 @@
   </main>
 
   <a class="floating-whatsapp" id="floating-whatsapp" href="#" target="_blank" rel="noopener noreferrer" aria-label="Contact MARYAM LUXE on WhatsApp" title="WhatsApp" hidden><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 3.2A12.6 12.6 0 0 0 5.1 22.1L3.5 28.5l6.6-1.7A12.7 12.7 0 1 0 16 3.2Zm0 22.9c-2 0-4-.5-5.7-1.6l-.4-.2-3.9 1 1-3.8-.3-.4A10.2 10.2 0 1 1 16 26.1Zm5.6-7.6c-.3-.2-1.8-.9-2.1-1s-.5-.2-.7.2-.8 1-1 1.2-.4.2-.7.1a8.3 8.3 0 0 1-2.5-1.5 9.3 9.3 0 0 1-1.7-2.1c-.2-.3 0-.5.1-.7l.5-.6c.2-.2.2-.4.3-.6.1-.2 0-.4 0-.6s-.7-1.7-1-2.3c-.3-.6-.5-.5-.7-.5h-.6c-.2 0-.6.1-.9.4s-1.2 1.2-1.2 2.8 1.2 3.2 1.4 3.4a11.7 11.7 0 0 0 4.5 4c.6.3 1.1.5 1.5.6.6.2 1.2.2 1.7.1.5-.1 1.8-.7 2.1-1.4.3-.7.3-1.3.2-1.4-.1-.1-.3-.2-.6-.4Z"/></svg></a>
-  <footer><span>MARYAM LUXE</span><span data-i18n="footer">Fabrics · Fashion · Worldwide</span></footer>
+  <section class="customer-updates" aria-labelledby="customer-updates-title">
+  <div class="customer-updates-copy"><p class="eyebrow">STAY CONNECTED</p><h2 id="customer-updates-title">Be first to discover what’s new.</h2><p>Subscribe by email for collection updates, or turn on browser notifications whenever you wish.</p></div>
+  <form id="newsletter-form" class="newsletter-form">
+    <label class="sr-only" for="newsletter-email">Email address</label>
+    <div class="newsletter-controls"><input id="newsletter-email" name="email" type="email" maxlength="254" autocomplete="email" placeholder="Enter your email address" required><button type="submit">Subscribe</button></div>
+    <label class="newsletter-consent"><input type="checkbox" name="consent" required><span>I agree to receive collection and store updates by email. I can unsubscribe at any time.</span></label>
+    <input class="newsletter-honeypot" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+    <p id="newsletter-message" role="status" aria-live="polite"></p>
+  </form>
+  <div class="push-consent"><div><strong>Browser notifications</strong><p id="push-status">Optional alerts for new collections and important store updates.</p></div><button id="push-toggle" class="push-toggle" type="button" aria-pressed="false"><span aria-hidden="true">♧</span> Enable notifications</button></div>
+</section>
+<footer><span>MARYAM LUXE</span><span data-i18n="footer">Fabrics · Fashion · Worldwide</span></footer>
+<button id="notification-bell" class="notification-bell" type="button" aria-label="Enable browser notifications" title="Notification settings"><span aria-hidden="true">♧</span><i></i></button>
+<script type="module" src="customer-notifications.js?v=1"></script>
 
 <script type="module" src="visitor-tracker.js?v=1"></script>
 <script type="module" src="contact-widget.js?v=1"></script>
@@ -147,5 +160,6 @@
     });
   }
 </script>
+<script type="module" src="visitor-tracker.js?v=1"></script>
 </body>
 </html>

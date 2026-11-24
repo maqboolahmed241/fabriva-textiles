@@ -69,6 +69,13 @@
       </div>
     </section>
 
+
+    <section class="live-collection" id="live-collection" aria-labelledby="live-collection-title">
+      <div class="section-heading"><p class="eyebrow">AVAILABLE NOW</p><h2 id="live-collection-title">Latest collection</h2><p class="section-intro">Browse the products currently published by our store.</p></div>
+      <p id="home-catalog-message" class="home-catalog-message" role="status">Loading collection…</p><div id="home-product-grid" class="home-product-grid"></div>
+      <a class="featured-all" href="shop.html#products">View full collection →</a>
+    </section>
+
     <section class="coming" id="about">
       <p class="eyebrow" data-i18n="nextChapter">THE NEXT CHAPTER</p>
       <h2 data-i18n="comingTitle">A world of fabric. One thoughtful destination.</h2>
@@ -78,5 +85,13 @@
   </main>
 
   <footer><span>MARYAM LUXE</span><span data-i18n="footer">Fabrics · Fashion · Worldwide</span></footer>
+
+<script type="module">
+import {SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY} from "./config.js";
+const grid=document.getElementById("home-product-grid"),msg=document.getElementById("home-catalog-message");
+const money=(n,c="PKR")=>new Intl.NumberFormat("en-PK",{style:"currency",currency:c,maximumFractionDigits:0}).format(Number(n||0));
+try{const res=await fetch(SUPABASE_URL+"/functions/v1/public-catalog",{headers:{apikey:SUPABASE_PUBLISHABLE_KEY}});const data=await res.json();if(!res.ok)throw new Error(data.error||"Collection unavailable");const products=data.products||[];msg.textContent=products.length?products.length+" products available":"The new collection is being prepared.";for(const p of products){const card=document.createElement("article");card.className="home-product-card";if(p.images?.[0]){const img=document.createElement("img");img.src=p.images[0];img.alt=p.title?.en||p.title?.ur||"FABRIVA product";img.loading="lazy";card.append(img)}else{const ph=document.createElement("div");ph.className="home-product-placeholder";ph.textContent="F";card.append(ph)}const copy=document.createElement("div");copy.className="home-product-copy";const code=document.createElement("span");code.className="home-product-code";code.textContent=p.product_tracking_id||p.sku||("FT-"+String(p.id||"").slice(0,8).toUpperCase());copy.append(code);const title=document.createElement("h3");title.textContent=p.title?.[document.documentElement.lang]||p.title?.en||p.title?.ur||p.title?.ar||"FABRIVA Product";copy.append(title);const category=document.createElement("p");category.textContent=[p.category,p.product_type?.replaceAll("_"," ")].filter(Boolean).join(" · ");copy.append(category);const price=document.createElement("div");price.className="home-product-price";price.textContent=money(p.sale_price??p.price,p.currency);if(p.sale_price!==null&&p.sale_price!==undefined){const del=document.createElement("del");del.textContent=money(p.price,p.currency);price.append(del)}copy.append(price);card.append(copy);grid.append(card)}}catch(e){msg.textContent="Could not load the collection: "+(e.message||"Please refresh the page.")}
+</script>
+
 </body>
 </html>

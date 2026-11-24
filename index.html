@@ -84,7 +84,18 @@
     </section>
   </main>
 
-  <footer><span>MARYAM LUXE</span><span data-i18n="footer">Fabrics · Fashion · Worldwide</span></footer>
+  <section class="customer-updates" aria-labelledby="customer-updates-title">
+  <div class="customer-updates-copy"><p class="eyebrow">STAY CONNECTED</p><h2 id="customer-updates-title">Be first to discover what’s new.</h2><p>Subscribe by email for collection updates, or turn on browser notifications whenever you wish.</p></div>
+  <form id="newsletter-form" class="newsletter-form">
+    <label class="sr-only" for="newsletter-email">Email address</label>
+    <div class="newsletter-controls"><input id="newsletter-email" name="email" type="email" maxlength="254" autocomplete="email" placeholder="Enter your email address" required><button type="submit">Subscribe</button></div>
+    <label class="newsletter-consent"><input type="checkbox" name="consent" required><span>I agree to receive collection and store updates by email. I can unsubscribe at any time.</span></label>
+    <input class="newsletter-honeypot" name="website" tabindex="-1" autocomplete="off" aria-hidden="true"><p id="newsletter-message" role="status" aria-live="polite"></p>
+  </form>
+  <div class="push-consent"><div><strong>Browser notifications</strong><p id="push-status">Optional alerts for new collections and important store updates.</p></div><button id="push-toggle" class="push-toggle" type="button" aria-pressed="false">Enable notifications</button></div>
+</section>
+<button id="notification-bell" class="notification-bell" type="button" aria-label="Enable browser notifications" title="Notification settings">🔔</button>
+<script type="module" src="customer-notifications.js?v=1"></script>
 
 <script type="module">
 import {SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY} from "./config.js";

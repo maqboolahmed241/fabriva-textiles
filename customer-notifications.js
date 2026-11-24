@@ -44,7 +44,7 @@ if (toggle) toggle.addEventListener("click", async () => {
   finally { toggle.disabled = false; }
 });
 if (bell) bell.addEventListener("click", () => {
-  if (Notification?.permission === "granted") { status && (status.textContent = "Notifications are enabled. Manage permission in your browser settings."); return; }
+  if ("Notification" in window && Notification.permission === "granted") { status && (status.textContent = "Notifications are enabled. Manage permission in your browser settings."); return; }
   toggle?.click();
 });
 if (form) form.addEventListener("submit", async event => {

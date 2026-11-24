@@ -40,6 +40,7 @@ try {
       const orderAccess = can(profile, "can_view_orders", "can_update_order_status", "can_cancel_orders");
       const teamAccess = profile.is_owner === true;
       const shippingAccess = can(profile, "can_manage_settings");
+      const notificationAccess = shippingAccess;
 
       const [productCount, orderCount] = await Promise.all([
         productAccess ? supabase.from("products").select("*", { count: "exact", head: true }) : Promise.resolve({ count: null, error: null }),
@@ -59,8 +60,9 @@ try {
       $("#products-link").hidden = !productAccess;
       $("#orders-link").hidden = !orderAccess;
       $("#shipping-link").hidden = !shippingAccess;
+      $("#notifications-link").hidden = !notificationAccess;
 
-      const visibleTools = [teamAccess, productAccess, orderAccess, shippingAccess].some(Boolean);
+      const visibleTools = [teamAccess, productAccess, orderAccess, shippingAccess, notificationAccess].some(Boolean);
       if (!visibleTools) throw new Error("This administrator account has no dashboard permissions. Ask the owner to grant access.");
 
       notice.textContent = "Access verified. Choose a store-management section below.";

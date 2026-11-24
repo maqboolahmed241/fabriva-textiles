@@ -1,4 +1,4 @@
-const CACHE_NAME = "maryam-luxe-shell-v29";
+const CACHE_NAME = "maryam-luxe-shell-v30";
 const APP_SHELL = [
   "./",
   "./index.html",
@@ -19,7 +19,8 @@ const APP_SHELL = [
   "./visitor-tracker.js",
   "./visitor-tracker.js?v=1",
   "./contact-widget.js",
-  "./contact-widget.js?v=1"
+  "./contact-widget.js?v=1",
+  "./customer-notifications.js?v=1"
 ];
 
 async function cachedPage(request) {
@@ -72,4 +73,28 @@ self.addEventListener("fetch", event => {
       return response;
     }).catch(() => caches.match(request, { ignoreSearch: true }).then(cached => cached || Response.error()))
   );
+});
+
+
+self.addEventListener("push", event => {
+  let data = {};
+  try { data = event.data ? event.data.json() : {}; } catch { data = { body: event.data?.text() || "" }; }
+  event.waitUntil(self.registration.showNotification(data.title || "MARYAM LUXE", {
+    body: data.body || "A new store update is available.",
+    icon: "./icons/icon.svg",
+    badge: "./icons/icon.svg",
+    data: { url: data.url || "./shop.html" },
+    tag: "maryam-luxe-store-update"
+  }));
+});
+self.addEventListener("notificationclick", event => {
+  event.notification.close();
+  const target = new URL(event.notification.data?.url || "./shop.html", self.location.origin).href;
+  event.waitUntil((async () => {
+    const clientsList = await self.clients.matchAll({ type: "window", includeUncontrolled: true });
+    for (const client of clientsList) {
+      if (client.url === target && "focus" in client) return client.focus();
+    }
+    if (self.clients.openWindow) return self.clients.openWindow(target);
+  })());
 });

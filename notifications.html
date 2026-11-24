@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#242321">
+<title>Collection Notifications | FABRIVA TEXTILES</title>
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="admin.css">
+</head>
+<body class="admin-body">
+<header class="site-header">
+  <a class="brand" href="admin.html"><span class="brand-mark">F</span><span><strong>FABRIVA TEXTILES</strong><small>PRIVATE ADMIN</small></span></a>
+  <a class="small-button" href="admin.html">Dashboard</a>
+</header>
+<main class="dashboard">
+  <div class="dash-heading"><div><p class="eyebrow">CUSTOMER COMMUNICATION</p><h1>Collection <em>notifications</em></h1><p class="muted">Send a new collection announcement to customers who have opted in.</p></div><span class="private-chip">PRIVATE ADMIN</span></div>
+  <div id="notice" class="notice" role="status">Checking administrator access…</div>
+  <section id="composer" class="panel" hidden>
+    <form id="push-form">
+      <label class="settings-field">Notification title<input name="title" maxlength="90" required value="New collection is here!"></label>
+      <label class="settings-field">Message<textarea name="body" maxlength="220" rows="3" required>Discover the latest FABRIVA TEXTILES collection. Explore the new arrivals today.</textarea></label>
+      <label class="settings-field">Destination<select name="url"><option value="./shop.html">Shop all collections</option><option value="./shop.html?collection=ladies">Ladies collection</option><option value="./shop.html?collection=gents">Gents collection</option><option value="./shop.html?collection=fabrics">Fabric collection</option></select></label>
+      <button class="gold-button" type="submit">Send to opted-in customers</button>
+    </form>
+    <p id="result" class="muted" role="status">Only customers who enabled notifications will receive this message.</p>
+  </section>
+</main>
+<footer><span>FABRIVA TEXTILES</span><span>Private customer notifications</span></footer>
+<script type="module" src="notifications-admin.js?v=1"></script>
+</body>
+</html>
